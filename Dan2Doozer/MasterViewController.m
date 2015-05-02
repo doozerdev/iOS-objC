@@ -107,10 +107,21 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+
+    
     [self configureCell:cell atIndexPath:indexPath];
+  
+    
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+
+    [self.tableView reloadData];
+}
+
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
@@ -134,10 +145,14 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    cell.showsReorderControl = YES;
+    
     NSString *first = [[object valueForKey:@"itemName"] description];
     NSString *second = [[object valueForKey:@"order"] description];
     NSNumber *completedNumber = [object valueForKey:@"completed"];
     BOOL B = [completedNumber boolValue];
+    
 
     cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", first, second];
     
