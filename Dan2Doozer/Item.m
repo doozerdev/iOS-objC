@@ -12,6 +12,7 @@
 
 @synthesize itemName;
 @synthesize order;
+@synthesize completed;
 
 
 @end

@@ -45,20 +45,33 @@
 
 - (void)insertNewObject:(id)sender {
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    
     Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
     
+    
+    NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
     long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
-    long orderValue = numberOfResults * 1000;
+    
+    
+    if (numberOfResults == 0){
+        newItem.order = [NSNumber numberWithLong:16777216];
+    }
+    else{
+    //find the lowest order value in the array of items
+    NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
+    NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
+    [itemArray sortedArrayUsingDescriptors:sortDescriptors];
+    Item *firstObject = [itemArray objectAtIndex:0];
+    long lowestOrder = ([firstObject.order longValue]/2);
+    newItem.order = [NSNumber numberWithLong:lowestOrder];
+    }
+    
     newItem.itemName = self.itemNameTextField.text;
-    newItem.order = [NSNumber numberWithLong:orderValue];
+    
+    newItem.completed = [NSNumber numberWithLong:0];
     
     self.itemNameTextField.text = nil;
     
-
-  
     // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
@@ -123,8 +136,17 @@
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *first = [[object valueForKey:@"itemName"] description];
     NSString *second = [[object valueForKey:@"order"] description];
+    NSNumber *completedNumber = [object valueForKey:@"completed"];
+    BOOL B = [completedNumber boolValue];
 
     cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", first, second];
+    
+    
+    if (B) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     
     
 }

@@ -13,6 +13,7 @@
 
 @property (nonatomic, retain) NSString *itemName;
 @property (nonatomic, retain) NSNumber *order;
+@property (nonatomic, retain) NSNumber *completed;
 
 
 
