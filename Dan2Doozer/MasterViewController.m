@@ -8,8 +8,13 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "Item.h"
 
 @interface MasterViewController ()
+
+@property (weak, nonatomic) IBOutlet UITextField *itemNameTextField;
+
+
 
 @end
 
@@ -40,13 +45,20 @@
 
 - (void)insertNewObject:(id)sender {
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-        
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-        
+    
+    Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    
+    long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
+    long orderValue = numberOfResults * 1000;
+    newItem.itemName = self.itemNameTextField.text;
+    newItem.order = [NSNumber numberWithLong:orderValue];
+    
+    self.itemNameTextField.text = nil;
+    
+
+  
     // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
@@ -109,7 +121,12 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    NSString *first = [[object valueForKey:@"itemName"] description];
+    NSString *second = [[object valueForKey:@"order"] description];
+
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", first, second];
+    
+    
 }
 
 #pragma mark - Fetched results controller
@@ -129,7 +146,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptor];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
