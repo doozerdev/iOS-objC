@@ -12,9 +12,7 @@
 
 @interface MasterViewController ()
 
-@property (weak, nonatomic) IBOutlet UITextField *itemNameTextField;
-
-
+@property (strong, nonatomic) UITextField *itemNameTextField;
 
 @end
 
@@ -32,11 +30,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    
+    self.itemNameTextField.delegate = self;
+    
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self insertNewObject:nil];
+    return YES;
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
