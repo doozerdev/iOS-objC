@@ -17,6 +17,7 @@
 		A2301B421AF41A7C00E2267D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2301B401AF41A7C00E2267D /* LaunchScreen.xib */; };
 		A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */; };
 		A2301B5C1AF43CAE00E2267D /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5B1AF43CAE00E2267D /* Item.m */; };
+		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,7 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A2301B281AF41A7C00E2267D /* Dan2Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dan2Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2301B281AF41A7C00E2267D /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B2C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B2D1AF41A7C00E2267D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A2301B2F1AF41A7C00E2267D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -43,11 +44,13 @@
 		A2301B3C1AF41A7C00E2267D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A2301B3E1AF41A7C00E2267D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A2301B411AF41A7C00E2267D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		A2301B471AF41A7C00E2267D /* Dan2DoozerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Dan2DoozerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2301B471AF41A7C00E2267D /* DoozerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B4C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dan2DoozerTests.m; sourceTree = "<group>"; };
 		A2301B5A1AF43CAE00E2267D /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		A2301B5B1AF43CAE00E2267D /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
+		A2301B5D1AF6E04F00E2267D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		A2301B5E1AF6E04F00E2267D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +83,8 @@
 		A2301B291AF41A7C00E2267D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A2301B281AF41A7C00E2267D /* Dan2Doozer.app */,
-				A2301B471AF41A7C00E2267D /* Dan2DoozerTests.xctest */,
+				A2301B281AF41A7C00E2267D /* Doozer.app */,
+				A2301B471AF41A7C00E2267D /* DoozerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +101,8 @@
 				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
 				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
+				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
+				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
 				A2301B3E1AF41A7C00E2267D /* Images.xcassets */,
 				A2301B401AF41A7C00E2267D /* LaunchScreen.xib */,
 				A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */,
@@ -135,9 +140,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A2301B271AF41A7C00E2267D /* Dan2Doozer */ = {
+		A2301B271AF41A7C00E2267D /* Doozer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A2301B511AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Dan2Doozer" */;
+			buildConfigurationList = A2301B511AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Doozer" */;
 			buildPhases = (
 				A2301B241AF41A7C00E2267D /* Sources */,
 				A2301B251AF41A7C00E2267D /* Frameworks */,
@@ -147,14 +152,14 @@
 			);
 			dependencies = (
 			);
-			name = Dan2Doozer;
+			name = Doozer;
 			productName = Dan2Doozer;
-			productReference = A2301B281AF41A7C00E2267D /* Dan2Doozer.app */;
+			productReference = A2301B281AF41A7C00E2267D /* Doozer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A2301B461AF41A7C00E2267D /* Dan2DoozerTests */ = {
+		A2301B461AF41A7C00E2267D /* DoozerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A2301B541AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Dan2DoozerTests" */;
+			buildConfigurationList = A2301B541AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "DoozerTests" */;
 			buildPhases = (
 				A2301B431AF41A7C00E2267D /* Sources */,
 				A2301B441AF41A7C00E2267D /* Frameworks */,
@@ -165,9 +170,9 @@
 			dependencies = (
 				A2301B491AF41A7C00E2267D /* PBXTargetDependency */,
 			);
-			name = Dan2DoozerTests;
+			name = DoozerTests;
 			productName = Dan2DoozerTests;
-			productReference = A2301B471AF41A7C00E2267D /* Dan2DoozerTests.xctest */;
+			productReference = A2301B471AF41A7C00E2267D /* DoozerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -188,7 +193,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A2301B231AF41A7C00E2267D /* Build configuration list for PBXProject "Dan2Doozer" */;
+			buildConfigurationList = A2301B231AF41A7C00E2267D /* Build configuration list for PBXProject "Doozer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -201,8 +206,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A2301B271AF41A7C00E2267D /* Dan2Doozer */,
-				A2301B461AF41A7C00E2267D /* Dan2DoozerTests */,
+				A2301B271AF41A7C00E2267D /* Doozer */,
+				A2301B461AF41A7C00E2267D /* DoozerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -236,6 +241,7 @@
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
+				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
 			);
@@ -254,7 +260,7 @@
 /* Begin PBXTargetDependency section */
 		A2301B491AF41A7C00E2267D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A2301B271AF41A7C00E2267D /* Dan2Doozer */;
+			target = A2301B271AF41A7C00E2267D /* Doozer */;
 			targetProxy = A2301B481AF41A7C00E2267D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -368,7 +374,7 @@
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Doozer;
 			};
 			name = Debug;
 		};
@@ -379,7 +385,7 @@
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Doozer;
 			};
 			name = Release;
 		};
@@ -397,8 +403,8 @@
 				);
 				INFOPLIST_FILE = Dan2DoozerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dan2Doozer.app/Dan2Doozer";
+				PRODUCT_NAME = DoozerTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
 			};
 			name = Debug;
 		};
@@ -412,15 +418,15 @@
 				);
 				INFOPLIST_FILE = Dan2DoozerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dan2Doozer.app/Dan2Doozer";
+				PRODUCT_NAME = DoozerTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A2301B231AF41A7C00E2267D /* Build configuration list for PBXProject "Dan2Doozer" */ = {
+		A2301B231AF41A7C00E2267D /* Build configuration list for PBXProject "Doozer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A2301B4F1AF41A7C00E2267D /* Debug */,
@@ -429,21 +435,23 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A2301B511AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Dan2Doozer" */ = {
+		A2301B511AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Doozer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A2301B521AF41A7C00E2267D /* Debug */,
 				A2301B531AF41A7C00E2267D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		A2301B541AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Dan2DoozerTests" */ = {
+		A2301B541AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "DoozerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A2301B551AF41A7C00E2267D /* Debug */,
 				A2301B561AF41A7C00E2267D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

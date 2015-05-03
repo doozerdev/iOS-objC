@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A2301B271AF41A7C00E2267D"
-               BuildableName = "Dan2Doozer.app"
-               BlueprintName = "Dan2Doozer"
-               ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+               BuildableName = "Doozer.app"
+               BlueprintName = "Doozer"
+               ReferencedContainer = "container:Doozer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A2301B461AF41A7C00E2267D"
-               BuildableName = "Dan2DoozerTests.xctest"
-               BlueprintName = "Dan2DoozerTests"
-               ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+               BuildableName = "DoozerTests.xctest"
+               BlueprintName = "DoozerTests"
+               ReferencedContainer = "container:Doozer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A2301B461AF41A7C00E2267D"
-               BuildableName = "Dan2DoozerTests.xctest"
-               BlueprintName = "Dan2DoozerTests"
-               ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+               BuildableName = "DoozerTests.xctest"
+               BlueprintName = "DoozerTests"
+               ReferencedContainer = "container:Doozer.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A2301B271AF41A7C00E2267D"
-            BuildableName = "Dan2Doozer.app"
-            BlueprintName = "Dan2Doozer"
-            ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+            BuildableName = "Doozer.app"
+            BlueprintName = "Doozer"
+            ReferencedContainer = "container:Doozer.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A2301B271AF41A7C00E2267D"
-            BuildableName = "Dan2Doozer.app"
-            BlueprintName = "Dan2Doozer"
-            ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+            BuildableName = "Doozer.app"
+            BlueprintName = "Doozer"
+            ReferencedContainer = "container:Doozer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -96,9 +96,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A2301B271AF41A7C00E2267D"
-            BuildableName = "Dan2Doozer.app"
-            BlueprintName = "Dan2Doozer"
-            ReferencedContainer = "container:Dan2Doozer.xcodeproj">
+            BuildableName = "Doozer.app"
+            BlueprintName = "Doozer"
+            ReferencedContainer = "container:Doozer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
