@@ -7,8 +7,10 @@
 //
 
 #import "DetailViewController.h"
+#import "Item.h"
 
 @interface DetailViewController ()
+
 
 @end
 
@@ -28,7 +30,16 @@
 - (void)configureView {
     // Update the user interface for the detail item.
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [[self.detailItem valueForKey:@"timeStamp"] description];
+        Item *displayItem = self.detailItem;
+        self.ItemTitleField.text = displayItem.itemName;
+        self.OrderValueField.text = displayItem.order.stringValue;
+        self.CompletedField.text = displayItem.completed.stringValue;
+        
+        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateStyle:NSDateFormatterLongStyle];
+        NSString *labelData = [dateFormatter stringFromDate:displayItem.createdDate];
+        self.CreationDateField.text = labelData;
+        
     }
 }
 

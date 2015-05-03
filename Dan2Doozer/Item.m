@@ -13,6 +13,7 @@
 @synthesize itemName;
 @synthesize order;
 @synthesize completed;
+@synthesize createdDate;
 
 
 @end

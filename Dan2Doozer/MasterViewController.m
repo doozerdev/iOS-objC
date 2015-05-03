@@ -72,6 +72,8 @@
     
     newItem.completed = [NSNumber numberWithLong:0];
     
+    newItem.createdDate = [NSDate date];
+    
     self.itemNameTextField.text = nil;
     
     // Save the context.
@@ -196,13 +198,12 @@
     
     cell.showsReorderControl = YES;
     
-    NSString *first = [[object valueForKey:@"itemName"] description];
-    NSString *second = [[object valueForKey:@"order"] description];
+
     NSNumber *completedNumber = [object valueForKey:@"completed"];
     BOOL B = [completedNumber boolValue];
     
 
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", first, second];
+    cell.textLabel.text = [[object valueForKey:@"itemName"] description];
     
     
     if (B) {
