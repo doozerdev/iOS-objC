@@ -122,7 +122,7 @@
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
 
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    
+
     
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
     
@@ -153,7 +153,7 @@
     
     
     
-    [self.tableView reloadData];
+    
     
     
     // Save the context.
@@ -164,6 +164,8 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+    
+    [self.tableView reloadData];
     
     
 }
