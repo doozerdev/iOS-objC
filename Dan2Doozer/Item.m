@@ -14,6 +14,8 @@
 @synthesize order;
 @synthesize completed;
 @synthesize createdDate;
+@synthesize itemId;
+@synthesize parentId;
 
 
 @end

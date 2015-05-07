@@ -18,6 +18,7 @@
 		A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */; };
 		A2301B5C1AF43CAE00E2267D /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5B1AF43CAE00E2267D /* Item.m */; };
 		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
+		A2843E621AF71EF100FE47B6 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2843E611AF71EF100FE47B6 /* ListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		A2301B5B1AF43CAE00E2267D /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		A2301B5D1AF6E04F00E2267D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		A2301B5E1AF6E04F00E2267D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
+		A2843E611AF71EF100FE47B6 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,10 +97,12 @@
 			children = (
 				A2301B2F1AF41A7C00E2267D /* AppDelegate.h */,
 				A2301B301AF41A7C00E2267D /* AppDelegate.m */,
-				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
-				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
 				A2301B5A1AF43CAE00E2267D /* Item.h */,
 				A2301B5B1AF43CAE00E2267D /* Item.m */,
+				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
+				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
+				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
+				A2843E611AF71EF100FE47B6 /* ListViewController.m */,
 				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
 				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
@@ -239,6 +244,7 @@
 			files = (
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
+				A2843E621AF71EF100FE47B6 /* ListViewController.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,

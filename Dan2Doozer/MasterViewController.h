@@ -10,10 +10,12 @@
 #import <CoreData/CoreData.h>
 
 @class DetailViewController;
+@class ListViewController;
 
 @interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate>
 
-@property (strong, nonatomic) DetailViewController *detailViewController;
+//@property (strong, nonatomic) DetailViewController *detailViewController;
+@property (strong, nonatomic) ListViewController *listViewController;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

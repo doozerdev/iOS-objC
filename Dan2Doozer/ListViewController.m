@@ -1,22 +1,56 @@
 //
-//  MasterViewController.m
-//  Dan2Doozer
+//  ListViewController.m
+//  Doozer
 //
-//  Created by Daniel Apone on 5/1/15.
+//  Created by Daniel Apone on 5/3/15.
 //  Copyright (c) 2015 Daniel Apone. All rights reserved.
 //
 
-#import "MasterViewController.h"
 #import "ListViewController.h"
+#import "DetailViewController.h"
 #import "Item.h"
 
-@interface MasterViewController ()
 
-@property (weak, nonatomic) IBOutlet UITextField *listNameTextField;
+@interface ListViewController ()
+
+@property (weak, nonatomic) IBOutlet UITextField *itemNameTextField;
+
 
 @end
 
-@implementation MasterViewController
+@implementation ListViewController
+
+
+- (void)setDisplayList:(id)newDisplayList {
+    if (_displayList != newDisplayList) {
+        _displayList = newDisplayList;
+        
+        
+        
+        
+        
+        // Update the view.
+        [self configureView];
+    }
+}
+
+- (void)configureView {
+    // Update the user interface for the detail item.
+    if (self.displayList) {
+        
+        Item *displayThisList = self.displayList;
+        
+        NSString *superMonkey = displayThisList.itemName;
+        superMonkey = nil;
+        
+     
+        
+        
+        
+    }
+}
+
+
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -31,9 +65,9 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
-    self.listNameTextField.delegate = self;
+    self.itemNameTextField.delegate = self;
     
-    self.listViewController = (ListViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
 }
 
@@ -73,20 +107,20 @@
         newItem.order = [NSNumber numberWithLong:lowestOrder];
     }
     
-    newItem.itemName = self.listNameTextField.text;
+    newItem.itemName = self.itemNameTextField.text;
     
     newItem.completed = [NSNumber numberWithLong:0];
     
     newItem.createdDate = [NSDate date];
     
     newItem.itemId = [NSNumber numberWithLong:7273887];
-
+    
     newItem.parentId = nil;
     
     
     
     
-    self.listNameTextField.text = nil;
+    self.itemNameTextField.text = nil;
     
     // Save the context.
     NSError *error = nil;
@@ -101,20 +135,16 @@
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([[segue identifier] isEqualToString:@"showList"]) {
-        
-        
+    if ([[segue identifier] isEqualToString:@"showItem"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Item *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
+        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
+        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
         controller.managedObjectContext = self.managedObjectContext;
-        [controller setDisplayList:object];
+        [controller setDetailItem:object];
         
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
-        
     }
 }
 
@@ -132,18 +162,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
+    
     
     [self configureCell:cell atIndexPath:indexPath];
-  
+    
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
-
+    
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
+    
     
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
     
@@ -201,7 +231,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-            
+        
         NSError *error = nil;
         if (![context save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
@@ -217,11 +247,11 @@
     
     cell.showsReorderControl = YES;
     
-
+    
     NSNumber *completedNumber = [object valueForKey:@"completed"];
     BOOL B = [completedNumber boolValue];
     
-
+    
     cell.textLabel.text = [[object valueForKey:@"itemName"] description];
     
     
@@ -236,11 +266,15 @@
 
 #pragma mark - Fetched results controller
 
+
+
 - (NSFetchedResultsController *)fetchedResultsController
 {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
+    
+    
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
@@ -262,16 +296,19 @@
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
-	NSError *error = nil;
-	if (![self.fetchedResultsController performFetch:&error]) {
-	     // Replace this implementation with code to handle the error appropriately.
-	     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
-	}
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
     
     return _fetchedResultsController;
-}    
+}
+
+
+
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
@@ -327,13 +364,13 @@
 }
 
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
  
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
+ {
+ // In the simplest, most efficient, case, reload the table view.
+ [self.tableView reloadData];
+ }
  */
 
 @end
