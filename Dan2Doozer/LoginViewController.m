@@ -10,13 +10,26 @@
 
 @interface LoginViewController ()
 
+
+
 @end
 
 @implementation LoginViewController
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+    self.accessTokenTextField.text = fbAccessToken;
+    
+    
+    
+    
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

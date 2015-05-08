@@ -19,6 +19,8 @@
 		A2301B5C1AF43CAE00E2267D /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5B1AF43CAE00E2267D /* Item.m */; };
 		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
 		A2843E621AF71EF100FE47B6 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2843E611AF71EF100FE47B6 /* ListViewController.m */; };
+		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
+		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,8 @@
 		A2301B5E1AF6E04F00E2267D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		A2843E611AF71EF100FE47B6 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
+		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */,
+				A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +83,8 @@
 		A2301B1F1AF41A7C00E2267D = {
 			isa = PBXGroup;
 			children = (
+				A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */,
+				A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */,
 				A2301B2A1AF41A7C00E2267D /* Dan2Doozer */,
 				A2301B4A1AF41A7C00E2267D /* Dan2DoozerTests */,
 				A2301B291AF41A7C00E2267D /* Products */,
@@ -377,6 +385,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/danielapone/Documents/FacebookSDK,
+				);
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -388,6 +400,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/danielapone/Documents/FacebookSDK,
+				);
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

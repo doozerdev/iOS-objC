@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface LoginViewController : UIViewController
+
+
+@property (weak, nonatomic) IBOutlet UITextField *accessTokenTextField;
+
+
 
 @end
