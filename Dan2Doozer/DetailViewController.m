@@ -35,6 +35,8 @@
         self.ItemTitleField.text = displayItem.itemName;
         self.OrderValueField.text = displayItem.order.stringValue;
         self.CompletedField.text = displayItem.completed.stringValue;
+        self.ItemIDTextField.text = displayItem.itemId.stringValue;
+        self.ParentIDTextField.text = displayItem.parentId.stringValue;
         
         NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateStyle:NSDateFormatterLongStyle];

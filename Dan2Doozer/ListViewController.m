@@ -115,10 +115,8 @@
     
     newItem.itemId = [NSNumber numberWithLong:7273887];
     
-    newItem.parentId = nil;
-    
-    
-    
+    Item *parentList = self.displayList;
+    newItem.parentId = parentList.itemId;
     
     self.itemNameTextField.text = nil;
     
@@ -274,7 +272,8 @@
         return _fetchedResultsController;
     }
     
-    
+
+   
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
@@ -284,6 +283,11 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
+    Item *parentItem = self.displayList;
+    NSNumber *currentParentId = parentItem.itemId;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentId == %@", currentParentId];
+    [fetchRequest setPredicate:predicate];
+    
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptor];
@@ -292,9 +296,11 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"List"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
+    [NSFetchedResultsController deleteCacheWithName:@"List"];
+    
     
     NSError *error = nil;
     if (![self.fetchedResultsController performFetch:&error]) {

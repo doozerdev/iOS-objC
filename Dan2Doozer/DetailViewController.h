@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *OrderValueField;
 @property (weak, nonatomic) IBOutlet UITextField *CompletedField;
 @property (weak, nonatomic) IBOutlet UITextField *CreationDateField;
+@property (weak, nonatomic) IBOutlet UITextField *ItemIDTextField;
+@property (weak, nonatomic) IBOutlet UITextField *ParentIDTextField;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

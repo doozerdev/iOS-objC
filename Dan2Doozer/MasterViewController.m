@@ -6,9 +6,14 @@
 //  Copyright (c) 2015 Daniel Apone. All rights reserved.
 //
 
+#include <stdlib.h>
+
 #import "MasterViewController.h"
 #import "ListViewController.h"
 #import "Item.h"
+
+
+
 
 @interface MasterViewController ()
 
@@ -79,7 +84,8 @@
     
     newItem.createdDate = [NSDate date];
     
-    newItem.itemId = [NSNumber numberWithLong:7273887];
+    int r = arc4random_uniform(1000);
+    newItem.itemId = [NSNumber numberWithLong:r];
 
     newItem.parentId = nil;
     
@@ -250,6 +256,9 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentId == %@", nil];
+    [fetchRequest setPredicate:predicate];
+    
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptor];
@@ -261,6 +270,8 @@
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
+    [NSFetchedResultsController deleteCacheWithName:@"Master"];
+    
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error]) {
