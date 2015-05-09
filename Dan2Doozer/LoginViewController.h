@@ -14,6 +14,7 @@
 
 
 @property (weak, nonatomic) IBOutlet UITextField *accessTokenTextField;
+@property (weak, nonatomic) IBOutlet UITextField *doozerSessionIDTextField;
 
 
 
