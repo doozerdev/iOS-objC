@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0B7AC7BF-618E-4933-97F9-7AB69E19D66F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Doozer</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D5A93241B5E42437703FBE85E32A6131E6C223CB</key>
+		<string>https://github.com/doozerdev/iOS-objC.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Doozer.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D5A93241B5E42437703FBE85E32A6131E6C223CB</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/doozerdev/iOS-objC.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D5A93241B5E42437703FBE85E32A6131E6C223CB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D5A93241B5E42437703FBE85E32A6131E6C223CB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Dan2Doozer</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34FD78D6035D60223AE09344 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C2D4A9618C74277E2804AE79 /* libPods.a */; };
 		A2301B2E1AF41A7C00E2267D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B2D1AF41A7C00E2267D /* main.m */; };
 		A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B301AF41A7C00E2267D /* AppDelegate.m */; };
 		A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */; };
@@ -34,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		A2301B281AF41A7C00E2267D /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B2C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B2D1AF41A7C00E2267D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -58,6 +61,7 @@
 		A2843E611AF71EF100FE47B6 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		C2D4A9618C74277E2804AE79 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,7 @@
 			files = (
 				A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */,
 				A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */,
+				34FD78D6035D60223AE09344 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +85,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		43A827BFC5215AAE9D57429C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */,
+				7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		43E9D580928C3349D37B4FA4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C2D4A9618C74277E2804AE79 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A2301B1F1AF41A7C00E2267D = {
 			isa = PBXGroup;
 			children = (
@@ -88,6 +110,8 @@
 				A2301B2A1AF41A7C00E2267D /* Dan2Doozer */,
 				A2301B4A1AF41A7C00E2267D /* Dan2DoozerTests */,
 				A2301B291AF41A7C00E2267D /* Products */,
+				43A827BFC5215AAE9D57429C /* Pods */,
+				43E9D580928C3349D37B4FA4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,9 +181,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A2301B511AF41A7C00E2267D /* Build configuration list for PBXNativeTarget "Doozer" */;
 			buildPhases = (
+				9F44B70D8E01F114117C8198 /* Check Pods Manifest.lock */,
 				A2301B241AF41A7C00E2267D /* Sources */,
 				A2301B251AF41A7C00E2267D /* Frameworks */,
 				A2301B261AF41A7C00E2267D /* Resources */,
+				C5C9BF98E677463B90305B93 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -199,6 +225,7 @@
 				TargetAttributes = {
 					A2301B271AF41A7C00E2267D = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = J7HXU6U6X7;
 					};
 					A2301B461AF41A7C00E2267D = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -244,6 +271,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9F44B70D8E01F114117C8198 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C5C9BF98E677463B90305B93 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A2301B241AF41A7C00E2267D /* Sources */ = {
@@ -383,8 +443,11 @@
 		};
 		A2301B521AF41A7C00E2267D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
@@ -393,13 +456,17 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Doozer;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
 		A2301B531AF41A7C00E2267D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
@@ -408,6 +475,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Doozer;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
