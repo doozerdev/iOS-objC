@@ -8,12 +8,12 @@
 
 #import "LoginViewController.h"
 #import "AFNetworking.h"
-
-static NSString * const BaseURLString = @"http://warm-atoll-6588.herokuapp.com/";
+#import "MasterViewController.h"
 
 @interface LoginViewController ()
 
-  
+
+
 
 @end
 
@@ -24,47 +24,58 @@ static NSString * const BaseURLString = @"http://warm-atoll-6588.herokuapp.com/"
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-    self.accessTokenTextField.text = fbAccessToken;
-    
-    NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
-    NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
-    
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-        
-        NSString *sessionID = [responseObject objectForKey:@"sessionId"];
-        
-        self.doozerSessionIDTextField.text = sessionID;
-    
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
-   
-    
-    
 
-    
-    
     
 }
-
+                                                          
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (IBAction)buttonDoozerServer:(id)sender {
+    
+    [self logInWithFacebook];
+    
 }
-*/
 
+- (void)logInWithFacebook {
+        
+    if([FBSDKAccessToken currentAccessToken]){
+        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+    
+        NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
+        NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+            NSString *sessionID = [responseObject objectForKey:@"sessionId"];
+            self.doozerSessionId.text = sessionID;
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+        }];
+    }
+}
+
+
+- (void)showListList {
+    [self performSegueWithIdentifier:@"showListList" sender:self];
+}
+
+#pragma mark - Segues
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([[segue identifier] isEqualToString:@"showListList"]) {
+        
+        MasterViewController *controller = (MasterViewController *)[[segue destinationViewController] topViewController];
+        
+        controller.managedObjectContext = self.managedObjectContext;
+        
+        
+    }
+}
+
+- (IBAction)buttonLogInToDoozer:(UIButton *)sender {
+}
 @end

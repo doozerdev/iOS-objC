@@ -10,6 +10,7 @@
 
 #import "MasterViewController.h"
 #import "ListViewController.h"
+#import "LoginViewController.h"
 #import "Item.h"
 
 
@@ -106,6 +107,8 @@
 
 #pragma mark - Segues
 
+
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([[segue identifier] isEqualToString:@"showList"]) {
@@ -120,6 +123,14 @@
         
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+        
+    }
+    if ([[segue identifier] isEqualToString:@"showLoginFromMaster"]) {
+        
+        LoginViewController *controller = (LoginViewController *)[segue destinationViewController];
+        
+        controller.managedObjectContext = self.managedObjectContext;
+        
         
     }
 }

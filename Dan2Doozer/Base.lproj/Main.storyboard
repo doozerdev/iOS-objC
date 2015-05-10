@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="H1p-Uh-vWS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="hLd-dF-StO">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
     </dependencies>
@@ -115,20 +115,6 @@
             </objects>
             <point key="canvasLocation" x="825" y="1217"/>
         </scene>
-        <!--Split View Controller-->
-        <scene sceneID="Nki-YV-4Qg">
-            <objects>
-                <splitViewController id="H1p-Uh-vWS" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <connections>
-                        <segue destination="RMx-3f-FxP" kind="relationship" relationship="masterViewController" id="BlO-5A-QYV"/>
-                        <segue destination="vC3-pB-5Vb" kind="relationship" relationship="detailViewController" id="Tll-UG-LXB"/>
-                    </connections>
-                </splitViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cZU-Oi-B1e" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-856" y="-330"/>
-        </scene>
         <!--Master-->
         <scene sceneID="smW-Zh-WAh">
             <objects>
@@ -176,7 +162,7 @@
                         </textField>
                         <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
                             <connections>
-                                <segue destination="Ecz-Fx-uwS" kind="showDetail" identifier="showLogin" id="hdS-p9-Old"/>
+                                <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginFromMaster" id="2Qw-lt-bpE"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -217,34 +203,47 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mgJ-Vu-MOk" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="60" y="430" width="200" height="50"/>
+                                <rect key="frame" x="60" y="227" width="200" height="50"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O22-i2-cHx" customClass="FBSDKProfilePictureView">
                                 <rect key="frame" x="85" y="61" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sNX-9f-i8Y">
-                                <rect key="frame" x="60" y="224" width="201" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TLp-nZ-bO8">
+                                <rect key="frame" x="80" y="309" width="160" height="30"/>
+                                <state key="normal" title="Login To Doozer Server">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonDoozerServer:" destination="Ecz-Fx-uwS" eventType="touchUpInside" id="Z8K-P8-Evp"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Hro-8O-bc2">
+                                <rect key="frame" x="60" y="352" width="200" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-C6-IRB">
-                                <rect key="frame" x="60" y="323" width="201" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ja8-nQ-Uwz">
+                                <rect key="frame" x="113" y="402" width="94" height="30"/>
+                                <state key="normal" title="View My Lists">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="RMx-3f-FxP" kind="show" identifier="showListList" id="Vjl-4v-waI"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="EPJ-Gp-OSn"/>
                     <connections>
-                        <outlet property="accessTokenTextField" destination="sNX-9f-i8Y" id="qHe-GA-yz5"/>
-                        <outlet property="doozerSessionIDTextField" destination="ffG-C6-IRB" id="laU-Od-spn"/>
+                        <outlet property="doozerSessionId" destination="Hro-8O-bc2" id="ZlL-88-Bev"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ouj-fP-t7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1467" y="-630"/>
+            <point key="canvasLocation" x="-751" y="-1174"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
@@ -288,7 +287,7 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showItem" id="8L5-RV-DWF"/>
+                                    <segue destination="vC3-pB-5Vb" kind="show" identifier="showItem" id="8L5-RV-DWF"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -316,11 +315,45 @@
             </objects>
             <point key="canvasLocation" x="883" y="264"/>
         </scene>
+        <!--Welcome View Controller-->
+        <scene sceneID="okt-gC-dry">
+            <objects>
+                <viewController id="hLd-dF-StO" customClass="WelcomeViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9p6-g8-4zs"/>
+                        <viewControllerLayoutGuide type="bottom" id="pGp-o8-uxd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="DNu-wS-yEX">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="STV-hZ-obx">
+                                <rect key="frame" x="24" y="119" width="208" height="21"/>
+                                <string key="text">Spash screen shown for 1s
+
+</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" modalPresentationStyle="fullScreen" animates="NO" id="ze2-v1-70c"/>
+                        <segue destination="RMx-3f-FxP" kind="showDetail" identifier="showLists" id="dfn-SN-roe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hqi-3x-DXH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1574" y="-616"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Hamburger" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="8L5-RV-DWF"/>
+        <segue reference="Vjl-4v-waI"/>
+        <segue reference="2Qw-lt-bpE"/>
     </inferredMetricsTieBreakers>
 </document>
