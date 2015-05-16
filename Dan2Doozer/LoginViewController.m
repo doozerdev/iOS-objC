@@ -13,12 +13,11 @@
 @interface LoginViewController ()
 
 
-
-
 @end
 
 @implementation LoginViewController
 
+NSString *sessionID = nil;
 
 
 - (void)viewDidLoad {
@@ -42,19 +41,48 @@
 - (void)logInWithFacebook {
         
     if([FBSDKAccessToken currentAccessToken]){
+        
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-    
         NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
         NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-            NSString *sessionID = [responseObject objectForKey:@"sessionId"];
+            sessionID = [responseObject objectForKey:@"sessionId"];
             self.doozerSessionId.text = sessionID;
+            NSLog(@"here is the first time session ID shows up = %@", sessionID);
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
+        NSLog(@"here's session ID once again= %@", sessionID);
+        
+        NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
+
+        AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
+        [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
+        
+        NSLog(@"session ID = %@", sessionID);
+        
+        [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSString *itemsReturned = [responseObject objectForKey:@"items"];
+            
+            NSLog(@"spot 1");
+            NSLog(@"%@", itemsReturned);
+            NSLog(@"spot 2");
+        
+
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"spot 3");
+            NSLog(@"Error: %@", error);
+            NSLog(@"spot 4");
+        }];
+        
+        
+        
+        
     }
+    
 }
 
 
