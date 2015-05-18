@@ -37,6 +37,10 @@ NSString *sessionID = nil;
     [self logInWithFacebook];
     
 }
+- (IBAction)buttonGetMyLists:(id)sender {
+    
+    [self getDataFromDoozer];
+}
 
 - (void)logInWithFacebook {
         
@@ -56,31 +60,6 @@ NSString *sessionID = nil;
         }];
         NSLog(@"here's session ID once again= %@", sessionID);
         
-        NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
-
-        AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
-        [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
-        
-        NSLog(@"session ID = %@", sessionID);
-        
-        [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSString *itemsReturned = [responseObject objectForKey:@"items"];
-            
-            NSLog(@"spot 1");
-            NSLog(@"%@", itemsReturned);
-            NSLog(@"spot 2");
-        
-
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"spot 3");
-            NSLog(@"Error: %@", error);
-            NSLog(@"spot 4");
-        }];
-        
-        
-        
-        
     }
     
 }
@@ -89,6 +68,35 @@ NSString *sessionID = nil;
 - (void)showListList {
     [self performSegueWithIdentifier:@"showListList" sender:self];
 }
+
+
+- (void)getDataFromDoozer {
+    
+    NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
+    
+    AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
+    [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
+    
+    NSLog(@"session ID = %@", sessionID);
+    
+    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSString *itemsReturned = [responseObject objectForKey:@"items"];
+        
+        NSLog(@"spot 1");
+        NSLog(@"%@", itemsReturned);
+        NSLog(@"spot 2");
+        
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"spot 3");
+        NSLog(@"Error: %@", error);
+        NSLog(@"spot 4");
+    }];
+    
+}
+
+
 
 #pragma mark - Segues
 

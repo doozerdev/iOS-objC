@@ -230,6 +230,7 @@
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     cell.showsReorderControl = YES;

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		34FD78D6035D60223AE09344 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C2D4A9618C74277E2804AE79 /* libPods.a */; };
 		A2301B2E1AF41A7C00E2267D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B2D1AF41A7C00E2267D /* main.m */; };
 		A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B301AF41A7C00E2267D /* AppDelegate.m */; };
 		A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */; };
@@ -64,7 +63,6 @@
 		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		A2F71D4B1AFEE75C00A3561F /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
 		A2F71D4C1AFEE75C00A3561F /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
-		C2D4A9618C74277E2804AE79 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +72,6 @@
 			files = (
 				A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */,
 				A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */,
-				34FD78D6035D60223AE09344 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,7 +97,6 @@
 		43E9D580928C3349D37B4FA4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C2D4A9618C74277E2804AE79 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

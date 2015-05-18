@@ -203,15 +203,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mgJ-Vu-MOk" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="60" y="227" width="200" height="50"/>
+                                <rect key="frame" x="60" y="190" width="200" height="50"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O22-i2-cHx" customClass="FBSDKProfilePictureView">
-                                <rect key="frame" x="85" y="61" width="150" height="150"/>
+                                <rect key="frame" x="85" y="38" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TLp-nZ-bO8">
-                                <rect key="frame" x="80" y="309" width="160" height="30"/>
+                                <rect key="frame" x="80" y="242" width="160" height="30"/>
                                 <state key="normal" title="Login To Doozer Server">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -220,7 +220,7 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Hro-8O-bc2">
-                                <rect key="frame" x="60" y="352" width="200" height="30"/>
+                                <rect key="frame" x="60" y="274" width="200" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -231,6 +231,15 @@
                                 </state>
                                 <connections>
                                     <segue destination="RMx-3f-FxP" kind="show" identifier="showListList" id="Vjl-4v-waI"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xFV-zC-n7I">
+                                <rect key="frame" x="117" y="332" width="87" height="30"/>
+                                <state key="normal" title="Get My Lists">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonGetMyLists:" destination="Ecz-Fx-uwS" eventType="touchUpInside" id="HdW-IE-wCV"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -333,7 +342,7 @@
 
 </string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
