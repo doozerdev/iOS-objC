@@ -11,10 +11,9 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <CoreData/CoreData.h>
 
-@interface LoginViewController : UIViewController
+@interface LoginViewController : UIViewController <NSFetchedResultsControllerDelegate>
 
 
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (weak, nonatomic) IBOutlet UITextField *doozerSessionId;

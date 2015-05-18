@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "AFNetworking.h"
 #import "MasterViewController.h"
+#import "Item.h"
 
 @interface LoginViewController ()
 
@@ -54,11 +55,9 @@ NSString *sessionID = nil;
         
             sessionID = [responseObject objectForKey:@"sessionId"];
             self.doozerSessionId.text = sessionID;
-            NSLog(@"here is the first time session ID shows up = %@", sessionID);
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
-        NSLog(@"here's session ID once again= %@", sessionID);
         
     }
     
@@ -76,22 +75,41 @@ NSString *sessionID = nil;
     
     AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
     [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
-    
-    NSLog(@"session ID = %@", sessionID);
-    
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        NSString *itemsReturned = [responseObject objectForKey:@"items"];
+        NSDictionary *jsonDict = (NSDictionary *) responseObject;
         
-        NSLog(@"spot 1");
-        NSLog(@"%@", itemsReturned);
-        NSLog(@"spot 2");
+        NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
+        
+        for (id eachArrayElement in fetchedArray) {
+            NSString *title = [eachArrayElement objectForKey:@"title"];
+            NSLog(@"%@", title);
+            
+            NSManagedObjectContext *context = _managedObjectContext;
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+            
+            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            
+            newItem.itemName = title;
+            newItem.parentId = nil;
+            
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            
+                }
+        
+
+        
+        
+        
         
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"spot 3");
         NSLog(@"Error: %@", error);
-        NSLog(@"spot 4");
     }];
     
 }
@@ -114,4 +132,5 @@ NSString *sessionID = nil;
 
 - (IBAction)buttonLogInToDoozer:(UIButton *)sender {
 }
+
 @end
