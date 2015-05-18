@@ -55,9 +55,14 @@ NSString *sessionID = nil;
         
             sessionID = [responseObject objectForKey:@"sessionId"];
             self.doozerSessionId.text = sessionID;
+            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
+        
+
         
     }
     

@@ -12,6 +12,7 @@
 #import "ListViewController.h"
 #import "LoginViewController.h"
 #import "Item.h"
+#import "AFNetworking.h"
 
 
 
@@ -102,6 +103,22 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+    
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    NSDictionary *params = @{@"title": newItem.itemName,
+                             };
+    [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+    
+    
     
 }
 
