@@ -119,37 +119,22 @@ NSString *sessionID = nil;
     [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        
-        
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
-        
         NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
         
         for (id eachArrayElement in fetchedArray) {
-            NSString *itemId = [eachArrayElement objectForKey:@"id"];
-            NSLog(@"%@", itemId);
-            
-            
             NSManagedObjectContext *context = _managedObjectContext;
             NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
             [fetchRequest setEntity:entity];
+            NSString *itemId = [eachArrayElement objectForKey:@"id"];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", itemId];
             [fetchRequest setPredicate:predicate];
             
             NSError *firsterror = nil;
             NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
             NSUInteger length = [results count];
-            NSLog(@"Array results lenght = %tu", length);
-            
             if (length == 0){
-
-                /*
-                Item *memItem = [results objectAtIndex:0];
-                NSString *hopefully = memItem.itemName;
-                NSLog(@"memory item title: %@", hopefully);
-                */
-                
                 NSString *title = [eachArrayElement objectForKey:@"title"];
                 NSLog(@"%@", title);
                 
@@ -165,20 +150,63 @@ NSString *sessionID = nil;
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
-            }else{
-                
-                //do nothing
-                NSLog(@"yep, doing nothing");
-
             }
-            
+           
+            NSNumber *children = [eachArrayElement objectForKey:@"children_count"];
+           
+            if (children!=0){
+                NSString *getChildrenURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/items/%@/children", itemId];
+                AFHTTPRequestOperationManager *dogs = [AFHTTPRequestOperationManager manager];
+                [dogs.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
+                [dogs GET:getChildrenURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                
+                NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
+                NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
+                    
+                    for (id eachArrayElement in fetchedChildrenArray) {
+                        NSManagedObjectContext *context = _managedObjectContext;
+                        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+                        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+                        [fetchRequest setEntity:entity];
+                        NSString *childId = [eachArrayElement objectForKey:@"id"];
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", childId];
+                        [fetchRequest setPredicate:predicate];
+                        
+                        NSError *firsterror = nil;
+                        NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
+                        NSUInteger length = [results count];
+                        if (length == 0){
+                            NSString *title = [eachArrayElement objectForKey:@"title"];
+                            NSLog(@"%@", title);
+                            
+                            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+                            
+                            newItem.itemName = title;
+                            newItem.parentId = itemId;
+                            newItem.itemId = childId;
+                            
+                            // Save the context.
+                            NSError *error = nil;
+                            if (![context save:&error]) {
+                                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                                abort();
+                            }
+                        }
+                    }
+
+                
+                
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     NSLog(@"Error: %@", error);
+                }
+                ];
+            }
         }
-        
         [self performSelector:@selector(showListList) withObject:nil afterDelay:1];
         
-        
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    }
+     
+    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
     

@@ -9,6 +9,8 @@
 #import "ListViewController.h"
 #import "DetailViewController.h"
 #import "Item.h"
+#import "AFNetworking.h"
+
 
 
 @interface ListViewController ()
@@ -113,21 +115,51 @@
     
     newItem.createdDate = [NSDate date];
     
-    //newItem.itemId = [NSNumber numberWithLong:7273887];
+    Item *parentList = self.displayList;
     
-    //Item *parentList = self.displayList;
-    //newItem.parentId = parentList.itemId;
+    newItem.parentId = parentList.itemId;
     
     self.itemNameTextField.text = nil;
     
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    NSLog(@"current session ID = %@", currentSessionId);
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    NSLog(@"current parent list = %@", parentList.itemId);
+    
+    NSDictionary *params = @{@"title": newItem.itemName,
+                             @"parent": parentList.itemId
+                             };
+    [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+        
+        NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        NSString *newItemId = [serverResponse objectForKey:@"id"];
+        newItem.itemId = newItemId;
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        //[self.tableView reloadData];
+ 
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+    
+    
+
+    
+    
+    
+    
 }
 
 #pragma mark - Segues
@@ -285,6 +317,7 @@
     
     Item *parentItem = self.displayList;
     NSString *currentParentId = parentItem.itemId;
+    NSLog(@"NSFetchedResultsController current parent ID = %@", currentParentId);
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentId == %@", currentParentId];
     [fetchRequest setPredicate:predicate];
     

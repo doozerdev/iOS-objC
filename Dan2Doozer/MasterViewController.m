@@ -112,7 +112,9 @@
     [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
         
-        ////////////Add itemID to item here!!!!!!!! the server provides the ID!!!!!!!!!
+        NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        NSString *newItemId = [serverResponse objectForKey:@"id"];
+        newItem.itemId = newItemId;
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);

@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSNumber *completed;
 @property (nonatomic, retain) NSDate *createdDate;
 @property (nonatomic, retain) NSString *itemId;
-@property (nonatomic, retain) NSNumber *parentId;
+@property (nonatomic, retain) NSString *parentId;
 
 
 
