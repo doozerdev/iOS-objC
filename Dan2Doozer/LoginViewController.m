@@ -24,7 +24,14 @@ NSString *sessionID = nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-
+    
+    
+    if ([FBSDKAccessToken currentAccessToken]) {
+        [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
+    }
+    else{
+        [self performSelector:@selector(loginToFacebook) withObject:nil afterDelay:1];
+    }
     
 }
                                                           
@@ -33,9 +40,38 @@ NSString *sessionID = nil;
     // Dispose of any resources that can be recreated.
 }
 
+
+
+- (void)loginToFacebook {
+    
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logInWithReadPermissions:@[@"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            // Process error
+        } else if (result.isCancelled) {
+            // Handle cancellations
+        } else {
+            
+            NSLog(@"oh yeah! Email!");
+            
+            [self logIntoDoozerWithFacebook];
+            NSLog(@"Doozer should be logged in now");
+            
+            // If you ask for multiple permissions at once, you
+            // should check if specific permissions missing
+            if ([result.grantedPermissions containsObject:@"email"]) {
+                // Do work
+                
+            }
+        }
+    }];
+}
+
+
+
 - (IBAction)buttonDoozerServer:(id)sender {
     
-    [self logInWithFacebook];
+    [self logIntoDoozerWithFacebook];
     
 }
 - (IBAction)buttonGetMyLists:(id)sender {
@@ -43,7 +79,7 @@ NSString *sessionID = nil;
     [self getDataFromDoozer];
 }
 
-- (void)logInWithFacebook {
+- (void)logIntoDoozerWithFacebook {
         
     if([FBSDKAccessToken currentAccessToken]){
         
@@ -57,6 +93,8 @@ NSString *sessionID = nil;
             self.doozerSessionId.text = sessionID;
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [self getDataFromDoozer];
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
@@ -105,11 +143,9 @@ NSString *sessionID = nil;
                 abort();
             }
             
-                }
+        }
         
-
-        
-        
+        [self performSelector:@selector(showListList) withObject:nil afterDelay:1];
         
         
         

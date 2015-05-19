@@ -235,6 +235,8 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        
+        
             
         NSError *error = nil;
         if (![context save:&error]) {
