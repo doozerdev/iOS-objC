@@ -11,7 +11,6 @@
 #import "MasterViewController.h"
 #import "ListViewController.h"
 #import "LoginViewController.h"
-#import "WelcomeViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
@@ -25,7 +24,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    WelcomeViewController *controller = (WelcomeViewController *)self.window.rootViewController;
+    LoginViewController *controller = (LoginViewController *)self.window.rootViewController;
  
     controller.managedObjectContext = self.managedObjectContext;
     

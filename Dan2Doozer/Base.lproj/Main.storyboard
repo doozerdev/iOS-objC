@@ -160,11 +160,7 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
-                            <connections>
-                                <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginFromMaster" id="2Qw-lt-bpE"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA"/>
                     </navigationItem>
                     <connections>
                         <outlet property="listNameTextField" destination="M0c-Wc-ZSc" id="FAh-ga-UfJ"/>
@@ -252,7 +248,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ouj-fP-t7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-751" y="-1174"/>
+            <point key="canvasLocation" x="-771" y="-630"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
@@ -324,45 +320,8 @@
             </objects>
             <point key="canvasLocation" x="883" y="264"/>
         </scene>
-        <!--Welcome View Controller-->
-        <scene sceneID="okt-gC-dry">
-            <objects>
-                <viewController id="hLd-dF-StO" customClass="WelcomeViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="9p6-g8-4zs"/>
-                        <viewControllerLayoutGuide type="bottom" id="pGp-o8-uxd"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="DNu-wS-yEX">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="STV-hZ-obx">
-                                <rect key="frame" x="24" y="119" width="208" height="21"/>
-                                <string key="text">Spash screen shown for 1s
-
-</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" modalPresentationStyle="fullScreen" animates="NO" id="ze2-v1-70c"/>
-                        <segue destination="RMx-3f-FxP" kind="showDetail" identifier="showLists" id="dfn-SN-roe"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hqi-3x-DXH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1574" y="-616"/>
-        </scene>
     </scenes>
     <resources>
         <image name="Hamburger" width="16" height="16"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="Vjl-4v-waI"/>
-        <segue reference="2Qw-lt-bpE"/>
-    </inferredMetricsTieBreakers>
 </document>

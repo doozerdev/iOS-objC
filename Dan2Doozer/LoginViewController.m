@@ -113,34 +113,63 @@ NSString *sessionID = nil;
 
 
 - (void)getDataFromDoozer {
-    
     NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
     
     AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
     [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
+        
+        
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         
         NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
         
         for (id eachArrayElement in fetchedArray) {
-            NSString *title = [eachArrayElement objectForKey:@"title"];
-            NSLog(@"%@", title);
+            NSString *itemId = [eachArrayElement objectForKey:@"id"];
+            NSLog(@"%@", itemId);
+            
             
             NSManagedObjectContext *context = _managedObjectContext;
             NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+            [fetchRequest setEntity:entity];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", itemId];
+            [fetchRequest setPredicate:predicate];
             
-            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            NSError *firsterror = nil;
+            NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
+            NSUInteger length = [results count];
+            NSLog(@"Array results lenght = %tu", length);
             
-            newItem.itemName = title;
-            newItem.parentId = nil;
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
+            if (length == 0){
+
+                /*
+                Item *memItem = [results objectAtIndex:0];
+                NSString *hopefully = memItem.itemName;
+                NSLog(@"memory item title: %@", hopefully);
+                */
+                
+                NSString *title = [eachArrayElement objectForKey:@"title"];
+                NSLog(@"%@", title);
+                
+                Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+                
+                newItem.itemName = title;
+                newItem.parentId = nil;
+                newItem.itemId = itemId;
+                
+                // Save the context.
+                NSError *error = nil;
+                if (![context save:&error]) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+            }else{
+                
+                //do nothing
+                NSLog(@"yep, doing nothing");
+
             }
             
         }

@@ -113,10 +113,10 @@
     
     newItem.createdDate = [NSDate date];
     
-    newItem.itemId = [NSNumber numberWithLong:7273887];
+    //newItem.itemId = [NSNumber numberWithLong:7273887];
     
-    Item *parentList = self.displayList;
-    newItem.parentId = parentList.itemId;
+    //Item *parentList = self.displayList;
+    //newItem.parentId = parentList.itemId;
     
     self.itemNameTextField.text = nil;
     
@@ -284,7 +284,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     Item *parentItem = self.displayList;
-    NSNumber *currentParentId = parentItem.itemId;
+    NSString *currentParentId = parentItem.itemId;
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentId == %@", currentParentId];
     [fetchRequest setPredicate:predicate];
     

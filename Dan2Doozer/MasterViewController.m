@@ -85,9 +85,6 @@
     newItem.completed = [NSNumber numberWithLong:0];
     
     newItem.createdDate = [NSDate date];
-    
-    int r = arc4random_uniform(1000);
-    newItem.itemId = [NSNumber numberWithLong:r];
 
     newItem.parentId = nil;
     
@@ -114,6 +111,9 @@
                              };
     [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
+        
+        ////////////Add itemID to item here!!!!!!!! the server provides the ID!!!!!!!!!
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
@@ -140,14 +140,6 @@
         
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
-        
-    }
-    if ([[segue identifier] isEqualToString:@"showLoginFromMaster"]) {
-        
-        LoginViewController *controller = (LoginViewController *)[segue destinationViewController];
-        
-        controller.managedObjectContext = self.managedObjectContext;
-        
         
     }
 }

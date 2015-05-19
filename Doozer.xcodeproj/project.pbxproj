@@ -21,7 +21,6 @@
 		A2843E621AF71EF100FE47B6 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2843E611AF71EF100FE47B6 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
 		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
-		A2F71D4D1AFEE75C00A3561F /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F71D4C1AFEE75C00A3561F /* WelcomeViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,8 +60,6 @@
 		A2843E611AF71EF100FE47B6 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		A2F71D4B1AFEE75C00A3561F /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
-		A2F71D4C1AFEE75C00A3561F /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,8 +134,6 @@
 				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
 				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
-				A2F71D4B1AFEE75C00A3561F /* WelcomeViewController.h */,
-				A2F71D4C1AFEE75C00A3561F /* WelcomeViewController.m */,
 				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
 				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
 				A2301B3E1AF41A7C00E2267D /* Images.xcassets */,
@@ -313,7 +308,6 @@
 			files = (
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
-				A2F71D4D1AFEE75C00A3561F /* WelcomeViewController.m in Sources */,
 				A2843E621AF71EF100FE47B6 /* ListViewController.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
