@@ -11,12 +11,19 @@
 @interface Item : NSManagedObject
 
 
-@property (nonatomic, retain) NSString *itemName;
+@property (nonatomic, retain) NSString *title;
+@property (nonatomic) BOOL done;
+@property (nonatomic) BOOL archive;
+@property (nonatomic, retain) NSString *parent;
 @property (nonatomic, retain) NSNumber *order;
-@property (nonatomic, retain) NSNumber *completed;
-@property (nonatomic, retain) NSDate *createdDate;
+@property (nonatomic, retain) NSDate *duedate;
+@property (nonatomic, retain) NSString *user_id;
+@property (nonatomic, retain) NSString *notes;
+@property (nonatomic, retain) NSString *solutions;
+@property (nonatomic, retain) NSDate *updated_at;
+
 @property (nonatomic, retain) NSString *itemId;
-@property (nonatomic, retain) NSString *parentId;
+
 
 
 

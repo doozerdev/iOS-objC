@@ -10,12 +10,19 @@
 
 @implementation Item
 
-@synthesize itemName;
+@synthesize title;
+@synthesize done;
+@synthesize archive;
+@synthesize parent;
 @synthesize order;
-@synthesize completed;
-@synthesize createdDate;
+@synthesize duedate;
+@synthesize user_id;
+@synthesize notes;
+@synthesize solutions;
+@synthesize updated_at;
+
 @synthesize itemId;
-@synthesize parentId;
+
 
 
 @end

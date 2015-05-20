@@ -32,17 +32,18 @@
     // Update the user interface for the detail item.
     if (self.detailItem) {
         Item *displayItem = self.detailItem;
-        self.ItemTitleField.text = displayItem.itemName;
+        self.ItemTitleField.text = displayItem.title;
         self.OrderValueField.text = displayItem.order.stringValue;
-        self.CompletedField.text = displayItem.completed.stringValue;
+        if(displayItem.done == YES){
+            NSString *doneText = @"DONE!!";
+            self.CompletedField.text = doneText;
+        }else{
+            NSString *notDoneText = @"Not done yet....";
+            self.CompletedField.text = notDoneText;
+        }
+        
         self.ItemIDTextField.text = displayItem.itemId;
-        self.ParentIDTextField.text = displayItem.parentId;
-        
-        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateStyle:NSDateFormatterLongStyle];
-        NSString *labelData = [dateFormatter stringFromDate:displayItem.createdDate];
-        self.CreationDateField.text = labelData;
-        
+        self.ParentIDTextField.text = displayItem.parent;
     }
 }
 

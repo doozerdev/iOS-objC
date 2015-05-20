@@ -42,7 +42,7 @@
         
         Item *displayThisList = self.displayList;
         
-        NSString *superMonkey = displayThisList.itemName;
+        NSString *superMonkey = displayThisList.title;
         superMonkey = nil;
         
      
@@ -109,15 +109,13 @@
         newItem.order = [NSNumber numberWithLong:lowestOrder];
     }
     
-    newItem.itemName = self.itemNameTextField.text;
+    newItem.title = self.itemNameTextField.text;
     
-    newItem.completed = [NSNumber numberWithLong:0];
-    
-    newItem.createdDate = [NSDate date];
+    newItem.done = NO;
     
     Item *parentList = self.displayList;
     
-    newItem.parentId = parentList.itemId;
+    newItem.parent = parentList.itemId;
     
     self.itemNameTextField.text = nil;
     
@@ -130,7 +128,7 @@
     
     NSLog(@"current parent list = %@", parentList.itemId);
     
-    NSDictionary *params = @{@"title": newItem.itemName,
+    NSDictionary *params = @{@"title": newItem.title,
                              @"parent": parentList.itemId
                              };
     [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -204,7 +202,6 @@
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     
-    
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
     
     if(destinationIndexPath>sourceIndexPath){
@@ -258,17 +255,57 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+
         
-        NSError *error = nil;
-        if (![context save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+        NSLog(@"current session ID = %@", currentSessionId);
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+        Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSString *itemToDeleteId = itemToDelete.itemId;
+        NSLog(@"here's the item to delete = %@", itemToDeleteId);
+        
+        NSString *deleteURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToDeleteId];
+        
+        NSString *isItComplete = nil;
+        if(itemToDelete.done == YES){
+            isItComplete = @"true";
+        }else{
+            isItComplete = @"false";
         }
+        
+        NSDictionary *params = @{
+                                 @"archive": @"true"
+                                 /*,
+                                 @"children_count": @"0",
+                                 @"children_undone": @"0",
+                                 @"done": isItComplete,
+                                 @"id": itemToDelete.itemId,
+                                 @"order": itemToDelete.order,
+                                 @"parent": itemToDelete.parent,
+                                 @"title": itemToDelete.title,
+                                 //@"user_id": itemToDelete.user_id
+                                  */
+                                 };
+
+        [manager PUT:deleteURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSLog(@"JSON: %@", responseObject);
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+                
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+        }];
+        
     }
 }
 
@@ -276,21 +313,8 @@
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     cell.showsReorderControl = YES;
-    
-    
-    NSNumber *completedNumber = [object valueForKey:@"completed"];
-    BOOL B = [completedNumber boolValue];
-    
-    
-    cell.textLabel.text = [[object valueForKey:@"itemName"] description];
-    
-    
-    if (B) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    
+
+    cell.textLabel.text = [[object valueForKey:@"title"] description];
     
 }
 
@@ -318,7 +342,7 @@
     Item *parentItem = self.displayList;
     NSString *currentParentId = parentItem.itemId;
     NSLog(@"NSFetchedResultsController current parent ID = %@", currentParentId);
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parentId == %@", currentParentId];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", currentParentId];
     [fetchRequest setPredicate:predicate];
     
     // Edit the sort key as appropriate.

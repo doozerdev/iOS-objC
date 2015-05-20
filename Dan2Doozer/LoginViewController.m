@@ -119,8 +119,13 @@ NSString *sessionID = nil;
     [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
+        NSLog(@"here's the data %@", responseObject);
+        
+        
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
+        
+        
         
         for (id eachArrayElement in fetchedArray) {
             NSManagedObjectContext *context = _managedObjectContext;
@@ -140,8 +145,8 @@ NSString *sessionID = nil;
                 
                 Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
                 
-                newItem.itemName = title;
-                newItem.parentId = nil;
+                newItem.title = title;
+                newItem.parent = nil;
                 newItem.itemId = itemId;
                 
                 // Save the context.
@@ -160,6 +165,8 @@ NSString *sessionID = nil;
                 [dogs.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
                 [dogs GET:getChildrenURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 
+                    NSLog(@"here's the data %@", responseObject);
+                    
                 NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
                 NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
                     
@@ -181,8 +188,8 @@ NSString *sessionID = nil;
                             
                             Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
                             
-                            newItem.itemName = title;
-                            newItem.parentId = itemId;
+                            newItem.title = title;
+                            newItem.parent = itemId;
                             newItem.itemId = childId;
                             
                             // Save the context.

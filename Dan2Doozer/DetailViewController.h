@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *ItemTitleField;
 @property (weak, nonatomic) IBOutlet UITextField *OrderValueField;
 @property (weak, nonatomic) IBOutlet UITextField *CompletedField;
-@property (weak, nonatomic) IBOutlet UITextField *CreationDateField;
 @property (weak, nonatomic) IBOutlet UITextField *ItemIDTextField;
 @property (weak, nonatomic) IBOutlet UITextField *ParentIDTextField;
 
