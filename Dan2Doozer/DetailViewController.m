@@ -22,19 +22,25 @@
 - (void)setDetailItem:(id)newDetailItem {
     if (_detailItem != newDetailItem) {
         _detailItem = newDetailItem;
-            
-        // Update the view.
-        [self configureView];
+        
     }
 }
 
-- (void)configureView {
-    // Update the user interface for the detail item.
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
     if (self.detailItem) {
         Item *displayItem = self.detailItem;
         self.ItemTitleField.text = displayItem.title;
         self.OrderValueField.text = displayItem.order.stringValue;
-        if(displayItem.done == YES){
+        
+        NSNumber *testBOOL = [NSNumber numberWithBool:true];
+        NSLog(@"test bool is now = %@", testBOOL);
+        NSNumber *displayItemComplete = displayItem.done;
+        NSLog(@"displayItemComplete is now = %@", displayItemComplete);
+        
+        if([displayItemComplete doubleValue] == [testBOOL doubleValue]){
             NSString *doneText = @"DONE!!";
             self.CompletedField.text = doneText;
         }else{
@@ -45,12 +51,7 @@
         self.ItemIDTextField.text = displayItem.itemId;
         self.ParentIDTextField.text = displayItem.parent;
     }
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    [self configureView];
 }
 
 - (void)didReceiveMemoryWarning {

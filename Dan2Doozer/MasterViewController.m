@@ -81,8 +81,6 @@
     }
     
     newItem.title = self.listNameTextField.text;
-    
-    newItem.done = NO;
 
     newItem.parent = nil;
     
@@ -172,6 +170,7 @@
 
     
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+    NSDecimalNumber *newOrder = nil;
     
     if(destinationIndexPath>sourceIndexPath){
         
@@ -182,7 +181,7 @@
         NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
         NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
         NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        NSDecimalNumber *newOrder = [totalOrder decimalNumberByDividingBy:divisor];
+        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
         reorderedItem.order = newOrder;
     }else{
         
@@ -193,24 +192,37 @@
         NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
         NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
         NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        NSDecimalNumber *newOrder = [totalOrder decimalNumberByDividingBy:divisor];
+        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
         reorderedItem.order = newOrder;
         
     }
     
     
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    NSLog(@"current session ID = %@", currentSessionId);
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
     
     
+    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
+    NSLog(@"here's the update URL = %@", updateURL);
     
+    NSDictionary *params = @{
+                             @"order": newOrder
+                             };
     
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
     
     [self.tableView reloadData];
     
@@ -238,26 +250,10 @@
         NSLog(@"here's the item to delete = %@", itemToDeleteId);
         
         NSString *deleteURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToDeleteId];
-        
-        NSString *isItComplete = nil;
-        if(itemToDelete.done == YES){
-            isItComplete = @"true";
-        }else{
-            isItComplete = @"false";
-        }
+
         
         NSDictionary *params = @{
                                  @"archive": @"true"
-                                 /*,
-                                  @"children_count": @"0",
-                                  @"children_undone": @"0",
-                                  @"done": isItComplete,
-                                  @"id": itemToDelete.itemId,
-                                  @"order": itemToDelete.order,
-                                  @"parent": itemToDelete.parent,
-                                  @"title": itemToDelete.title,
-                                  //@"user_id": itemToDelete.user_id
-                                  */
                                  };
         
         [manager PUT:deleteURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {

@@ -141,13 +141,16 @@ NSString *sessionID = nil;
             NSUInteger length = [results count];
             if (length == 0){
                 NSString *title = [eachArrayElement objectForKey:@"title"];
-                NSLog(@"%@", title);
+                NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
+                NSInteger ordertempInt = [ordertemp integerValue];
+                NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
                 
                 Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
                 
                 newItem.title = title;
                 newItem.parent = nil;
                 newItem.itemId = itemId;
+                newItem.order = order;
                 
                 // Save the context.
                 NSError *error = nil;
@@ -184,13 +187,16 @@ NSString *sessionID = nil;
                         NSUInteger length = [results count];
                         if (length == 0){
                             NSString *title = [eachArrayElement objectForKey:@"title"];
-                            NSLog(@"%@", title);
+                            NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
+                            NSInteger ordertempInt = [ordertemp integerValue];
+                            NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
                             
                             Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
                             
                             newItem.title = title;
                             newItem.parent = itemId;
                             newItem.itemId = childId;
+                            newItem.order = order;
                             
                             // Save the context.
                             NSError *error = nil;
