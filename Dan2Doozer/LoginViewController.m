@@ -52,10 +52,7 @@ NSString *sessionID = nil;
             // Handle cancellations
         } else {
             
-            NSLog(@"oh yeah! Email!");
-            
             [self logIntoDoozerWithFacebook];
-            NSLog(@"Doozer should be logged in now");
             
             // If you ask for multiple permissions at once, you
             // should check if specific permissions missing
@@ -69,16 +66,6 @@ NSString *sessionID = nil;
 
 
 
-- (IBAction)buttonDoozerServer:(id)sender {
-    
-    [self logIntoDoozerWithFacebook];
-    
-}
-- (IBAction)buttonGetMyLists:(id)sender {
-    
-    [self getDataFromDoozer];
-}
-
 - (void)logIntoDoozerWithFacebook {
         
     if([FBSDKAccessToken currentAccessToken]){
@@ -90,7 +77,7 @@ NSString *sessionID = nil;
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
             sessionID = [responseObject objectForKey:@"sessionId"];
-            self.doozerSessionId.text = sessionID;
+            self.doozerSessionId.text = @"Connected!!";
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -168,7 +155,7 @@ NSString *sessionID = nil;
                 [dogs.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
                 [dogs GET:getChildrenURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 
-                    NSLog(@"here's the data %@", responseObject);
+                    NSLog(@"here's the chilren data %@", responseObject);
                     
                 NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
                 NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
@@ -229,6 +216,7 @@ NSString *sessionID = nil;
 
 #pragma mark - Segues
 
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([[segue identifier] isEqualToString:@"showListList"]) {
@@ -240,8 +228,8 @@ NSString *sessionID = nil;
         
     }
 }
+ 
 
-- (IBAction)buttonLogInToDoozer:(UIButton *)sender {
-}
+
 
 @end

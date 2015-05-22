@@ -41,6 +41,26 @@
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [self.tableView addGestureRecognizer:recognizer];
     
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
+                                          initWithTarget:self action:@selector(handleLongPress:)];
+    lpgr.minimumPressDuration = 2.0; //seconds
+    lpgr.delegate = self;
+    [self.tableView addGestureRecognizer:lpgr];
+    
+}
+
+-(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    CGPoint p = [gestureRecognizer locationInView:self.tableView];
+    
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
+    if (indexPath == nil) {
+        NSLog(@"long press on table view but not on a row");
+    } else if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        NSLog(@"long press on table view at row %ld", indexPath.row);
+    } else {
+        NSLog(@"gestureRecognizer.state = %ld", gestureRecognizer.state);
+    }
 }
 
 - (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
@@ -57,7 +77,7 @@
     
     NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
     NSMutableArray *allItemOrderValues = [[NSMutableArray alloc] init];
-    
+
     for (id eachElement in listArray){
         Item *theItem = eachElement;
         [allItemOrderValues addObject:theItem.order];
@@ -66,24 +86,73 @@
         }
     }
     
+    int completedMinOrder = [[completedItemOrderValues valueForKeyPath:@"@min.intValue"] intValue];
+    NSLog(@"here's the first completed item = %d", completedMinOrder);
+    int maxItemOrder = [[allItemOrderValues valueForKeyPath:@"@max.intValue"] intValue];
+    NSLog(@"here's the last item = %d", maxItemOrder);
+    
     NSLog(@"previously completed Item order Values = %@", completedItemOrderValues);
     NSLog(@"all Item order Values = %@", allItemOrderValues);
     
     
     CGPoint location = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-    NSLog(@"here's the index path = %@", indexPath);
 
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     Item *itemToToggleComplete = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+    
+    NSLog(@"Item to toggle current state = %@", itemToToggleComplete.done);
+    
+    
+    NSNumber *num = [NSNumber numberWithInt:completedMinOrder];
+    
+    int indexOfFirstCompleted = 0;
+    
+    if ([num intValue] == 0) {
+        int newOrderForCompletedItem = maxItemOrder + 10000000;
+        NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
+        NSLog(@"None Complete, updating order to = %@", orderForCompleted);
+        itemToToggleComplete.order = orderForCompleted;
         
+    }
+    else{
+        int loopcount = 0;
+        
+        for(id eachElement in allItemOrderValues){
+            NSNumber *placeholder = eachElement;
+            int value = [placeholder intValue];
+            if (value == completedMinOrder)
+            {
+                indexOfFirstCompleted = loopcount;
+            }
+            loopcount ++;
+        }
+        
+        //NSUInteger index = [allItemOrderValues indexOfObject:@"completedMinOrder"];
+        NSLog(@"index of first completed = %d", indexOfFirstCompleted);
+        
+           
+        int indexOfLastUncompleted = indexOfFirstCompleted - 1;
+        NSNumber *monkey = [allItemOrderValues objectAtIndex:indexOfLastUncompleted];
+        int orderValOfLastUncompleted = [monkey intValue];
+            
+        int newOrderForCompletedItem = ((completedMinOrder - orderValOfLastUncompleted)/2)+orderValOfLastUncompleted;
+        NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
+        NSLog(@"updating order to = %@", orderForCompleted);
+        itemToToggleComplete.order = orderForCompleted;
+    
+    }
+    
+    
     NSDictionary *params = nil;
     if([itemToToggleComplete.done intValue] == 0){
         itemToToggleComplete.done = [NSNumber numberWithBool:true];
-        params= @{@"done": @"true"};
+        params= @{@"done": @"1"};
+        
+        
     }else{
         itemToToggleComplete.done = [NSNumber numberWithBool:false];
-        params= @{@"done": @"false"};
+        params= @{@"done": @"0"};
     }
         
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
@@ -106,9 +175,7 @@
         NSLog(@"Error: %@", error);
     }];
     
-
-        
-        
+    //[self.tableView reloadData];
         
     }
 
@@ -349,15 +416,25 @@
     [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
         
+        /*
         // Save the context.
         NSError *error = nil;
         if (![context save:&error]) {
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+         */
+        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
     
     [self.tableView reloadData];
 }
