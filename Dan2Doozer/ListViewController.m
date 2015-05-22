@@ -43,7 +43,7 @@
     
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleLongPress:)];
-    lpgr.minimumPressDuration = 2.0; //seconds
+    lpgr.minimumPressDuration = 1.5; //seconds
     lpgr.delegate = self;
     [self.tableView addGestureRecognizer:lpgr];
     
@@ -72,9 +72,6 @@
 {
     
     NSArray *listArray = [self.fetchedResultsController fetchedObjects];
-    NSLog(@"here's the array = %@", listArray);
-    
-    
     NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
     NSMutableArray *allItemOrderValues = [[NSMutableArray alloc] init];
 
@@ -87,23 +84,14 @@
     }
     
     int completedMinOrder = [[completedItemOrderValues valueForKeyPath:@"@min.intValue"] intValue];
-    NSLog(@"here's the first completed item = %d", completedMinOrder);
     int maxItemOrder = [[allItemOrderValues valueForKeyPath:@"@max.intValue"] intValue];
-    NSLog(@"here's the last item = %d", maxItemOrder);
-    
-    NSLog(@"previously completed Item order Values = %@", completedItemOrderValues);
-    NSLog(@"all Item order Values = %@", allItemOrderValues);
-    
     
     CGPoint location = [gestureRecognizer locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
 
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     Item *itemToToggleComplete = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
-    
-    NSLog(@"Item to toggle current state = %@", itemToToggleComplete.done);
-    
-    
+ 
     NSNumber *num = [NSNumber numberWithInt:completedMinOrder];
     
     int indexOfFirstCompleted = 0;
@@ -111,7 +99,6 @@
     if ([num intValue] == 0) {
         int newOrderForCompletedItem = maxItemOrder + 10000000;
         NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
-        NSLog(@"None Complete, updating order to = %@", orderForCompleted);
         itemToToggleComplete.order = orderForCompleted;
         
     }
@@ -128,10 +115,6 @@
             loopcount ++;
         }
         
-        //NSUInteger index = [allItemOrderValues indexOfObject:@"completedMinOrder"];
-        NSLog(@"index of first completed = %d", indexOfFirstCompleted);
-        
-           
         int indexOfLastUncompleted = indexOfFirstCompleted - 1;
         NSNumber *monkey = [allItemOrderValues objectAtIndex:indexOfLastUncompleted];
         int orderValOfLastUncompleted = [monkey intValue];
@@ -140,19 +123,19 @@
         NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
         NSLog(@"updating order to = %@", orderForCompleted);
         itemToToggleComplete.order = orderForCompleted;
-    
     }
     
+    NSString *orderAfterToggling = itemToToggleComplete.order.stringValue;
     
     NSDictionary *params = nil;
     if([itemToToggleComplete.done intValue] == 0){
         itemToToggleComplete.done = [NSNumber numberWithBool:true];
-        params= @{@"done": @"1"};
+        params= @{@"done": @"true", @"order": orderAfterToggling};
         
         
     }else{
         itemToToggleComplete.done = [NSNumber numberWithBool:false];
-        params= @{@"done": @"0"};
+        params= @{@"done": @"false", @"order": orderAfterToggling};
     }
         
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
@@ -175,9 +158,7 @@
         NSLog(@"Error: %@", error);
     }];
     
-    //[self.tableView reloadData];
-        
-    }
+}
 
 
 - (void)setDisplayList:(id)newDisplayList {
@@ -326,47 +307,8 @@
     
     if ([done intValue] == 1) {
         cell.textLabel.textColor = [UIColor lightGrayColor];
-    }
-}
-
-
-- (void)checkButtonTapped:(id)sender
-{
-    CGPoint buttonPosition = [sender convertPoint:CGPointZero toView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonPosition];
-    if (indexPath != nil)
-    {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        Item *itemToToggleComplete = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
-        
-        NSDictionary *params = nil;
-        if([itemToToggleComplete.done intValue] == 0){
-            itemToToggleComplete.done = [NSNumber numberWithBool:true];
-            params= @{@"done": @"true"};
-        }else{
-            itemToToggleComplete.done = [NSNumber numberWithBool:false];
-            params= @{@"done": @"false"};
-        }
-        
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-        NSLog(@"current session ID = %@", currentSessionId);
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-        
-        NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToToggleComplete.itemId];
-        
-        [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
+    }else{
+        cell.textLabel.textColor = [UIColor blackColor];
     }
 }
 
