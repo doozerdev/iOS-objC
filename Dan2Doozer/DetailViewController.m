@@ -35,12 +35,7 @@
         self.ItemTitleField.text = displayItem.title;
         self.OrderValueField.text = displayItem.order.stringValue;
         
-        NSNumber *testBOOL = [NSNumber numberWithBool:true];
-        NSLog(@"test bool is now = %@", testBOOL);
-        NSNumber *displayItemComplete = displayItem.done;
-        NSLog(@"displayItemComplete is now = %@", displayItemComplete);
-        
-        if([displayItemComplete doubleValue] == [testBOOL doubleValue]){
+        if([displayItem.done intValue] == 1){
             NSString *doneText = @"DONE!!";
             self.CompletedField.text = doneText;
         }else{

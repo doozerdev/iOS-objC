@@ -12,7 +12,7 @@
 @class DetailViewController;
 @class MasterViewController;
 
-@interface ListViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate>
+@interface ListViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) id displayList;
 
