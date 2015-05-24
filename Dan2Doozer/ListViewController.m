@@ -26,7 +26,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
     self.itemNameTextField.delegate = self;
     
@@ -57,7 +56,7 @@
     if (indexPath == nil) {
         NSLog(@"long press on table view but not on a row");
     } else if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        
+        [self.tableView setEditing:YES animated:YES];
         NSLog(@"long press on table view at row %ld", indexPath.row);
     } else {
         NSLog(@"gestureRecognizer.state = %ld", gestureRecognizer.state);
@@ -324,6 +323,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
+    
+    [self.tableView setEditing:NO animated:YES];
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     

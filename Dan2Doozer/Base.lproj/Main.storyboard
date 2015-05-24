@@ -160,7 +160,11 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA"/>
+                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
+                            <connections>
+                                <segue destination="YFT-UZ-tcf" kind="show" id="yU8-dJ-AzT"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -170,6 +174,32 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="709" y="-630"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="O2m-yM-8AJ">
+            <objects>
+                <viewController id="YFT-UZ-tcf" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="KsC-AP-k7o"/>
+                        <viewControllerLayoutGuide type="bottom" id="XGe-Fd-G6C"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PD9-rp-ugQ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Coming Soon: settings page..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XXe-nI-IhD">
+                                <rect key="frame" x="39" y="110" width="233" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gat-wy-CTf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1658" y="-387"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YfC-Mg-EJm">
@@ -279,7 +309,11 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
-                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="sQG-kd-cCP"/>
+                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="sQG-kd-cCP">
+                            <connections>
+                                <segue destination="YFT-UZ-tcf" kind="show" id="bSg-ee-uv2"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -294,4 +328,7 @@
     <resources>
         <image name="Hamburger" width="16" height="16"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="bSg-ee-uv2"/>
+    </inferredMetricsTieBreakers>
 </document>
