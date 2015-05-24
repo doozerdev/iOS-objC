@@ -45,7 +45,15 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self insertNewObject:nil];
+    
+    if (textField.text.length > 0) {
+        [self insertNewObject:nil];
+    }
+    else{
+        NSLog(@"they're not typing anything");
+    }
+    [textField resignFirstResponder];
+    
     return YES;
 }
 

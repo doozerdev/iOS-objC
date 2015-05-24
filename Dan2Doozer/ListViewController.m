@@ -43,7 +43,7 @@
     
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
                                           initWithTarget:self action:@selector(handleLongPress:)];
-    lpgr.minimumPressDuration = 1.5; //seconds
+    lpgr.minimumPressDuration = 0.75; //seconds
     lpgr.delegate = self;
     [self.tableView addGestureRecognizer:lpgr];
     
@@ -191,7 +191,15 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self insertNewObject:nil];
+    
+    if (textField.text.length > 0) {
+        [self insertNewObject:nil];
+    }
+    else{
+        NSLog(@"they're not typing anything");
+    }
+    [textField resignFirstResponder];
+
     return YES;
 }
 
@@ -261,6 +269,8 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
+    
+    
 }
 
 #pragma mark - Segues
