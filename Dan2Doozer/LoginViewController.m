@@ -157,8 +157,8 @@ NSString *sessionID = nil;
                 
                     NSLog(@"here's the chilren data %@", responseObject);
                     
-                NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
-                NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
+                    NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
+                    NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
                     
                     for (id eachArrayElement in fetchedChildrenArray) {
                         NSManagedObjectContext *context = _managedObjectContext;
@@ -169,6 +169,7 @@ NSString *sessionID = nil;
                         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", childId];
                         [fetchRequest setPredicate:predicate];
                         
+                        //check to see if the item is already in local memory
                         NSError *firsterror = nil;
                         NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
                         NSUInteger length = [results count];
@@ -177,6 +178,10 @@ NSString *sessionID = nil;
                             NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
                             NSInteger ordertempInt = [ordertemp integerValue];
                             NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
+                            NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
+                            
+                            NSLog(@"current done flag = %@", donetemp);
+                            
                             
                             Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
                             
@@ -184,6 +189,7 @@ NSString *sessionID = nil;
                             newItem.parent = itemId;
                             newItem.itemId = childId;
                             newItem.order = order;
+                            newItem.done = donetemp;
                             
                             // Save the context.
                             NSError *error = nil;
