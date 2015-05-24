@@ -57,6 +57,7 @@
     if (indexPath == nil) {
         NSLog(@"long press on table view but not on a row");
     } else if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
         NSLog(@"long press on table view at row %ld", indexPath.row);
     } else {
         NSLog(@"gestureRecognizer.state = %ld", gestureRecognizer.state);
@@ -317,31 +318,58 @@
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+    NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
+    NSLog(@"total number of items on list = %lu", numberOfObjects);
+    
     
     NSDecimalNumber *newOrder = nil;
     
     if(destinationIndexPath>sourceIndexPath){
+        if (destinationIndexPath.row == (numberOfObjects - 1)) {
+            NSLog(@"Moving to bottom of list, then crash!");
+            Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
+            int newItemNewOrder = originalLastItem.order.intValue + 1048576;
+            
+            NSNumber *placeholder = [NSNumber numberWithInt:newItemNewOrder];
+            newOrder = [NSDecimalNumber decimalNumberWithDecimal:[placeholder decimalValue]];
+            
+            NSLog(@"Here's the new last item order = %@", newOrder);
+            reorderedItem.order =  newOrder;
+        }else{
+            Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
+            Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row+1];
         
-        Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-        Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row+1];
-        
-        NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-        NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-        NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-        NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-        reorderedItem.order = newOrder;
+            NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
+            NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
+            NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
+            NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
+            newOrder = [totalOrder decimalNumberByDividingBy:divisor];
+            reorderedItem.order = newOrder;
+        }
     }else{
+        if (destinationIndexPath.row == 0) {
+            NSLog(@"Moving to top of list!");
+            Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
+            int newItemNewOrder = originalFirstItem.order.intValue / 2;
+            
+            NSNumber *placeholder = [NSNumber numberWithInt:newItemNewOrder];
+            newOrder = [NSDecimalNumber decimalNumberWithDecimal:[placeholder decimalValue]];
+            
+            NSLog(@"Here's the new first item order = %@", newOrder);
+            reorderedItem.order =  newOrder;
+            
+        }else{
         
-        Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row-1];
-        Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
+            Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row-1];
+            Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
         
-        NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-        NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-        NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-        NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-        reorderedItem.order = newOrder;
+            NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
+            NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
+            NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
+            NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
+            newOrder = [totalOrder decimalNumberByDividingBy:divisor];
+            reorderedItem.order = newOrder;
+        }
     }
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
