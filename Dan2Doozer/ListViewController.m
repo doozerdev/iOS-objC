@@ -40,32 +40,220 @@
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [self.tableView addGestureRecognizer:recognizer];
     
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
-                                          initWithTarget:self action:@selector(handleLongPress:)];
-    lpgr.minimumPressDuration = 0.75; //seconds
-    lpgr.delegate = self;
-    [self.tableView addGestureRecognizer:lpgr];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
+                                               initWithTarget:self action:@selector(longPressGestureRecognized:)];
+    [self.tableView addGestureRecognizer:longPress];
     
 }
 
--(void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    CGPoint p = [gestureRecognizer locationInView:self.tableView];
+- (IBAction)longPressGestureRecognized:(id)sender {
     
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
-    if (indexPath == nil) {
-        NSLog(@"long press on table view but not on a row");
-    } else if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        [self.tableView setEditing:YES animated:YES];
-        NSLog(@"long press on table view at row %ld", indexPath.row);
-    } else {
-        NSLog(@"gestureRecognizer.state = %ld", gestureRecognizer.state);
+    UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
+    UIGestureRecognizerState state = longPress.state;
+    
+    CGPoint location = [longPress locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    //_superOriginalIndex = NULL;
+    
+    static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
+    static NSIndexPath  *sourceIndexPath = nil; ///< Initial index path, where gesture begins.
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan: {
+            if (indexPath) {
+                _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
+                NSLog(@"here's where we think the item started = %ld", (long)_superOriginalIndex.row);
+                
+                Item *grabbedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+                Item *grabbedPlusOneItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row+1];
+                Item *grabbedMinusOneItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row-1];
+                
+                
+                NSLog(@"Grabbed Minues One Item = %@", grabbedMinusOneItem.title);
+                NSLog(@"Grabbed Item = %@", grabbedItem.title);
+                NSLog(@"grabbed Plus One name = %@", grabbedPlusOneItem.title);
+                
+                sourceIndexPath = indexPath;
+                
+                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+                
+                // Take a snapshot of the selected row using helper method.
+                snapshot = [self customSnapshoFromView:cell];
+                
+                // Add the snapshot as subview, centered at cell's center...
+                __block CGPoint center = cell.center;
+                snapshot.center = center;
+                snapshot.alpha = 0.0;
+                [self.tableView addSubview:snapshot];
+                [UIView animateWithDuration:0.25 animations:^{
+                    
+                    // Offset for gesture location.
+                    center.y = location.y;
+                    snapshot.center = center;
+                    snapshot.transform = CGAffineTransformMakeScale(1.05, 1.05);
+                    snapshot.alpha = 0.98;
+                    cell.alpha = 0.0;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    cell.hidden = YES;
+                    
+                }];
+            }
+            break;
+        }
+            
+        case UIGestureRecognizerStateChanged: {
+            CGPoint center = snapshot.center;
+            center.y = location.y;
+            snapshot.center = center;
+            
+            // Is destination valid and is it different from source?
+            if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
+                
+                // ... update data source.
+                //[self.objects exchangeObjectAtIndex:indexPath.row withObjectAtIndex:sourceIndexPath.row];
+    
+                
+                // ... move the rows.
+                [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
+                
+                // ... and update source so it is in sync with UI changes.
+                sourceIndexPath = indexPath;
+            }
+            break;
+        }
+            
+        case UIGestureRecognizerStateEnded: {
+            
+            Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];;
+            
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            
+            NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
+            NSLog(@"total number of items on list = %lu", numberOfObjects);
+            
+            
+            NSLog(@"super Original Index = %ld", (long)_superOriginalIndex.row);
+            NSLog(@"Index = %ld", (long)indexPath.row);
+            Item *previousItem = nil;
+            Item *followingItem  = nil;
+            
+            if(_superOriginalIndex.row < indexPath.row){
+                if (indexPath.row == (numberOfObjects - 1)) {
+                    NSLog(@"Moving to bottom of list, then crash!");
+                    Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+                    int newItemNewOrder = originalLastItem.order.intValue + 1048576;
+            
+                    NSLog(@"Here's the new last item order = %d", newItemNewOrder);
+                    reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                    
+                }else{
+                    NSLog(@"entered FIRST case");
+                    previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+                    followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row+1];
+                    
+                    int previousItemOrder = [previousItem.order intValue];
+                    int followingItemOrder = [followingItem.order intValue];
+                    int newOrder = (previousItemOrder + followingItemOrder)/2;
+                    reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                }
+                
+            }else{
+                if (indexPath.row == 0) {
+                    NSLog(@"Moving to top of list!");
+                    Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+                    int newItemNewOrder = originalFirstItem.order.intValue / 2;
+            
+                    NSLog(@"Here's the new first item order = %d", newItemNewOrder);
+                    reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                }else{
+                
+                    NSLog(@"entered SECOND case");
+                    previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row-1];
+                    followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+                
+                    int previousItemOrder = [previousItem.order intValue];
+                    int followingItemOrder = [followingItem.order intValue];
+                    int newOrder = (previousItemOrder + followingItemOrder)/2;
+                    reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                }
+            }
+            
+            NSLog(@"Previous Item = %@", previousItem.title);
+            NSLog(@"reordered item name = %@", reorderedItem.title);
+            NSLog(@"following Item = %@", followingItem.title);
+        
+            NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+            
+            
+            NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
+            
+            NSDictionary *params = @{@"order": reorderedItem.order};
+            
+            [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                NSLog(@"JSON: %@", responseObject);
+                
+                
+                // Save the context.
+                NSError *error = nil;
+                if (![context save:&error]) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+                
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"Error: %@", error);
+            }];
+            
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+
+            
+            [self.tableView reloadData];
+            
+        }
+            
+        default: {
+            // Clean up.
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:sourceIndexPath];
+            cell.hidden = NO;
+            cell.alpha = 0.0;
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                
+                snapshot.center = cell.center;
+                snapshot.transform = CGAffineTransformIdentity;
+                snapshot.alpha = 0.0;
+                cell.alpha = 1.0;
+                
+            } completion:^(BOOL finished) {
+                
+                sourceIndexPath = nil;
+                [snapshot removeFromSuperview];
+                snapshot = nil;
+                
+            }];
+            
+            break;
+        }
     }
+
 }
+
 
 - (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
 {
     //do you left swipe stuff here.
+    NSLog(@"left swipe happened");
 }
 
 - (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
@@ -313,6 +501,7 @@
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.showsReorderControl = YES;
     cell.textLabel.text = [object valueForKey:@"title"];
+
     NSString *done = [object valueForKey:@"done"];
     
     if ([done intValue] == 1) {
@@ -321,105 +510,6 @@
         cell.textLabel.textColor = [UIColor blackColor];
     }
 }
-
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
-    
-    [self.tableView setEditing:NO animated:YES];
-    
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    
-    Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
-    NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
-    NSLog(@"total number of items on list = %lu", numberOfObjects);
-    
-    
-    NSDecimalNumber *newOrder = nil;
-    
-    if(destinationIndexPath>sourceIndexPath){
-        if (destinationIndexPath.row == (numberOfObjects - 1)) {
-            NSLog(@"Moving to bottom of list, then crash!");
-            Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-            int newItemNewOrder = originalLastItem.order.intValue + 1048576;
-            
-            NSNumber *placeholder = [NSNumber numberWithInt:newItemNewOrder];
-            newOrder = [NSDecimalNumber decimalNumberWithDecimal:[placeholder decimalValue]];
-            
-            NSLog(@"Here's the new last item order = %@", newOrder);
-            reorderedItem.order =  newOrder;
-        }else{
-            Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-            Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row+1];
-        
-            NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-            NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-            NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-            NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-            newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-            reorderedItem.order = newOrder;
-        }
-    }else{
-        if (destinationIndexPath.row == 0) {
-            NSLog(@"Moving to top of list!");
-            Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-            int newItemNewOrder = originalFirstItem.order.intValue / 2;
-            
-            NSNumber *placeholder = [NSNumber numberWithInt:newItemNewOrder];
-            newOrder = [NSDecimalNumber decimalNumberWithDecimal:[placeholder decimalValue]];
-            
-            NSLog(@"Here's the new first item order = %@", newOrder);
-            reorderedItem.order =  newOrder;
-            
-        }else{
-        
-            Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row-1];
-            Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-        
-            NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-            NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-            NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-            NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-            newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-            reorderedItem.order = newOrder;
-        }
-    }
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    NSLog(@"current session ID = %@", currentSessionId);
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    
-    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
-    NSLog(@"here's the update URL = %@", updateURL);
-    
-    NSDictionary *params = @{@"order": newOrder};
-    
-    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-        
-        /*
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-         */
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    
-    [self.tableView reloadData];
-}
-
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
@@ -568,14 +658,30 @@
     [self.tableView endUpdates];
 }
 
-/*
- // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
- {
- // In the simplest, most efficient, case, reload the table view.
- [self.tableView reloadData];
- }
- */
+
+
+#pragma mark - Helper methods
+
+/** @brief Returns a customized snapshot of a given view. */
+- (UIView *)customSnapshoFromView:(UIView *)inputView {
+    
+    // Make an image from the input view.
+    UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
+    [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // Create an image view.
+    UIView *snapshot = [[UIImageView alloc] initWithImage:image];
+    snapshot.layer.masksToBounds = NO;
+    snapshot.layer.cornerRadius = 0.0;
+    snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
+    snapshot.layer.shadowRadius = 5.0;
+    snapshot.layer.shadowOpacity = 0.4;
+    
+    return snapshot;
+}
+
 
 @end
+
