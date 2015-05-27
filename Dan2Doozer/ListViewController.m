@@ -65,15 +65,6 @@
                 _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
                 NSLog(@"here's where we think the item started = %ld", (long)_superOriginalIndex.row);
                 
-                Item *grabbedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
-                Item *grabbedPlusOneItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row+1];
-                Item *grabbedMinusOneItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row-1];
-                
-                
-                NSLog(@"Grabbed Minues One Item = %@", grabbedMinusOneItem.title);
-                NSLog(@"Grabbed Item = %@", grabbedItem.title);
-                NSLog(@"grabbed Plus One name = %@", grabbedPlusOneItem.title);
-                
                 sourceIndexPath = indexPath;
                 
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
