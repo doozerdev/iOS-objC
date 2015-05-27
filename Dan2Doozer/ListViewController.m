@@ -29,6 +29,8 @@
     
     self.itemNameTextField.delegate = self;
     
+    Item *listForTitle = self.displayList;
+    self.navigationItem.title = listForTitle.title;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipe:)];
@@ -46,6 +48,92 @@
     [self.tableView addGestureRecognizer:longPress];
     
 }
+
+- (IBAction)addItemButton:(id)sender {
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new item"
+                                                    message:nil
+                                                   delegate:self
+                                          cancelButtonTitle:@"cancel"
+                                          otherButtonTitles:@"add", nil];
+    
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    
+    [alert show];
+    
+}
+
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        NSString *name = [alertView textFieldAtIndex:0].text;
+        NSLog(@"text field value = %@", name);
+        
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        
+        
+        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+        
+        
+        NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
+        long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
+        
+        
+        if (numberOfResults == 0){
+            newItem.order = [NSNumber numberWithLong:16777216];
+        }
+        else{
+            //find the lowest order value in the array of items
+            NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
+            NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
+            [itemArray sortedArrayUsingDescriptors:sortDescriptors];
+            Item *firstObject = [itemArray objectAtIndex:0];
+            long lowestOrder = ([firstObject.order longValue]/2);
+            newItem.order = [NSNumber numberWithLong:lowestOrder];
+        }
+        
+        newItem.title = name;
+        
+        newItem.done = 0;
+        
+        Item *parentList = self.displayList;
+        
+        newItem.parent = parentList.itemId;
+        
+        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+        NSLog(@"current session ID = %@", currentSessionId);
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+        
+        NSLog(@"current parent list = %@", parentList.itemId);
+        
+        NSDictionary *params = @{@"title": newItem.title, @"parent": parentList.itemId};
+        [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSLog(@"JSON: %@", responseObject);
+            
+            NSDictionary *serverResponse = (NSDictionary *)responseObject;
+            NSString *newItemId = [serverResponse objectForKey:@"id"];
+            newItem.itemId = newItemId;
+            
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+        }];
+
+        
+        
+        
+    }
+}
+
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
@@ -368,87 +456,9 @@
     }
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    
-    if (textField.text.length > 0) {
-        [self insertNewObject:nil];
-    }
-    else{
-        NSLog(@"they're not typing anything");
-    }
-    [textField resignFirstResponder];
-
-    return YES;
-}
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)insertNewObject:(id)sender {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    
-    
-    Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-    
-    
-    NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
-    long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
-    
-    
-    if (numberOfResults == 0){
-        newItem.order = [NSNumber numberWithLong:16777216];
-    }
-    else{
-        //find the lowest order value in the array of items
-        NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
-        NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
-        [itemArray sortedArrayUsingDescriptors:sortDescriptors];
-        Item *firstObject = [itemArray objectAtIndex:0];
-        long lowestOrder = ([firstObject.order longValue]/2);
-        newItem.order = [NSNumber numberWithLong:lowestOrder];
-    }
-    
-    newItem.title = self.itemNameTextField.text;
-    
-    newItem.done = 0;
-    
-    Item *parentList = self.displayList;
-    
-    newItem.parent = parentList.itemId;
-    
-    self.itemNameTextField.text = nil;
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    NSLog(@"current session ID = %@", currentSessionId);
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    NSLog(@"current parent list = %@", parentList.itemId);
-    
-    NSDictionary *params = @{@"title": newItem.title, @"parent": parentList.itemId};
-    [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-        
-        NSDictionary *serverResponse = (NSDictionary *)responseObject;
-        NSString *newItemId = [serverResponse objectForKey:@"id"];
-        newItem.itemId = newItemId;
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
-    
-    
 }
 
 #pragma mark - Segues
@@ -464,6 +474,13 @@
         
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+        
+        UIBarButtonItem *newBackButton =
+        [[UIBarButtonItem alloc] initWithTitle:@""
+                                         style:UIBarButtonItemStylePlain
+                                        target:nil
+                                        action:nil];
+        [[self navigationItem] setBackBarButtonItem:newBackButton];
     }
 }
 

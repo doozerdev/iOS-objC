@@ -32,6 +32,7 @@
     
     if (self.detailItem) {
         Item *displayItem = self.detailItem;
+        self.navigationItem.title = displayItem.title;
         self.ItemTitleField.text = displayItem.title;
         self.OrderValueField.text = displayItem.order.stringValue;
         

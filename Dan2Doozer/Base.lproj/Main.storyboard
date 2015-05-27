@@ -152,24 +152,19 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="Zdf-7t-Un8">
-                        <nil key="title"/>
-                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create New List" textAlignment="center" minimumFontSize="17" id="M0c-Wc-ZSc" userLabel="Enter New List">
-                            <rect key="frame" x="180" y="7" width="240" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
-                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
+                    <navigationItem key="navigationItem" title="Doozer Lists" id="Zdf-7t-Un8">
+                        <barButtonItem key="leftBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
                             <connections>
                                 <segue destination="YFT-UZ-tcf" kind="show" id="yU8-dJ-AzT"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="b82-Oq-taK">
+                            <connections>
+                                <action selector="addListButton:" destination="7bK-jq-Zjz" id="qDl-FO-9xd"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="listNameTextField" destination="M0c-Wc-ZSc" id="FAh-ga-UfJ"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>
@@ -303,22 +298,13 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="cE7-nX-Yxx">
                         <nil key="title"/>
-                        <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create New Item" textAlignment="center" minimumFontSize="17" id="5dD-7J-Izh" userLabel="Enter New Item">
-                            <rect key="frame" x="180" y="7" width="240" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
-                        <barButtonItem key="rightBarButtonItem" image="Hamburger" id="sQG-kd-cCP">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="sQG-kd-cCP">
                             <connections>
-                                <segue destination="YFT-UZ-tcf" kind="show" id="bSg-ee-uv2"/>
+                                <action selector="addItemButton:" destination="Lzo-3s-ZiQ" id="QC4-VT-JcO"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="itemNameTextField" destination="5dD-7J-Izh" id="c6q-64-VvS"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygx-FV-Pgj" sceneMemberID="firstResponder"/>
             </objects>
@@ -328,7 +314,4 @@
     <resources>
         <image name="Hamburger" width="16" height="16"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="bSg-ee-uv2"/>
-    </inferredMetricsTieBreakers>
 </document>
