@@ -19,6 +19,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *ParentIDTextLabel;
 @property (weak, nonatomic) IBOutlet UILabel *OrderValueLabel;
 @property (weak, nonatomic) IBOutlet UILabel *DoneLabel;
+@property (weak, nonatomic) IBOutlet UITextView *NotesTextArea;
+@property (weak, nonatomic) IBOutlet UITextField *DueDateTextField;
+
+
+
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

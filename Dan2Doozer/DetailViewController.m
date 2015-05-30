@@ -9,6 +9,8 @@
 #import "DetailViewController.h"
 #import "ListViewController.h"
 #import "Item.h"
+#import "AFNetworking.h"
+
 
 @interface DetailViewController ()
 
@@ -19,6 +21,56 @@
 
 #pragma mark - Managing the detail item
 
+- (IBAction)SaveItemDateButton:(id)sender {
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    Item *tempDetailItem = self.detailItem;
+    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", tempDetailItem.itemId];
+    
+    tempDetailItem.title = self.ItemTitleField.text;
+    
+    NSDateFormatter* df = [[NSDateFormatter alloc]init];
+    [df setDateFormat:@"yyyy-MM-dd"];
+    
+    NSString *tempDueDateString = self.DueDateTextField.text;
+    NSDate *tempDueDateNSDate = [df dateFromString:tempDueDateString];
+    tempDetailItem.duedate = tempDueDateNSDate;
+    tempDetailItem.notes = self.NotesTextArea.text;
+    
+    NSDictionary *params = @{@"title": tempDetailItem.title,
+                             @"duedate": tempDetailItem.duedate,
+                             @"notes": tempDetailItem.notes
+                             };
+    
+    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+        
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    
+}
 
 - (UIColor *)returnUIColor:(int)numPicker{
     UIColor *returnValue = nil;
@@ -87,6 +139,22 @@
             self.DoneLabel.text = notDoneText;
         }
         
+        if(displayItem.duedate){
+            NSString *fullDateString = [NSString stringWithFormat:@"%@", displayItem.duedate];
+            NSString *mySmallerString = [fullDateString substringToIndex:10];
+            self.DueDateTextField.text = mySmallerString;
+        }else{
+            NSDate *currDate = [NSDate date];
+            NSString *fullDateString = [NSString stringWithFormat:@"%@", currDate];
+            NSString *mySmallerString = [fullDateString substringToIndex:10];
+            self.DueDateTextField.text = mySmallerString;
+            
+        }
+
+        
+        
+        self.NotesTextArea.text = displayItem.notes;
+        
     }
     // Do any additional setup after loading the view, typically from a nib.
 }
@@ -95,5 +163,57 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+#pragma mark - Fetched results controller
+
+
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    Item *currentItem = self.detailItem;
+    
+    NSLog(@"here's the current ItemID = %@",currentItem.itemId);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", currentItem.itemId];
+    [fetchRequest setPredicate:predicate];
+    
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Detail"];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    [NSFetchedResultsController deleteCacheWithName:@"Detail"];
+    
+    
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _fetchedResultsController;
+}
+
+
 
 @end

@@ -179,17 +179,22 @@ NSString *sessionID = nil;
                             NSInteger ordertempInt = [ordertemp integerValue];
                             NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
                             NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
-                            
-                            NSLog(@"current done flag = %@", donetemp);
-                            
+                            NSString *notes = [eachArrayElement objectForKey:@"notes"];
+                            NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
                             
                             Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+                            
+                            NSDateFormatter* df = [[NSDateFormatter alloc]init];
+                            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                            NSDate* duedate = [df dateFromString:duedateString];
                             
                             newItem.title = title;
                             newItem.parent = itemId;
                             newItem.itemId = childId;
                             newItem.order = order;
                             newItem.done = donetemp;
+                            newItem.notes = notes;
+                            newItem.duedate = duedate;
                             
                             // Save the context.
                             NSError *error = nil;
