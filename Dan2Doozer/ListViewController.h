@@ -21,5 +21,8 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSIndexPath *superOriginalIndex;
+@property (strong, nonatomic) NSMutableArray *children;
+
+@property (weak, nonatomic) IBOutlet UINavigationItem *listNavBar;
 
 @end

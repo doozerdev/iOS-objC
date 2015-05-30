@@ -15,23 +15,51 @@
 
 @interface ListViewController ()
 
-@property (weak, nonatomic) IBOutlet UITextField *itemNameTextField;
-
 
 @end
 
 @implementation ListViewController
 
+- (UIColor *)returnUIColor:(int)numPicker{
+    UIColor *returnValue = nil;
+    
+    if (numPicker == 0) {
+        returnValue = [UIColor colorWithRed:0.18 green:0.7 blue:0.76 alpha:1.0]; //blue
+    }
+    else if (numPicker == 1){
+        returnValue = [UIColor colorWithRed:0.52 green:0.76 blue:0.25 alpha:1.0]; //green
+    }
+    else if (numPicker == 2){
+        returnValue = [UIColor colorWithRed:1.0 green:0.42 blue:0.42 alpha:1.0]; //red
+    }
+    else if (numPicker == 3){
+        returnValue = [UIColor colorWithRed:0.78 green:0.39 blue:0.69 alpha:1.0]; //purple
+    }
+    else if (numPicker == 4){
+        returnValue = [UIColor colorWithRed:0.92 green:0.71 blue:0.0 alpha:1.0]; //yellow
+    }
+    else{
+        returnValue = [UIColor whiteColor];
+    }
+    
+    return returnValue;
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
-    self.itemNameTextField.delegate = self;
-    
+
     Item *listForTitle = self.displayList;
+    
+    UIColor *tempColor = [self returnUIColor:[listForTitle.list_color intValue]];
+    self.view.backgroundColor = tempColor;
+    
+    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    //self.navigationController.navigationBar.barTintColor = tempColor;
+    
     self.navigationItem.title = listForTitle.title;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    //self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipe:)];
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
@@ -77,8 +105,8 @@
         Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
         
         
-        NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
-        long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
+        NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
+        long numberOfResults = [itemArray count];
         
         
         if (numberOfResults == 0){
@@ -460,7 +488,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+ 
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -471,6 +499,7 @@
         DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
         controller.managedObjectContext = self.managedObjectContext;
         [controller setDetailItem:object];
+        [controller setDisplayListOfItem:self.displayList];
         
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
@@ -491,8 +520,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
+     
+    //return [[self findChildren] count];
 }
 
 
@@ -578,11 +610,12 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
+    
     Item *parentItem = self.displayList;
     NSString *currentParentId = parentItem.itemId;
-    NSLog(@"NSFetchedResultsController current parent ID = %@", currentParentId);
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", currentParentId];
     [fetchRequest setPredicate:predicate];
+    
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
@@ -670,6 +703,7 @@
 
 #pragma mark - Helper methods
 
+//Used in the re-ordering of items - captures a snapshot of the cell to move around
 /** @brief Returns a customized snapshot of a given view. */
 - (UIView *)customSnapshoFromView:(UIView *)inputView {
     

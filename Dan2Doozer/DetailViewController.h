@@ -12,11 +12,13 @@
 @interface DetailViewController : UIViewController <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) id detailItem;
+@property (strong, nonatomic) id displayListOfItem;
 @property (weak, nonatomic) IBOutlet UITextField *ItemTitleField;
-@property (weak, nonatomic) IBOutlet UITextField *OrderValueField;
-@property (weak, nonatomic) IBOutlet UITextField *CompletedField;
-@property (weak, nonatomic) IBOutlet UITextField *ItemIDTextField;
-@property (weak, nonatomic) IBOutlet UITextField *ParentIDTextField;
+
+@property (weak, nonatomic) IBOutlet UILabel *ItemIDTextLabel;
+@property (weak, nonatomic) IBOutlet UILabel *ParentIDTextLabel;
+@property (weak, nonatomic) IBOutlet UILabel *OrderValueLabel;
+@property (weak, nonatomic) IBOutlet UILabel *DoneLabel;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

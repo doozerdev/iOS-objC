@@ -23,8 +23,7 @@
 @property (nonatomic, retain) NSDate *updated_at;
 
 @property (nonatomic, retain) NSString *itemId;
-
-
+@property (nonatomic, retain) NSNumber *list_color;
 
 
 

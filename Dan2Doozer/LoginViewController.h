@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-@property (weak, nonatomic) IBOutlet UITextField *doozerSessionId;
+@property (weak, nonatomic) IBOutlet UILabel *ConnectingTextLabel;
 
 
 

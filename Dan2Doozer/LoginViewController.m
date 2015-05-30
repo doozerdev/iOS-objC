@@ -25,6 +25,8 @@ NSString *sessionID = nil;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.ConnectingTextLabel.text = @"Connecting to Doozer Server";
+    self.ConnectingTextLabel.textColor = [UIColor lightGrayColor];
     
     if ([FBSDKAccessToken currentAccessToken]) {
         [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
@@ -77,7 +79,8 @@ NSString *sessionID = nil;
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
             sessionID = [responseObject objectForKey:@"sessionId"];
-            self.doozerSessionId.text = @"Connected!!";
+            self.ConnectingTextLabel.text = @"Connected! Getting Items!";
+            self.ConnectingTextLabel.textColor = [UIColor colorWithRed:0.52 green:0.76 blue:0.25 alpha:1.0];
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
@@ -105,9 +108,6 @@ NSString *sessionID = nil;
     AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
     [cats.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        NSLog(@"here's the data %@", responseObject);
-        
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
@@ -138,6 +138,8 @@ NSString *sessionID = nil;
                 newItem.parent = nil;
                 newItem.itemId = itemId;
                 newItem.order = order;
+                int r = arc4random_uniform(5);
+                newItem.list_color = [NSNumber numberWithInt:r];
                 
                 // Save the context.
                 NSError *error = nil;
@@ -154,8 +156,6 @@ NSString *sessionID = nil;
                 AFHTTPRequestOperationManager *dogs = [AFHTTPRequestOperationManager manager];
                 [dogs.requestSerializer setValue:sessionID forHTTPHeaderField:@"sessionId"];
                 [dogs GET:getChildrenURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                
-                    NSLog(@"here's the chilren data %@", responseObject);
                     
                     NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
                     NSArray *fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];

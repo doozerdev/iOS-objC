@@ -22,6 +22,7 @@
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
 		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
+		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataItemManager.h; sourceTree = "<group>"; };
+		A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataItemManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 				A2301B301AF41A7C00E2267D /* AppDelegate.m */,
 				A2301B5A1AF43CAE00E2267D /* Item.h */,
 				A2301B5B1AF43CAE00E2267D /* Item.m */,
+				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
+				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
@@ -317,6 +322,7 @@
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
+				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

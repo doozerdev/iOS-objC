@@ -22,7 +22,7 @@
 @synthesize updated_at;
 
 @synthesize itemId;
-
+@synthesize list_color;
 
 
 @end

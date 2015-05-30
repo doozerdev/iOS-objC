@@ -13,17 +13,42 @@
 #import "LoginViewController.h"
 #import "Item.h"
 #import "AFNetworking.h"
+#import "CoreDataItemManager.h"
 
 
 
 
 @interface MasterViewController ()
 
-@property (weak, nonatomic) IBOutlet UITextField *listNameTextField;
-
 @end
 
 @implementation MasterViewController
+
+- (UIColor *)returnUIColor:(int)numPicker{
+    UIColor *returnValue = nil;
+    
+    if (numPicker == 0) {
+        returnValue = [UIColor colorWithRed:0.18 green:0.7 blue:0.76 alpha:1.0]; //blue
+    }
+    else if (numPicker == 1){
+        returnValue = [UIColor colorWithRed:0.52 green:0.76 blue:0.25 alpha:1.0]; //green
+    }
+    else if (numPicker == 2){
+        returnValue = [UIColor colorWithRed:1.0 green:0.42 blue:0.42 alpha:1.0]; //red
+    }
+    else if (numPicker == 3){
+        returnValue = [UIColor colorWithRed:0.78 green:0.39 blue:0.69 alpha:1.0]; //purple
+    }
+    else if (numPicker == 4){
+        returnValue = [UIColor colorWithRed:0.92 green:0.71 blue:0.0 alpha:1.0]; //yellow
+    }
+    else{
+        returnValue = [UIColor whiteColor];
+    }
+    
+    return returnValue;
+    
+}
 
 - (IBAction)addListButton:(id)sender {
     
@@ -71,6 +96,10 @@
         newItem.title = name;
         
         newItem.parent = nil;
+        int r = arc4random_uniform(5);
+        newItem.list_color = [NSNumber numberWithInt:r];
+        NSLog(@"random number generated is = %@", newItem.list_color);
+        
         
         // Save the context.
         NSError *error = nil;
@@ -114,10 +143,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.listNameTextField.delegate = self;
+    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
+    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.77 green:0.4 blue:0.68 alpha:1.0];
     
-    self.listViewController = (ListViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tableView reloadData]; // to reload selected cell
 }
 
 
@@ -134,9 +167,8 @@
     
     if ([[segue identifier] isEqualToString:@"showList"]) {
         
-        
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Item *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
         ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
         
         controller.managedObjectContext = self.managedObjectContext;
@@ -162,6 +194,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
 }
@@ -170,10 +203,8 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
-    
+    tableView.rowHeight = 75;
     [self configureCell:cell atIndexPath:indexPath];
-  
-    
     return cell;
 }
 
@@ -289,14 +320,24 @@
 
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
+
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     cell.showsReorderControl = YES;
-
-    cell.textLabel.text = [[object valueForKey:@"title"] description];
-
     
+    cell.textLabel.text = [[object valueForKey:@"title"] description];
+    
+    int numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d items", numKids];
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.font = [UIFont systemFontOfSize:30];
+    cell.detailTextLabel.textColor = [UIColor whiteColor];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
+    
+    int tempInt = [itemInCell.list_color intValue];
+    UIColor *tempColor = [self returnUIColor:tempInt];
+    cell.backgroundColor = tempColor;
     
 }
 
@@ -343,6 +384,8 @@
     
     return _fetchedResultsController;
 }    
+
+
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
