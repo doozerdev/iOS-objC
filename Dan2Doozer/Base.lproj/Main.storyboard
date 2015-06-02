@@ -311,7 +311,7 @@
                     <navigationItem key="navigationItem" title="Doozer Lists" id="Zdf-7t-Un8">
                         <barButtonItem key="leftBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
                             <connections>
-                                <segue destination="YFT-UZ-tcf" kind="show" id="yU8-dJ-AzT"/>
+                                <segue destination="YFT-UZ-tcf" kind="show" identifier="showSettings" id="yU8-dJ-AzT"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="b82-Oq-taK">
@@ -326,10 +326,10 @@
             </objects>
             <point key="canvasLocation" x="709" y="-630"/>
         </scene>
-        <!--View Controller-->
+        <!--Doozer Settings Manager-->
         <scene sceneID="O2m-yM-8AJ">
             <objects>
-                <viewController id="YFT-UZ-tcf" sceneMemberID="viewController">
+                <viewController id="YFT-UZ-tcf" customClass="DoozerSettingsManager" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="KsC-AP-k7o"/>
                         <viewControllerLayoutGuide type="bottom" id="XGe-Fd-G6C"/>
@@ -338,15 +338,45 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Coming Soon: settings page..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XXe-nI-IhD">
-                                <rect key="frame" x="39" y="110" width="233" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming Soon: settings page..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XXe-nI-IhD">
+                                <rect key="frame" x="184" y="100" width="233" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="233" id="HH5-sT-gLP"/>
+                                    <constraint firstAttribute="height" constant="21" id="qch-XQ-EKs"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bis-ZG-S2k">
+                                <rect key="frame" x="265" y="171" width="70" height="30"/>
+                                <state key="normal" title="Sync Now">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="SyncNowButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="ill-Oa-nIq"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9X-tg-4Fh">
+                                <rect key="frame" x="279" y="251" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="XXe-nI-IhD" firstAttribute="top" secondItem="KsC-AP-k7o" secondAttribute="bottom" constant="36" id="H5M-z3-sFf"/>
+                            <constraint firstAttribute="centerX" secondItem="XXe-nI-IhD" secondAttribute="centerX" id="TJZ-6T-r4M"/>
+                            <constraint firstItem="bis-ZG-S2k" firstAttribute="top" secondItem="XXe-nI-IhD" secondAttribute="bottom" constant="50" id="UTt-Qs-WpA"/>
+                            <constraint firstAttribute="centerX" secondItem="bis-ZG-S2k" secondAttribute="centerX" id="Zit-AF-wRE"/>
+                            <constraint firstAttribute="centerX" secondItem="h9X-tg-4Fh" secondAttribute="centerX" id="eT8-8w-8o6"/>
+                            <constraint firstItem="h9X-tg-4Fh" firstAttribute="top" secondItem="bis-ZG-S2k" secondAttribute="bottom" constant="50" id="gGA-O3-9yt"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="SyncCompleteLabel" destination="h9X-tg-4Fh" id="Dep-cf-0LE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gat-wy-CTf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

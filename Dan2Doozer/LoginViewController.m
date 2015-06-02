@@ -84,7 +84,8 @@ NSString *sessionID = nil;
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
-            [self getDataFromDoozer];
+            //[self getDataFromDoozer];
+            [self performSelector:@selector(showListList) withObject:nil afterDelay:1];
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
@@ -111,7 +112,7 @@ NSString *sessionID = nil;
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray *fetchedArray = [jsonDict objectForKey:@"items"];
-        
+        NSLog(@"HEre are the items from doozer server = %@", fetchedArray);
         
         
         for (id eachArrayElement in fetchedArray) {

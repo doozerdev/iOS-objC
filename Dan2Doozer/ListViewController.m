@@ -24,19 +24,19 @@
     UIColor *returnValue = nil;
     
     if (numPicker == 0) {
-        returnValue = [UIColor colorWithRed:0.18 green:0.7 blue:0.76 alpha:1.0]; //blue
+        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:1]; //blue
     }
     else if (numPicker == 1){
-        returnValue = [UIColor colorWithRed:0.52 green:0.76 blue:0.25 alpha:1.0]; //green
+        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:1]; //green
     }
     else if (numPicker == 2){
-        returnValue = [UIColor colorWithRed:1.0 green:0.42 blue:0.42 alpha:1.0]; //red
+        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:1]; //red
     }
     else if (numPicker == 3){
-        returnValue = [UIColor colorWithRed:0.78 green:0.39 blue:0.69 alpha:1.0]; //purple
+        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:1]; //purple
     }
     else if (numPicker == 4){
-        returnValue = [UIColor colorWithRed:0.92 green:0.71 blue:0.0 alpha:1.0]; //yellow
+        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:1]; //yellow
     }
     else{
         returnValue = [UIColor whiteColor];

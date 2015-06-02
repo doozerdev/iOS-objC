@@ -22,6 +22,8 @@
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
 		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
+		A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */; };
+		A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */; };
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +65,10 @@
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoozerSyncManager.h; sourceTree = "<group>"; };
+		A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoozerSyncManager.m; sourceTree = "<group>"; };
+		A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoozerSettingsManager.h; sourceTree = "<group>"; };
+		A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoozerSettingsManager.m; sourceTree = "<group>"; };
 		A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataItemManager.h; sourceTree = "<group>"; };
 		A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataItemManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +140,8 @@
 				A2301B301AF41A7C00E2267D /* AppDelegate.m */,
 				A2301B5A1AF43CAE00E2267D /* Item.h */,
 				A2301B5B1AF43CAE00E2267D /* Item.m */,
+				A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */,
+				A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */,
 				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
 				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
@@ -143,6 +151,8 @@
 				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
 				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
+				A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */,
+				A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */,
 				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
 				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
 				A2301B3E1AF41A7C00E2267D /* Images.xcassets */,
@@ -316,6 +326,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
+				A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
@@ -324,6 +335,7 @@
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
 				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
+				A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
