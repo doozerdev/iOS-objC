@@ -24,6 +24,8 @@
 		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
 		A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */; };
 		A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */; };
+		A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */; };
+		A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */; };
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +71,10 @@
 		A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoozerSyncManager.m; sourceTree = "<group>"; };
 		A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoozerSettingsManager.h; sourceTree = "<group>"; };
 		A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoozerSettingsManager.m; sourceTree = "<group>"; };
+		A29CD7E81B1FFB27000FA1B0 /* GetItemsFromDoozer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetItemsFromDoozer.h; sourceTree = "<group>"; };
+		A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetItemsFromDoozer.m; sourceTree = "<group>"; };
+		A29CD7F41B211FAB000FA1B0 /* WelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
+		A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
 		A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataItemManager.h; sourceTree = "<group>"; };
 		A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataItemManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,23 +144,10 @@
 			children = (
 				A2301B2F1AF41A7C00E2267D /* AppDelegate.h */,
 				A2301B301AF41A7C00E2267D /* AppDelegate.m */,
-				A2301B5A1AF43CAE00E2267D /* Item.h */,
-				A2301B5B1AF43CAE00E2267D /* Item.m */,
-				A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */,
-				A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */,
-				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
-				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
-				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
-				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
-				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
-				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
-				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
-				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
+				A29CD7ED1B2007D7000FA1B0 /* ItemManagement */,
+				A29CD7EB1B200772000FA1B0 /* ServerCommunications */,
+				A29CD7EC1B2007A3000FA1B0 /* ViewControllers */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
-				A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */,
-				A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */,
-				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
-				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
 				A2301B3E1AF41A7C00E2267D /* Images.xcassets */,
 				A2301B401AF41A7C00E2267D /* LaunchScreen.xib */,
 				A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */,
@@ -187,6 +180,47 @@
 				A2301B4C1AF41A7C00E2267D /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A29CD7EB1B200772000FA1B0 /* ServerCommunications */ = {
+			isa = PBXGroup;
+			children = (
+				A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */,
+				A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */,
+				A29CD7E81B1FFB27000FA1B0 /* GetItemsFromDoozer.h */,
+				A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */,
+			);
+			name = ServerCommunications;
+			sourceTree = "<group>";
+		};
+		A29CD7EC1B2007A3000FA1B0 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
+				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
+				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
+				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
+				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
+				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
+				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
+				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
+				A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */,
+				A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */,
+				A29CD7F41B211FAB000FA1B0 /* WelcomeViewController.h */,
+				A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		A29CD7ED1B2007D7000FA1B0 /* ItemManagement */ = {
+			isa = PBXGroup;
+			children = (
+				A2301B5A1AF43CAE00E2267D /* Item.h */,
+				A2301B5B1AF43CAE00E2267D /* Item.m */,
+				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
+				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
+			);
+			name = ItemManagement;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -328,7 +362,9 @@
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
 				A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
+				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
+				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,

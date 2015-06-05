@@ -9,66 +9,44 @@
 #import "DoozerSyncManager.h"
 #import "AFNetworking.h"
 #import "Item.h"
+#import "GetItemsFromDoozer.h"
 
 //NSFetchedResultsController *_fetchedResultsController;
+NSMutableArray *_itemsArray;
+
 
 @implementation DoozerSyncManager
 
 +(void)syncWithServer :(NSManagedObjectContext *)passOnContext{
-    
-    NSMutableArray * itemsArray = [[NSMutableArray alloc] init];
-    __block NSMutableArray * fetchedArray = [[NSMutableArray alloc] init];
-    
-    NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    
-    AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
-    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    //[self getItemsFromServer:passOnContext];
+    NSLog(@"here's the items");
+    GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
+    [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
+        NSLog(@"here's the items array from Completion handler = %@", itemsBigArray);
         
-        NSDictionary *jsonDict = (NSDictionary *) responseObject;
-        fetchedArray = [jsonDict objectForKey:@"items"];
+        [self copyFromServer :passOnContext :itemsBigArray];
         
-        [itemsArray addObjectsFromArray:fetchedArray];
+        NSDate * now = [NSDate date];
+        [[NSUserDefaults standardUserDefaults] setObject:now forKey:@"LastSuccessfulSync"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
-        long numberOfLists = [fetchedArray count];
-        int loopCount = 0;
         
-        for (id eachArrayElement in fetchedArray) {
-            loopCount += 1;
-            //NSNumber *children = [eachArrayElement objectForKey:@"children_count"];
-            NSString *itemId = [eachArrayElement objectForKey:@"id"];
+        NSMutableArray *newArrayOfItemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
         
-            NSString *getChildrenURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/items/%@/children", itemId];
-            AFHTTPRequestOperationManager *dogs = [AFHTTPRequestOperationManager manager];
-            [dogs.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-            [dogs GET:getChildrenURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                
-                NSDictionary *jsonChildrenDict = (NSDictionary *) responseObject;
-                NSArray * fetchedChildrenArray = [jsonChildrenDict objectForKey:@"items"];
-                [itemsArray addObjectsFromArray:fetchedChildrenArray];
-            
-                NSLog(@"loopcount = %d and number of lists = %ld", loopCount, numberOfLists);
-                if (loopCount == numberOfLists){
-                    [self meshDataStores:passOnContext:itemsArray];
-                    NSLog(@"print the whole array of items = %@", itemsArray);
-                }
-                    
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                NSLog(@"Error: %@", error);
-            }];
+        NSLog(@"here's the items to update array = %@", newArrayOfItemsToUpdate);
+        
+        for (NSString *eachArrayElement in newArrayOfItemsToUpdate){
+            [self addItemToServer:eachArrayElement :passOnContext];
         }
-    }
-      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"Error: %@", error);
-          
-      }];
-    
+        
+        
+        
+    }];
+    NSLog(@"after the handler fires");
+
 }
 
-+(void)meshDataStores:(NSManagedObjectContext *) passOnContext :(NSMutableArray *)inputArray{
++(void)copyFromServer:(NSManagedObjectContext *) passOnContext :(NSMutableArray *)inputArray{
     
     for (id eachArrayElement in inputArray) {
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:passOnContext];
@@ -121,6 +99,9 @@
             NSDate* duedate = [df dateFromString:duedateString];
             newItem.duedate = duedate;
             
+            NSNumber *children_undone = [eachArrayElement objectForKey:@"children_undone"];
+            newItem.children_undone = children_undone;
+            
             // Save the context.
             NSError *error = nil;
             if (![passOnContext save:&error]) {
@@ -131,6 +112,71 @@
         }
     }
 }
+
++ (void)addItemToServer:(NSString *)itemIdToAdd :(NSManagedObjectContext *)passOnContext{
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:passOnContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:entity];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", itemIdToAdd];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *firsterror = nil;
+    NSArray *results = [passOnContext executeFetchRequest:fetchRequest error:&firsterror];
+    NSLog(@"here's the array of items = %@", results);
+    Item *itemToAdd = [results objectAtIndex:0];
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    NSLog(@"current session ID = %@", currentSessionId);
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    
+    NSDictionary *params = @{@"title": itemToAdd.title, @"parent": itemToAdd.parent};
+    [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
+        
+        NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        //NSString *previousTempId = itemToAdd.itemId;
+
+        //NSString *newItemUpdatedAt = [serverResponse objectForKey:@"updated_at"];
+        //itemToAdd.updated_at = newItemUpdatedAt;
+        
+        
+        NSString *newItemId = [serverResponse objectForKey:@"id"];
+        itemToAdd.itemId = newItemId;
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![passOnContext save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        NSMutableArray *newItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+        
+        NSMutableArray *newItemsToUpdateCopy =[[NSMutableArray alloc]init];
+       
+        for (NSString * arrayElement in newItemsToUpdate) {
+            if ([arrayElement isEqualToString:itemIdToAdd]){
+          
+            }else{
+            [newItemsToUpdateCopy addObject:arrayElement];
+            }
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setObject:newItemsToUpdateCopy forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    
+     
+        
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+    }];
+    
+}
+
 
 
 - (NSFetchedResultsController *)fetchedResultsController

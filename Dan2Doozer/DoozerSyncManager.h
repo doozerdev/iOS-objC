@@ -12,10 +12,12 @@
 @interface DoozerSyncManager : NSObject 
 
 
-+(void)syncWithServer:(NSManagedObjectContext *)passOnContext;
++ (void)syncWithServer:(NSManagedObjectContext *)passOnContext;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+//@property (strong, nonatomic) NSMutableArray * itemsArray;
+
 
 
 @end

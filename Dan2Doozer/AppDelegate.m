@@ -11,6 +11,7 @@
 #import "MasterViewController.h"
 #import "ListViewController.h"
 #import "LoginViewController.h"
+#import "WelcomeViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
@@ -24,7 +25,24 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    LoginViewController *controller = (LoginViewController *)self.window.rootViewController;
+    
+    NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    NSLog(@"num launches = %@", numberOfLaunches);
+    if (numberOfLaunches == NULL){
+        numberOfLaunches = [NSNumber numberWithInt:1];
+    }else{
+        int value = [numberOfLaunches intValue];
+        numberOfLaunches = [NSNumber numberWithInt:value + 1];
+    }
+    NSLog(@"num launches = %@", numberOfLaunches);
+    
+    
+    [[NSUserDefaults standardUserDefaults] setObject:numberOfLaunches forKey:@"NumberOfLaunches"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    
+    
+    WelcomeViewController *controller = (WelcomeViewController *)self.window.rootViewController;
  
     controller.managedObjectContext = self.managedObjectContext;
     

@@ -8,6 +8,8 @@
 
 #import "DoozerSettingsManager.h"
 #import "DoozerSyncManager.h"
+#import "MasterViewController.h"
+
 
 @interface DoozerSettingsManager ()
 
@@ -20,7 +22,9 @@
     
     [DoozerSyncManager syncWithServer:_managedObjectContext];
     
-    self.SyncCompleteLabel.text = @"heck yeah!!!";
+    
+    
+    self.SyncCompleteLabel.text = @"Syncing!";
     
     
 }
@@ -29,7 +33,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.SyncCompleteLabel.text = nil;
+    NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
+    NSString *syncDateString = [NSString stringWithFormat:@"%@", syncDate];
+    self.SyncCompleteLabel.text = syncDateString;
 }
 
 - (void)didReceiveMemoryWarning {

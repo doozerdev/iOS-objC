@@ -15,6 +15,7 @@
 #import "AFNetworking.h"
 #import "CoreDataItemManager.h"
 #import "DoozerSettingsManager.h"
+#import "DoozerSyncManager.h"
 
 
 
@@ -152,6 +153,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView reloadData]; // to reload selected cell
+    [DoozerSyncManager syncWithServer:_managedObjectContext];
 }
 
 
@@ -335,7 +337,14 @@
     
     cell.textLabel.text = [[object valueForKey:@"title"] description];
     
-    int numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];
+    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"numberOfLaunches"];
+    int numKids = 0;
+    if ([launchCount intValue] == 1) {
+        numKids = itemInCell.children_undone.intValue;
+    }else{
+        numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];
+    }
+    
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%d items", numKids];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.font = [UIFont systemFontOfSize:30];

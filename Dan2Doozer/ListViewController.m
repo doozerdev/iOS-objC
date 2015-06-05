@@ -96,7 +96,6 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        NSLog(@"text field value = %@", name);
         
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
@@ -130,34 +129,23 @@
         
         newItem.parent = parentList.itemId;
         
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-        NSLog(@"current session ID = %@", currentSessionId);
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+        double timestamp = [[NSDate date] timeIntervalSince1970];
+        //int64_t timeInMilisInt64 = (int64_t)(timestamp*1000);
         
-        NSLog(@"current parent list = %@", parentList.itemId);
+        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
         
-        NSDictionary *params = @{@"title": newItem.title, @"parent": parentList.itemId};
-        [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
+        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+        [newArrayOfItemsToUpdate addObject:newItem.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
             
-            NSDictionary *serverResponse = (NSDictionary *)responseObject;
-            NSString *newItemId = [serverResponse objectForKey:@"id"];
-            newItem.itemId = newItemId;
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-            
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
 
-        
-        
         
     }
 }
