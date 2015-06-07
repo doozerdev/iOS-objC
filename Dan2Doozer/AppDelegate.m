@@ -27,20 +27,14 @@
     
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-    NSLog(@"num launches = %@", numberOfLaunches);
     if (numberOfLaunches == NULL){
         numberOfLaunches = [NSNumber numberWithInt:1];
     }else{
         int value = [numberOfLaunches intValue];
         numberOfLaunches = [NSNumber numberWithInt:value + 1];
     }
-    NSLog(@"num launches = %@", numberOfLaunches);
-    
-    
     [[NSUserDefaults standardUserDefaults] setObject:numberOfLaunches forKey:@"NumberOfLaunches"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    
     
     WelcomeViewController *controller = (WelcomeViewController *)self.window.rootViewController;
  

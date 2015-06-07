@@ -9,6 +9,7 @@
 #import "DoozerSettingsManager.h"
 #import "DoozerSyncManager.h"
 #import "MasterViewController.h"
+#import "AFNetworking.h"
 
 
 @interface DoozerSettingsManager ()
@@ -16,17 +17,33 @@
 @end
 
 @implementation DoozerSettingsManager
-- (IBAction)SyncNowButton:(id)sender{
+
+- (IBAction)SyncButton:(id)sender {
     
-    NSLog(@"initial MOC = %@", _managedObjectContext);
-    
-    [DoozerSyncManager syncWithServer:_managedObjectContext];
-    
-    
-    
-    self.SyncCompleteLabel.text = @"Syncing!";
-    
-    
+    if([FBSDKAccessToken currentAccessToken]){
+        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+        NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
+        NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [DoozerSyncManager syncWithServer:self.managedObjectContext];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+        }];
+
+        NSDate * now = [NSDate date];
+        [[NSUserDefaults standardUserDefaults] setObject:now forKey:@"LastSuccessfulSync"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        self.SyncStatusMessage.text = @"Background Sync initiated...";
+    }
 }
 
 - (void)viewDidLoad {
@@ -36,6 +53,7 @@
     NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
     NSString *syncDateString = [NSString stringWithFormat:@"%@", syncDate];
     self.SyncCompleteLabel.text = syncDateString;
+    self.SyncStatusMessage.text = nil;
 }
 
 - (void)didReceiveMemoryWarning {

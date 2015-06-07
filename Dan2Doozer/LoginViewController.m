@@ -35,21 +35,35 @@ NSString *sessionID = nil;
         [self performSelector:@selector(loginToFacebook) withObject:nil afterDelay:1];
     }
     
+    NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
+    if(newArrayOfItemsToAdd){
+        //do nothing
+    }else{
+        //create the initial items to add array
+        NSMutableArray *itemsToAdd = [[NSMutableArray alloc]init];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToAdd forKey:@"itemsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     NSMutableArray *newArrayOfItemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
-    
-    NSLog(@"here's the items to update array = %@", newArrayOfItemsToUpdate);
-        
     if(newArrayOfItemsToUpdate){
         //do nothing
     }else{
         //create the initial items to update array
-        
-        NSMutableArray *itemstoUpdate = [[NSMutableArray alloc]init];
-        [[NSUserDefaults standardUserDefaults] setObject:itemstoUpdate forKey:@"itemsToUpdate"];
+        NSMutableArray *itemsToUpdate = [[NSMutableArray alloc]init];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToUpdate forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    NSMutableArray *newArrayOfItemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
+    if(newArrayOfItemsToDelete){
+        //do nothing
+    }else{
+        //create the initial items to delete array
+        NSMutableArray *itemsToDelete = [[NSMutableArray alloc]init];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 }
-                                                          
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

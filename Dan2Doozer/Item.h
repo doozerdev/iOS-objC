@@ -13,7 +13,7 @@
 
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSNumber *done;
-@property (readwrite, assign) BOOL archive;
+@property (nonatomic, retain) NSNumber *archive;
 @property (nonatomic, retain) NSString *parent;
 @property (nonatomic, retain) NSNumber *order;
 @property (nonatomic, retain) NSDate *duedate;

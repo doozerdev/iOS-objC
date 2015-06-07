@@ -134,9 +134,9 @@
         
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
         
-        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-        [newArrayOfItemsToUpdate addObject:newItem.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+        NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+        [newArrayOfItemsToAdd addObject:newItem.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
             
         // Save the context.
@@ -275,11 +275,11 @@
                     reorderedItem.order = [NSNumber numberWithInt:newOrder];
                 }
             }
-            
+            /*
             NSLog(@"Previous Item = %@", previousItem.title);
             NSLog(@"reordered item name = %@", reorderedItem.title);
             NSLog(@"following Item = %@", followingItem.title);
-        
+            
             NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
             AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
             [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
@@ -291,7 +291,7 @@
             
             [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
                 NSLog(@"JSON: %@", responseObject);
-                
+             
                 
                 // Save the context.
                 NSError *error = nil;
@@ -301,11 +301,18 @@
                 }
                 
                 
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                NSLog(@"Error: %@", error);
-            }];
-            
+           // } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            //    NSLog(@"Error: %@", error);
+            //}];
+            */
             // Save the context.
+            
+            
+            NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+            [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
+            [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             NSError *error = nil;
             if (![context save:&error]) {
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
@@ -548,34 +555,26 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-        NSLog(@"current session ID = %@", currentSessionId);
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
     
         Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        NSString *itemToDeleteId = itemToDelete.itemId;
-        NSLog(@"here's the item to delete = %@", itemToDeleteId);
-        
-        NSString *deleteURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToDeleteId];
-        
-        NSDictionary *params = @{@"archive": @"true"};
 
-        [manager PUT:deleteURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
-            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-                
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        
+        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+        [itemsToDelete addObject:itemToDelete.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        NSLog(@"items to delete = %@", itemsToDelete);
+        
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
         
     }
 }

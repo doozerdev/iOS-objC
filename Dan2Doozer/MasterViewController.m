@@ -17,9 +17,6 @@
 #import "DoozerSettingsManager.h"
 #import "DoozerSyncManager.h"
 
-
-
-
 @interface MasterViewController ()
 
 @end
@@ -47,9 +44,7 @@
     else{
         returnValue = [UIColor whiteColor];
     }
-    
     return returnValue;
-    
 }
 
 - (IBAction)addListButton:(id)sender {
@@ -102,6 +97,15 @@
         newItem.list_color = [NSNumber numberWithInt:r];
         NSLog(@"random number generated is = %@", newItem.list_color);
         
+        double timestamp = [[NSDate date] timeIntervalSince1970];
+        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+        
+        NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+        [newArrayOfItemsToAdd addObject:newItem.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        NSLog(@"array of items to add = %@", newArrayOfItemsToAdd);
         
         // Save the context.
         NSError *error = nil;
@@ -109,29 +113,8 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-        
-        
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-        
-        NSDictionary *params = @{@"title": newItem.title,
-                                 };
-        [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
-            
-            NSDictionary *serverResponse = (NSDictionary *)responseObject;
-            NSString *newItemId = [serverResponse objectForKey:@"id"];
-            newItem.itemId = newItemId;
-            
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
-
     }
 }
-
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -153,7 +136,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView reloadData]; // to reload selected cell
-    [DoozerSyncManager syncWithServer:_managedObjectContext];
+    //[DoozerSyncManager syncWithServer:_managedObjectContext];
 }
 
 
@@ -192,7 +175,6 @@
         DoozerSettingsManager *controller = segue.destinationViewController;
         //DoozerSettingsManager *controller = (DoozerSettingsManager *)[[segue destinationViewController] topViewController];
         controller.managedObjectContext = self.managedObjectContext;
-        NSLog(@"does the context in Master equal anything = %@", controller.managedObjectContext);
     }
 }
 
@@ -252,14 +234,9 @@
     
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    NSLog(@"current session ID = %@", currentSessionId);
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    
     NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
-    NSLog(@"here's the update URL = %@", updateURL);
-    
     NSDictionary *params = @{
                              @"order": newOrder
                              };
@@ -292,37 +269,25 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-        NSLog(@"current session ID = %@", currentSessionId);
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-        
         Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        NSString *itemToDeleteId = itemToDelete.itemId;
-        NSLog(@"here's the item to delete = %@", itemToDeleteId);
         
-        NSString *deleteURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToDeleteId];
-
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
-        NSDictionary *params = @{
-                                 @"archive": @"true"
-                                 };
+        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+        [itemsToDelete addObject:itemToDelete.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [manager PUT:deleteURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
-            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
+        NSLog(@"items to delete = %@", itemsToDelete);
+        
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
         
     }
 }
@@ -337,7 +302,8 @@
     
     cell.textLabel.text = [[object valueForKey:@"title"] description];
     
-    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"numberOfLaunches"];
+    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    
     int numKids = 0;
     if ([launchCount intValue] == 1) {
         numKids = itemInCell.children_undone.intValue;
