@@ -56,7 +56,9 @@
                                           otherButtonTitles:@"add", nil];
     
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-
+    [alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeYes;
+    [alert textFieldAtIndex:0].autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    
     [alert show];
     
 }
