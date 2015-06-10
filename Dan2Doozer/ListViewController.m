@@ -102,13 +102,9 @@
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
         
-        
         Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-        
-        
         NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
         long numberOfResults = [itemArray count];
-        
         
         if (numberOfResults == 0){
             newItem.order = [NSNumber numberWithLong:16777216];
@@ -133,8 +129,6 @@
         newItem.parent = parentList.itemId;
         
         double timestamp = [[NSDate date] timeIntervalSince1970];
-        //int64_t timeInMilisInt64 = (int64_t)(timestamp*1000);
-        
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
         
         NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
@@ -161,7 +155,6 @@
     
     CGPoint location = [longPress locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-    //_superOriginalIndex = NULL;
     
     static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
     static NSIndexPath  *sourceIndexPath = nil; ///< Initial index path, where gesture begins.

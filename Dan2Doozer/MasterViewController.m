@@ -136,7 +136,6 @@
     [super viewWillAppear:animated];
     
     [self.tableView reloadData]; // to reload selected cell
-    //[DoozerSyncManager syncWithServer:_managedObjectContext];
 }
 
 
@@ -173,7 +172,6 @@
     }
     if ([[segue identifier] isEqualToString:@"showSettings"]){
         DoozerSettingsManager *controller = segue.destinationViewController;
-        //DoozerSettingsManager *controller = (DoozerSettingsManager *)[[segue destinationViewController] topViewController];
         controller.managedObjectContext = self.managedObjectContext;
     }
 }
@@ -203,7 +201,6 @@
 
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
 
-    
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
     NSDecimalNumber *newOrder = nil;
     
@@ -229,9 +226,7 @@
         NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
         newOrder = [totalOrder decimalNumberByDividingBy:divisor];
         reorderedItem.order = newOrder;
-        
     }
-    
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
