@@ -124,6 +124,7 @@
         newItem.title = name;
         
         newItem.done = 0;
+        newItem.notes = @" ";
         
         Item *parentList = self.displayList;
         
@@ -167,8 +168,7 @@
         case UIGestureRecognizerStateBegan: {
             if (indexPath) {
                 _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
-                NSLog(@"here's where we think the item started = %ld", (long)_superOriginalIndex.row);
-                
+ 
                 sourceIndexPath = indexPath;
                 
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -227,25 +227,16 @@
             NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
             
             NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
-            NSLog(@"total number of items on list = %lu", numberOfObjects);
-            
-            
-            NSLog(@"super Original Index = %ld", (long)_superOriginalIndex.row);
-            NSLog(@"Index = %ld", (long)indexPath.row);
             Item *previousItem = nil;
             Item *followingItem  = nil;
             
             if(_superOriginalIndex.row < indexPath.row){
                 if (indexPath.row == (numberOfObjects - 1)) {
-                    NSLog(@"Moving to bottom of list, then crash!");
                     Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
                     int newItemNewOrder = originalLastItem.order.intValue + 1048576;
-            
-                    NSLog(@"Here's the new last item order = %d", newItemNewOrder);
                     reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
                     
                 }else{
-                    NSLog(@"entered FIRST case");
                     previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
                     followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row+1];
                     
@@ -257,15 +248,10 @@
                 
             }else{
                 if (indexPath.row == 0) {
-                    NSLog(@"Moving to top of list!");
                     Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
                     int newItemNewOrder = originalFirstItem.order.intValue / 2;
-            
-                    NSLog(@"Here's the new first item order = %d", newItemNewOrder);
                     reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
                 }else{
-                
-                    NSLog(@"entered SECOND case");
                     previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row-1];
                     followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
                 
@@ -275,38 +261,6 @@
                     reorderedItem.order = [NSNumber numberWithInt:newOrder];
                 }
             }
-            /*
-            NSLog(@"Previous Item = %@", previousItem.title);
-            NSLog(@"reordered item name = %@", reorderedItem.title);
-            NSLog(@"following Item = %@", followingItem.title);
-            
-            NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-            [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-            
-            
-            NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
-            
-            NSDictionary *params = @{@"order": reorderedItem.order};
-            
-            [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                NSLog(@"JSON: %@", responseObject);
-             
-                
-                // Save the context.
-                NSError *error = nil;
-                if (![context save:&error]) {
-                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                    abort();
-                }
-                
-                
-           // } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            //    NSLog(@"Error: %@", error);
-            //}];
-            */
-            // Save the context.
-            
             
             NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
             [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
@@ -318,10 +272,7 @@
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 abort();
             }
-
-            
             [self.tableView reloadData];
-            
         }
             
         default: {
@@ -355,7 +306,7 @@
 - (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
 {
     //do you left swipe stuff here.
-    NSLog(@"left swipe happened");
+ 
 }
 
 - (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
@@ -411,42 +362,27 @@
             
         int newOrderForCompletedItem = ((completedMinOrder - orderValOfLastUncompleted)/2)+orderValOfLastUncompleted;
         NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
-        NSLog(@"updating order to = %@", orderForCompleted);
         itemToToggleComplete.order = orderForCompleted;
     }
     
-    NSString *orderAfterToggling = itemToToggleComplete.order.stringValue;
-    
-    NSDictionary *params = nil;
     if([itemToToggleComplete.done intValue] == 0){
         itemToToggleComplete.done = [NSNumber numberWithBool:true];
-        params= @{@"done": @"true", @"order": orderAfterToggling};
-        
-        
     }else{
         itemToToggleComplete.done = [NSNumber numberWithBool:false];
-        params= @{@"done": @"false", @"order": orderAfterToggling};
     }
-        
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    NSLog(@"current session ID = %@", currentSessionId);
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-        
-    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToToggleComplete.itemId];
-        
-    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-            
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
+    
+    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+    [newArrayOfItemsToUpdate addObject:itemToToggleComplete.itemId];
+    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+            // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+
     
 }
 
@@ -561,12 +497,26 @@
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
+        NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+        NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
+        int matchCount = 0;
+        for(id eachElement in itemsToAdd){
+            if ([itemToDelete.itemId isEqualToString:eachElement]){
+                matchCount +=1;
+            }else{
+                [newItemsToAdd addObject:eachElement];
+            }
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        if (matchCount == 0){
         NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
         [itemsToDelete addObject:itemToDelete.itemId];
         [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        NSLog(@"items to delete = %@", itemsToDelete);
+
+        }
         
         
         // Save the context.

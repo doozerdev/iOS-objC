@@ -25,9 +25,6 @@ NSString *sessionID = nil;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.ConnectingTextLabel.text = @"Connecting to Doozer Server";
-    self.ConnectingTextLabel.textColor = [UIColor lightGrayColor];
-    
     if ([FBSDKAccessToken currentAccessToken]) {
         [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
     }
@@ -102,8 +99,6 @@ NSString *sessionID = nil;
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
             sessionID = [responseObject objectForKey:@"sessionId"];
-            self.ConnectingTextLabel.text = @"Connected!!";
-            self.ConnectingTextLabel.textColor = [UIColor colorWithRed:0.52 green:0.76 blue:0.25 alpha:1.0];
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             

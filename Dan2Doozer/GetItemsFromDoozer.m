@@ -17,15 +17,27 @@
     
     __block NSMutableArray * itemsArray = [[NSMutableArray alloc] init];
     
-    NSString *NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
+    NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
+    
+    NSString* dateString = [NSString stringWithFormat:@"%@", syncDate];
+    
+    NSDictionary *params = nil;
+    if (syncDate == NULL) {
+        //do nothing
+    }else{
+        params = @{@"last_sync" : dateString};
+        }
+    
+    NSString * NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     
     AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
-    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
     
-    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
+    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];    
+    
+    [cats GET:NewURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         itemsArray = [jsonDict objectForKey:@"items"];
         //NSLog(@" heres' the server response =%@", itemsArray);

@@ -13,12 +13,7 @@
 
 @interface LoginViewController : UIViewController <NSFetchedResultsControllerDelegate>
 
-
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-
-@property (weak, nonatomic) IBOutlet UILabel *ConnectingTextLabel;
-
-
 
 
 @end

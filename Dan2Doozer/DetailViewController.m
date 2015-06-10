@@ -24,13 +24,8 @@
 - (IBAction)SaveItemDateButton:(id)sender {
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
     Item *tempDetailItem = self.detailItem;
-    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", tempDetailItem.itemId];
-    
+   
     tempDetailItem.title = self.ItemTitleField.text;
     
     NSDateFormatter* df = [[NSDateFormatter alloc]init];
@@ -41,26 +36,10 @@
     tempDetailItem.duedate = tempDueDateNSDate;
     tempDetailItem.notes = self.NotesTextArea.text;
     
-    NSDictionary *params = @{@"title": tempDetailItem.title,
-                             @"duedate": tempDetailItem.duedate,
-                             @"notes": tempDetailItem.notes
-                             };
-    
-    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-        
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
+    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+    [newArrayOfItemsToUpdate addObject:tempDetailItem.itemId];
+    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     // Save the context.
     NSError *error = nil;
@@ -68,8 +47,6 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
-    
-    
 }
 
 - (UIColor *)returnUIColor:(int)numPicker{
@@ -183,8 +160,6 @@
     [fetchRequest setFetchBatchSize:20];
     
     Item *currentItem = self.detailItem;
-    
-    NSLog(@"here's the current ItemID = %@",currentItem.itemId);
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", currentItem.itemId];
     [fetchRequest setPredicate:predicate];
     

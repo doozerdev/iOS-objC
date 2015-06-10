@@ -37,10 +37,6 @@
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
-
-        NSDate * now = [NSDate date];
-        [[NSUserDefaults standardUserDefaults] setObject:now forKey:@"LastSuccessfulSync"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
         
         self.SyncStatusMessage.text = @"Background Sync initiated...";
     }

@@ -64,7 +64,6 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        NSLog(@"text field value = %@", name);
         
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
@@ -95,7 +94,7 @@
         newItem.parent = nil;
         int r = arc4random_uniform(5);
         newItem.list_color = [NSNumber numberWithInt:r];
-        NSLog(@"random number generated is = %@", newItem.list_color);
+
         
         double timestamp = [[NSDate date] timeIntervalSince1970];
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
@@ -104,8 +103,6 @@
         [newArrayOfItemsToAdd addObject:newItem.itemId];
         [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        NSLog(@"array of items to add = %@", newArrayOfItemsToAdd);
         
         // Save the context.
         NSError *error = nil;
@@ -135,6 +132,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     [self.tableView reloadData]; // to reload selected cell
     //[DoozerSyncManager syncWithServer:_managedObjectContext];
 }
@@ -274,13 +272,27 @@
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
-        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-        [itemsToDelete addObject:itemToDelete.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+        NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+        NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
+        int matchCount = 0;
+        for(id eachElement in itemsToAdd){
+            if ([itemToDelete.itemId isEqualToString:eachElement]){
+                matchCount +=1;
+            }else{
+                [newItemsToAdd addObject:eachElement];
+            }
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        NSLog(@"items to delete = %@", itemsToDelete);
-        
+        if (matchCount == 0){
+            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+            [itemsToDelete addObject:itemToDelete.itemId];
+            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            NSLog(@"items to delete = %@", itemsToDelete);
+        }
         
         // Save the context.
         NSError *error = nil;
@@ -303,9 +315,8 @@
     cell.textLabel.text = [[object valueForKey:@"title"] description];
     
     NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-    
     int numKids = 0;
-    if ([launchCount intValue] == 1) {
+    if ([launchCount intValue] == 0) {
         numKids = itemInCell.children_undone.intValue;
     }else{
         numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];

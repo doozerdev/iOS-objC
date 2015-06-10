@@ -42,6 +42,12 @@ NSMutableArray *_itemsArray;
             [self deleteItemFromServer:eachArrayElement];
         }
         
+        NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
+        int secondsEpochInt = secondsSinceUnixEpoch;
+        NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
+        [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
     }];
 }
 
@@ -97,6 +103,9 @@ NSMutableArray *_itemsArray;
             
             NSString *notes = [eachArrayElement objectForKey:@"notes"];
             newItem.notes = notes;
+            if (newItem.notes == nil) {
+                newItem.notes = @" ";
+            }
             
             NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
             NSDateFormatter* df = [[NSDateFormatter alloc]init];
@@ -115,6 +124,14 @@ NSMutableArray *_itemsArray;
             }
         }
     }
+    
+    
+    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    if ([launchCount intValue] == 0) {
+        launchCount = [NSNumber numberWithInt:1];
+        [[NSUserDefaults standardUserDefaults] setObject:launchCount forKey:@"NumberOfLaunches"];
+    }
+    
 }
 
 + (void)addItemToServer:(NSString *)itemIdToAdd :(NSManagedObjectContext *)passOnContext{
@@ -127,20 +144,17 @@ NSMutableArray *_itemsArray;
     
     NSError *firsterror = nil;
     NSArray *results = [passOnContext executeFetchRequest:fetchRequest error:&firsterror];
-    //NSLog(@"here's the array of items = %@", results);
     Item *itemToAdd = [results objectAtIndex:0];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    NSLog(@"item parent %@", itemToAdd.parent);
     NSDictionary *params = nil;
     if (itemToAdd.parent == NULL) {
         params = @{@"title": itemToAdd.title, @"parent": @""};
         
     }else{
-        params = @{@"title": itemToAdd.title, @"parent": itemToAdd.parent};
+        params = @{@"title": itemToAdd.title, @"parent": itemToAdd.parent, @"order": itemToAdd.order};
     }
     
     [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -165,9 +179,7 @@ NSMutableArray *_itemsArray;
             
             NSError *firsterror2 = nil;
             NSArray *results2 = [passOnContext executeFetchRequest:fetchRequest2 error:&firsterror2];
-            
-            NSLog(@"here are the children to add = %@", results2);
-            
+    
             for (id eachChild in results2){
                 Item *childToModifyParent = eachChild;
                 childToModifyParent.parent = newItemId;
@@ -219,47 +231,37 @@ NSMutableArray *_itemsArray;
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    NSLog(@"title = %@, done = %@, archive = %@", itemToUpdate.title, itemToUpdate.done, itemToUpdate.archive);
-    
+
     NSDictionary *params = nil;
     
     if (itemToUpdate.archive == NULL) {
         params = @{
-                                 @"title": itemToUpdate.title,
-                                 @"order": itemToUpdate.order,
-                                 //@"notes": itemToUpdate.notes,
-                                 //@"done": itemToUpdate.done,
-                                 //@"archive": itemToUpdate.archive,
-                                 //@"duedate": itemToUpdate.duedate
-                                 };
+                    @"title": itemToUpdate.title,
+                    @"order": itemToUpdate.order,
+                    @"parent": itemToUpdate.parent,
+                    @"notes": itemToUpdate.notes,
+                    @"done": [NSNumber numberWithBool: itemToUpdate.done.boolValue],
+                    //@"duedate": itemToUpdate.duedate
+                    };
     }else{
         params = @{
-                                 @"title": itemToUpdate.title,
-                                 //@"order": itemToUpdate.order,
-                                 //@"notes": itemToUpdate.notes,
-                                 //@"done": itemToUpdate.done,
-                                 @"archive": itemToUpdate.archive,
-                                 //@"duedate": itemToUpdate.duedate
-                                 };
+                    @"archive": itemToUpdate.archive,
+                    };
     }
+    NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
     
-    
-
-    
-    
-    [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
         
-        NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        //NSDictionary *serverResponse = (NSDictionary *)responseObject;
         //NSString *previousTempId = itemToAdd.itemId;
         
         //NSString *newItemUpdatedAt = [serverResponse objectForKey:@"updated_at"];
         //itemToAdd.updated_at = newItemUpdatedAt;
         
         
-        NSString *newItemId = [serverResponse objectForKey:@"id"];
-        itemToUpdate.itemId = newItemId;
+        //NSString *newItemId = [serverResponse objectForKey:@"id"];
+        //itemToUpdate.itemId = newItemId;
         
         // Save the context.
         NSError *error = nil;
@@ -297,8 +299,6 @@ NSMutableArray *_itemsArray;
     
     NSString *URL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@/archive", itemIdToDelete];
     
-    NSLog(@"url for delete = %@", URL);
-    
     [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
         
@@ -308,15 +308,11 @@ NSMutableArray *_itemsArray;
         
         for (NSString * arrayElement in itemsToDelete) {
             if ([arrayElement isEqualToString:itemIdToDelete]){
-                NSLog(@"IF array element = %@ and itemID to Delete = %@", arrayElement, itemIdToDelete);
+
             }else{
                 [itemsToDeleteCopy addObject:arrayElement];
-                NSLog(@"ELSE array element = %@ and itemID to Delete = %@", arrayElement, itemIdToDelete);
             }
         }
-        
-        NSLog(@"items to delete copy = %@", itemsToDeleteCopy);
-        
         [[NSUserDefaults standardUserDefaults] setObject:itemsToDeleteCopy forKey:@"itemsToDelete"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         

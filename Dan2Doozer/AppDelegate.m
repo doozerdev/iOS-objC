@@ -28,7 +28,7 @@
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches == NULL){
-        numberOfLaunches = [NSNumber numberWithInt:1];
+        numberOfLaunches = [NSNumber numberWithInt:0];
     }else{
         int value = [numberOfLaunches intValue];
         numberOfLaunches = [NSNumber numberWithInt:value + 1];
