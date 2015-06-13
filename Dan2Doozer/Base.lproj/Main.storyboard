@@ -431,8 +431,8 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="Mrv-C4-Xgs"/>
                                 <exclude reference="Flc-BC-oXg"/>
+                                <exclude reference="Mrv-C4-Xgs"/>
                             </mask>
                         </variation>
                     </view>
@@ -486,7 +486,6 @@
         <!--Login View Controller-->
         <scene sceneID="QgT-rB-gtM">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ouj-fP-t7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="Ecz-Fx-uwS" customClass="LoginViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="toQ-nb-RlX"/>
@@ -512,15 +511,37 @@
                                     <constraint firstAttribute="height" constant="150" id="iBf-zq-6aP"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ipo-7G-8xb">
+                                <rect key="frame" x="290" y="293" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="UbJ-kk-uuW"/>
+                                    <constraint firstAttribute="width" constant="20" id="ypb-0O-Zlr"/>
+                                </constraints>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogG-Hk-QQz">
+                                <rect key="frame" x="36" y="258" width="528" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="ZT5-01-DVo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="centerX" secondItem="ipo-7G-8xb" secondAttribute="centerX" id="1Dd-qv-Pp8"/>
+                            <constraint firstItem="ipo-7G-8xb" firstAttribute="top" secondItem="mgJ-Vu-MOk" secondAttribute="bottom" constant="50" id="9zd-9Y-ooU"/>
                             <constraint firstAttribute="centerX" secondItem="mgJ-Vu-MOk" secondAttribute="centerX" id="Rvi-rT-f10"/>
                             <constraint firstItem="mgJ-Vu-MOk" firstAttribute="top" secondItem="O22-i2-cHx" secondAttribute="bottom" constant="5" id="Z3Y-bn-xoA"/>
                             <constraint firstAttribute="centerX" secondItem="O22-i2-cHx" secondAttribute="centerX" id="ecP-Gh-2b8"/>
                             <constraint firstItem="O22-i2-cHx" firstAttribute="leading" secondItem="G9x-bX-0c2" secondAttribute="leadingMargin" constant="69" id="fFk-JB-Ub7"/>
                             <constraint firstItem="O22-i2-cHx" firstAttribute="top" secondItem="toQ-nb-RlX" secondAttribute="bottom" constant="18" id="g60-dh-eah"/>
+                            <constraint firstItem="ogG-Hk-QQz" firstAttribute="leading" secondItem="G9x-bX-0c2" secondAttribute="leadingMargin" constant="20" id="hfb-5f-i5u"/>
                             <constraint firstAttribute="centerX" secondItem="O22-i2-cHx" secondAttribute="centerX" id="ruk-Ai-mOJ"/>
+                            <constraint firstItem="ogG-Hk-QQz" firstAttribute="top" secondItem="mgJ-Vu-MOk" secondAttribute="bottom" constant="15" id="xN9-G9-usl"/>
+                            <constraint firstAttribute="centerX" secondItem="ogG-Hk-QQz" secondAttribute="centerX" id="yQt-PW-3tV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ogG-Hk-QQz" secondAttribute="trailing" constant="20" id="yZ8-5n-ZKw"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -530,9 +551,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="EPJ-Gp-OSn"/>
                     <connections>
+                        <outlet property="LoadingSpinner" destination="ipo-7G-8xb" id="nkc-Zw-Hsd"/>
+                        <outlet property="LoginStatusLabel" destination="ogG-Hk-QQz" id="Rcz-JW-CWc"/>
                         <segue destination="RMx-3f-FxP" kind="showDetail" identifier="showListList" id="O3e-c8-Xp2"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ouj-fP-t7P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-763" y="-1136"/>
         </scene>

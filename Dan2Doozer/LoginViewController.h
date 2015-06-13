@@ -14,6 +14,8 @@
 @interface LoginViewController : UIViewController <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *LoadingSpinner;
+@property (weak, nonatomic) IBOutlet UILabel *LoginStatusLabel;
 
 
 @end

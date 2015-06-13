@@ -13,6 +13,7 @@
 
 
 + (void)syncWithServer:(NSManagedObjectContext *)passOnContext;
++ (void)copyFromServer:(NSManagedObjectContext *)passOnContext :(NSMutableArray *)inputArray;
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

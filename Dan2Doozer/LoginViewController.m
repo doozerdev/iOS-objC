@@ -10,6 +10,9 @@
 #import "AFNetworking.h"
 #import "MasterViewController.h"
 #import "Item.h"
+#import "GetItemsFromDoozer.h"
+#import "DoozerSyncManager.h"
+
 
 @interface LoginViewController ()
 
@@ -76,6 +79,8 @@ NSString *sessionID = nil;
             // Handle cancellations
         } else {
             
+            [self.LoadingSpinner startAnimating];
+            
             [self logIntoDoozerWithFacebook];
             
             // If you ask for multiple permissions at once, you
@@ -91,19 +96,26 @@ NSString *sessionID = nil;
 - (void)logIntoDoozerWithFacebook {
         
     if([FBSDKAccessToken currentAccessToken]){
-        
+        self.LoginStatusLabel.text = @"Connecting to Doozer server...";
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
         NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
         NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            self.LoginStatusLabel.text = @"Checking server for items...";
         
             sessionID = [responseObject objectForKey:@"sessionId"];
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            //[self getDataFromDoozer];
-            [self performSelector:@selector(showListList) withObject:nil afterDelay:1];
+            GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
+            [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
+                NSManagedObjectContext *currentContext = self.managedObjectContext;
+                [DoozerSyncManager copyFromServer :currentContext :itemsBigArray];
+                
+                [self performSelector:@selector(showListList) withObject:nil afterDelay:2];
+                
+            }];
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
