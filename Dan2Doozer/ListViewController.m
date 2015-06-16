@@ -10,7 +10,7 @@
 #import "DetailViewController.h"
 #import "Item.h"
 #import "AFNetworking.h"
-
+#import "DoozerSyncManager.h"
 
 
 @interface ListViewController ()
@@ -142,6 +142,8 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+        
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
 
         
     }
@@ -257,16 +259,25 @@
                 }
             }
             
-            NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-            [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
-            [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
+            NSLog(@"first char = %@", itemIdCharacter);
             
+            if ([itemIdCharacter isEqualToString:@"1"]) {
+                //do nothing
+            }else{
+                NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+                [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
+                [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+                
+                
             NSError *error = nil;
             if (![context save:&error]) {
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 abort();
             }
+            [DoozerSyncManager syncWithServer:self.managedObjectContext];
             [self.tableView reloadData];
         }
             
@@ -366,17 +377,25 @@
         itemToToggleComplete.done = [NSNumber numberWithBool:false];
     }
     
-    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-    [newArrayOfItemsToUpdate addObject:itemToToggleComplete.itemId];
-    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     
+    NSString *itemIdCharacter = [itemToToggleComplete.itemId substringToIndex:1];
+    NSLog(@"first char = %@", itemIdCharacter);
+    
+    if ([itemIdCharacter isEqualToString:@"1"]) {
+        //do nothing
+    }else{
+        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+        [newArrayOfItemsToUpdate addObject:itemToToggleComplete.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
             // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+    [DoozerSyncManager syncWithServer:self.managedObjectContext];
 
     
 }
@@ -520,6 +539,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
         
     }
 }

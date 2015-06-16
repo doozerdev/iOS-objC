@@ -27,6 +27,9 @@
 		A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */; };
 		A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */; };
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
+		A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55391B2F851700D19660 /* AddItemsToServer.m */; };
+		A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */; };
+		A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +80,12 @@
 		A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
 		A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataItemManager.h; sourceTree = "<group>"; };
 		A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataItemManager.m; sourceTree = "<group>"; };
+		A2FB55381B2F851700D19660 /* AddItemsToServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemsToServer.h; sourceTree = "<group>"; };
+		A2FB55391B2F851700D19660 /* AddItemsToServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemsToServer.m; sourceTree = "<group>"; };
+		A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateItemsOnServer.h; sourceTree = "<group>"; };
+		A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateItemsOnServer.m; sourceTree = "<group>"; };
+		A2FB553E1B2FC44B00D19660 /* DeleteItemFromServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteItemFromServer.h; sourceTree = "<group>"; };
+		A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteItemFromServer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +196,12 @@
 			children = (
 				A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */,
 				A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */,
+				A2FB55381B2F851700D19660 /* AddItemsToServer.h */,
+				A2FB55391B2F851700D19660 /* AddItemsToServer.m */,
+				A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */,
+				A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */,
+				A2FB553E1B2FC44B00D19660 /* DeleteItemFromServer.h */,
+				A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */,
 				A29CD7E81B1FFB27000FA1B0 /* GetItemsFromDoozer.h */,
 				A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */,
 			);
@@ -361,16 +376,19 @@
 			files = (
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
 				A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */,
+				A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
 				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
 				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
 				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
+				A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
 				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
+				A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */,
 				A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

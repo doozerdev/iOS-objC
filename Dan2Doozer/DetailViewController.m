@@ -10,7 +10,7 @@
 #import "ListViewController.h"
 #import "Item.h"
 #import "AFNetworking.h"
-
+#import "DoozerSyncManager.h"
 
 @interface DetailViewController ()
 
@@ -36,10 +36,17 @@
     tempDetailItem.duedate = tempDueDateNSDate;
     tempDetailItem.notes = self.NotesTextArea.text;
     
-    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-    [newArrayOfItemsToUpdate addObject:tempDetailItem.itemId];
-    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSString *itemIdCharacter = [tempDetailItem.itemId substringToIndex:1];
+    NSLog(@"first char = %@", itemIdCharacter);
+    
+    if ([itemIdCharacter isEqualToString:@"1"]) {
+        //do nothing
+    }else{
+        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+        [newArrayOfItemsToUpdate addObject:tempDetailItem.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     // Save the context.
     NSError *error = nil;
@@ -47,6 +54,8 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+    [DoozerSyncManager syncWithServer:self.managedObjectContext];
+    
 }
 
 - (UIColor *)returnUIColor:(int)numPicker{

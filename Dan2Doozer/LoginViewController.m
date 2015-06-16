@@ -44,6 +44,15 @@ NSString *sessionID = nil;
         [[NSUserDefaults standardUserDefaults] setObject:itemsToAdd forKey:@"itemsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
+    if(newArrayOfListsToAdd){
+        //do nothing
+    }else{
+        //create the initial lists to add array
+        NSMutableArray *listsToAdd = [[NSMutableArray alloc]init];
+        [[NSUserDefaults standardUserDefaults] setObject:listsToAdd forKey:@"listsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     NSMutableArray *newArrayOfItemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
     if(newArrayOfItemsToUpdate){
         //do nothing

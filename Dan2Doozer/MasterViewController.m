@@ -101,9 +101,9 @@
         double timestamp = [[NSDate date] timeIntervalSince1970];
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
         
-        NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-        [newArrayOfItemsToAdd addObject:newItem.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+        NSMutableArray *newArrayOfListsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+        [newArrayOfListsToAdd addObject:newItem.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfListsToAdd forKey:@"listsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         // Save the context.
@@ -112,6 +112,8 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+        
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
     }
 }
 
@@ -269,17 +271,17 @@
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
-        NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-        NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
+        NSMutableArray *listsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+        NSMutableArray *newListsToAdd = [[NSMutableArray alloc]init];
         int matchCount = 0;
-        for(id eachElement in itemsToAdd){
+        for(id eachElement in listsToAdd){
             if ([itemToDelete.itemId isEqualToString:eachElement]){
                 matchCount +=1;
             }else{
-                [newItemsToAdd addObject:eachElement];
+                [newListsToAdd addObject:eachElement];
             }
         }
-        [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
+        [[NSUserDefaults standardUserDefaults] setObject:newListsToAdd forKey:@"listsToAdd"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         if (matchCount == 0){
@@ -297,6 +299,8 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+        
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
         
     }
 }

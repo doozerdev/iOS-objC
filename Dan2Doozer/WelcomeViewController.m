@@ -9,6 +9,7 @@
 #import "WelcomeViewController.h"
 #import "MasterViewController.h"
 #import "LoginViewController.h"
+#import "DoozerSyncManager.h"
 
 @interface WelcomeViewController ()
 
@@ -23,6 +24,7 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     if ([FBSDKAccessToken currentAccessToken]) {
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
         [self performSegueWithIdentifier:@"showMasterView" sender:self];
     }
     else{
