@@ -58,7 +58,7 @@
                        @"parent": itemToUpdate.parent,
                        @"notes": itemToUpdate.notes,
                        @"done": [NSNumber numberWithBool: itemToUpdate.done.boolValue],
-                       //@"duedate": itemToUpdate.duedate
+                       @"duedate": itemToUpdate.duedate
                        };
         }else{
             params = @{

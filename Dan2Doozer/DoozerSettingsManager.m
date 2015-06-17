@@ -18,38 +18,13 @@
 
 @implementation DoozerSettingsManager
 
-- (IBAction)SyncButton:(id)sender {
-    
-    if([FBSDKAccessToken currentAccessToken]){
-        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-        NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
-        NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            [DoozerSyncManager syncWithServer:self.managedObjectContext];
-            
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
-        
-        self.SyncStatusMessage.text = @"Background Sync initiated...";
-    }
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
-    NSString *syncDateString = [NSString stringWithFormat:@"%@", syncDate];
-    self.SyncCompleteLabel.text = syncDateString;
-    self.SyncStatusMessage.text = nil;
+    self.UserNameLabel.text = [FBSDKProfile currentProfile].name;
+    
 }
 
 - (void)didReceiveMemoryWarning {
