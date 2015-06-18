@@ -7,7 +7,7 @@
 //
 
 #import "ListViewController.h"
-#import "DetailViewController.h"
+#import "ItemViewController.h"
 #import "Item.h"
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
@@ -441,7 +441,7 @@
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
+        ItemViewController *controller = (ItemViewController *)[[segue destinationViewController] topViewController];
         controller.managedObjectContext = self.managedObjectContext;
         [controller setDetailItem:object];
         [controller setDisplayListOfItem:self.displayList];

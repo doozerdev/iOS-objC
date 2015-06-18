@@ -11,7 +11,6 @@
 		A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B301AF41A7C00E2267D /* AppDelegate.m */; };
 		A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */; };
 		A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B361AF41A7C00E2267D /* MasterViewController.m */; };
-		A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B391AF41A7C00E2267D /* DetailViewController.m */; };
 		A2301B3D1AF41A7C00E2267D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2301B3B1AF41A7C00E2267D /* Main.storyboard */; };
 		A2301B3F1AF41A7C00E2267D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2301B3E1AF41A7C00E2267D /* Images.xcassets */; };
 		A2301B421AF41A7C00E2267D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2301B401AF41A7C00E2267D /* LaunchScreen.xib */; };
@@ -30,6 +29,7 @@
 		A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55391B2F851700D19660 /* AddItemsToServer.m */; };
 		A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */; };
 		A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */; };
+		A2FB55431B311B8200D19660 /* ItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55421B311B8200D19660 /* ItemViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +53,6 @@
 		A2301B331AF41A7C00E2267D /* Dan2Doozer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Dan2Doozer.xcdatamodel; sourceTree = "<group>"; };
 		A2301B351AF41A7C00E2267D /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		A2301B361AF41A7C00E2267D /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		A2301B381AF41A7C00E2267D /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		A2301B391AF41A7C00E2267D /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		A2301B3C1AF41A7C00E2267D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A2301B3E1AF41A7C00E2267D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A2301B411AF41A7C00E2267D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -86,6 +84,8 @@
 		A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateItemsOnServer.m; sourceTree = "<group>"; };
 		A2FB553E1B2FC44B00D19660 /* DeleteItemFromServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteItemFromServer.h; sourceTree = "<group>"; };
 		A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeleteItemFromServer.m; sourceTree = "<group>"; };
+		A2FB55411B311B8200D19660 /* ItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemViewController.h; sourceTree = "<group>"; };
+		A2FB55421B311B8200D19660 /* ItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,8 +215,8 @@
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
 				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
-				A2301B381AF41A7C00E2267D /* DetailViewController.h */,
-				A2301B391AF41A7C00E2267D /* DetailViewController.m */,
+				A2FB55411B311B8200D19660 /* ItemViewController.h */,
+				A2FB55421B311B8200D19660 /* ItemViewController.m */,
 				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
 				A2301B5E1AF6E04F00E2267D /* LoginViewController.m */,
 				A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */,
@@ -379,10 +379,10 @@
 				A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
 				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
-				A2301B3A1AF41A7C00E2267D /* DetailViewController.m in Sources */,
 				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */,
+				A2FB55431B311B8200D19660 /* ItemViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,

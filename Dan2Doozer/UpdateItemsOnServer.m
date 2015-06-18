@@ -18,8 +18,6 @@
     _completionHandler = [handler copy];
     
     NSInteger numItems = [itemsToUpdate count];
-    //NSLog(@"number of items to update is %ld", (long)numItems);
-    
     
     if ((int)numItems == 0) {
         int tempNum = 0;
@@ -49,21 +47,19 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
         
-        NSDictionary *params = nil;
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         
         if (itemToUpdate.archive == NULL) {
-            params = @{
-                       @"title": itemToUpdate.title,
-                       @"order": itemToUpdate.order,
-                       @"parent": itemToUpdate.parent,
-                       @"notes": itemToUpdate.notes,
-                       @"done": [NSNumber numberWithBool: itemToUpdate.done.boolValue],
-                       @"duedate": itemToUpdate.duedate
-                       };
+            params[@"title"] = itemToUpdate.title;
+            params[@"order"] = itemToUpdate.order;
+            params[@"parent"] = itemToUpdate.parent;
+            params[@"notes"] = itemToUpdate.notes;
+            params[@"done"] = [NSNumber numberWithBool: itemToUpdate.done.boolValue];
+            if (itemToUpdate.duedate) {
+                params[@"duedate"] = itemToUpdate.duedate;
+            }
         }else{
-            params = @{
-                       @"archive": itemToUpdate.archive,
-                       };
+            params[@"archive"] = itemToUpdate.archive;
         }
         NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
         
