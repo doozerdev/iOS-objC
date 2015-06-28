@@ -24,7 +24,7 @@
     if ((int)numItems == 0) {
         int tempNum = 0;
         _completionHandler(tempNum);
-        NSLog(@"right after setting the completion handler in the IF statement");
+        //NSLog(@"right after setting the completion handler in the IF statement");
         _completionHandler = nil;
         
     }else{
@@ -58,7 +58,7 @@
         }
         
         [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON ADD ITEM __________--------___________: %@", responseObject);
+            NSLog(@"Successful JSON ADD ITEM");
         
             NSDictionary *serverResponse = (NSDictionary *)responseObject;
             //NSString *previousTempId = itemToAdd.itemId;
@@ -124,9 +124,9 @@
             
             
             if (loopcount == (int)numItems) {
-                NSLog(@"right before setting the completion handler");
+                //NSLog(@"right before setting the completion handler");
                 _completionHandler(loopcount);
-                NSLog(@"right after setting the completion handler");
+                //NSLog(@"right after setting the completion handler");
                 _completionHandler = nil;
             }
             

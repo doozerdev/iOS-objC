@@ -22,7 +22,7 @@
     if ((int)numItems == 0) {
         int tempNum = 0;
         _completionHandler(tempNum);
-        NSLog(@"right after setting the completion handler in the IF statement");
+        //NSLog(@"right after setting the completion handler in the IF statement");
         _completionHandler = nil;
         
     }else{
@@ -41,7 +41,7 @@
         NSString *URL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@/archive", itemIdToDelete];
         
         [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"JSON: %@", responseObject);
+            NSLog(@"successful JSON delete");
             
             NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
             

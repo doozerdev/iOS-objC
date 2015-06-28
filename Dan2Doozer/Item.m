@@ -21,6 +21,7 @@
 @synthesize solutions;
 @synthesize updated_at;
 @synthesize children_undone;
+@synthesize header_type;
 
 @synthesize itemId;
 @synthesize list_color;

@@ -81,7 +81,7 @@
         checkItem.duedate = tempDueDateNSDate;
          
         NSString *itemIdCharacter = [checkItem.itemId substringToIndex:1];
-        NSLog(@"first char = %@", itemIdCharacter);
+        //NSLog(@"first char = %@", itemIdCharacter);
         
         if ([itemIdCharacter isEqualToString:@"1"]) {
             //do nothing

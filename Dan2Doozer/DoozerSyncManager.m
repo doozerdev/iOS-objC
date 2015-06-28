@@ -38,13 +38,13 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
         [self copyFromServer :passOnContext :itemsBigArray];
         
         NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
-        NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
+        //NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
         NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
-        NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
+        //NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
         NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
-        NSLog(@"items to update on the server = %@", itemsToUpdate);
+        //NSLog(@"items to update on the server = %@", itemsToUpdate);
         NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
-        NSLog(@"items to delete from server = %@", itemsToDelete);
+        //NSLog(@"items to delete from server = %@", itemsToDelete);
         
         AddItemsToServer *moo = [[AddItemsToServer alloc] init];
         [moo addItemsToServer:newArrayOfListsToAdd :passOnContext :^(int handler) {

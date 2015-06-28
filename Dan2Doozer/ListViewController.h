@@ -24,5 +24,9 @@
 @property (strong, nonatomic) NSMutableArray *children;
 
 @property (weak, nonatomic) IBOutlet UINavigationItem *listNavBar;
+@property BOOL allowDragging;
+@property BOOL stillWithinSection;
+@property BOOL showCompleted;
 
 @end
+
