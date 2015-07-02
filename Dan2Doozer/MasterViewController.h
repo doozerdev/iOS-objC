@@ -22,6 +22,8 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property (nonatomic) int rowOfExpandedCell;
+
 
 
 @end

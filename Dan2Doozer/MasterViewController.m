@@ -17,34 +17,68 @@
 #import "DoozerSettingsManager.h"
 #import "DoozerSyncManager.h"
 
-@interface MasterViewController ()
+@interface MasterViewController () <UITextFieldDelegate>
+
 
 @end
 
 @implementation MasterViewController
 
-- (UIColor *)returnUIColor:(int)numPicker{
+- (UIColor *)returnUIColor:(int)numPicker :(float)alpha {
     UIColor *returnValue = nil;
     
     if (numPicker == 0) {
-        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:1]; //blue
+        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:alpha]; //blue
     }
     else if (numPicker == 1){
-        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:1]; //green
+        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:alpha]; //green
     }
     else if (numPicker == 2){
-        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:1]; //red
+        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:alpha]; //red
     }
     else if (numPicker == 3){
-        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:1]; //purple
+        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:alpha]; //purple
     }
     else if (numPicker == 4){
-        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:1]; //yellow
+        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:alpha]; //yellow
     }
     else{
         returnValue = [UIColor whiteColor];
     }
     return returnValue;
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    NSLog(@"text field is beginning editting");
+    [textField performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
+
+    return YES;
+}
+
+// It is important for you to hide the keyboard
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    NSString *currentText = textField.text;
+    
+    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0]];
+    
+    NSLog(@"old item title is %@", itemInCell.title);
+    
+    itemInCell.title = currentText;
+    NSLog(@"new item title is %@", itemInCell.title);
+    
+    NSLog(@"row of expanded row is %d", self.rowOfExpandedCell);
+    self.rowOfExpandedCell = -1;
+    
+    // Force any text fields that might be being edited to end so the text is stored
+    [self.view.window endEditing: YES];
+    
+    //add funtion here to save item!
+
+
+    return YES;
 }
 
 - (IBAction)addListButton:(id)sender {
@@ -127,6 +161,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.rowOfExpandedCell = -1;
+    
     // Do any additional setup after loading the view, typically from a nib.
     
     //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
@@ -137,7 +174,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.rowOfExpandedCell = -1;
+    
     [self.tableView reloadData]; // to reload selected cell
+    
+
+
+}
+
+- (void) viewWillDisappear: (BOOL) animated {
+    [super viewWillDisappear: animated];
+    // Force any text fields that might be being edited to end
+    [self.view.window endEditing: YES];
 }
 
 
@@ -194,10 +242,21 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
-    tableView.rowHeight = 75;
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    if (self.rowOfExpandedCell == (int)indexPath.row) {
+        NSLog(@"returning 125 for height for row %ld", (long)indexPath.row);
+        return 125;
+    }else{
+        NSLog(@"returning 75 for height for row %ld", (long)indexPath.row);
+        return 75;
+    }
+}
+
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
 
@@ -262,58 +321,186 @@
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+-(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-        Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        NSMutableArray *listsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
-        NSMutableArray *newListsToAdd = [[NSMutableArray alloc]init];
-        int matchCount = 0;
-        for(id eachElement in listsToAdd){
-            if ([itemToDelete.itemId isEqualToString:eachElement]){
-                matchCount +=1;
-            }else{
-                [newListsToAdd addObject:eachElement];
-            }
-        }
-        [[NSUserDefaults standardUserDefaults] setObject:newListsToAdd forKey:@"listsToAdd"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if (matchCount == 0){
-            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-            [itemsToDelete addObject:itemToDelete.itemId];
-            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            NSLog(@"items to delete = %@", itemsToDelete);
-        }
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
-        
-    }
+    UITableViewRowAction *deleteButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+                                    {
+                                        Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                                        
+                                        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+                                        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+                                        
+                                        NSMutableArray *listsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+                                        NSMutableArray *newListsToAdd = [[NSMutableArray alloc]init];
+                                        int matchCount = 0;
+                                        for(id eachElement in listsToAdd){
+                                            if ([itemToDelete.itemId isEqualToString:eachElement]){
+                                                matchCount +=1;
+                                            }else{
+                                                [newListsToAdd addObject:eachElement];
+                                            }
+                                        }
+                                        [[NSUserDefaults standardUserDefaults] setObject:newListsToAdd forKey:@"listsToAdd"];
+                                        [[NSUserDefaults standardUserDefaults] synchronize];
+                                        
+                                        if (matchCount == 0){
+                                            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+                                            [itemsToDelete addObject:itemToDelete.itemId];
+                                            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+                                            [[NSUserDefaults standardUserDefaults] synchronize];
+                                            
+                                            NSLog(@"items to delete = %@", itemsToDelete);
+                                        }
+                                        
+                                        // Save the context.
+                                        NSError *error = nil;
+                                        if (![context save:&error]) {
+                                            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                                            abort();
+                                        }
+                                        
+                                        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+                                    }];
+    deleteButton.backgroundColor = [UIColor lightGrayColor];
+    
+    
+    UITableViewRowAction *editButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Edit" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+                                     {
+                                         
+                                         int oldCell = self.rowOfExpandedCell;
+                                         self.rowOfExpandedCell = (int)indexPath.row;
+                                         
+                                         
+                                         if (oldCell != -1) {
+
+                                             NSArray *oldPath = [[NSArray alloc]initWithObjects:[NSIndexPath indexPathForRow:oldCell inSection:0], nil];
+                                             [self.tableView reloadRowsAtIndexPaths:oldPath withRowAnimation:UITableViewRowAnimationNone];
+                                         }
+                                         
+                                         [self.tableView reloadSections:[[NSIndexSet alloc]initWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+                                         
+                                         //NSArray *path = [[NSArray alloc]initWithObjects:indexPath, nil];
+                                    
+                                         //[self.tableView reloadRowsAtIndexPaths:path withRowAnimation:UITableViewRowAnimationNone];
+                                         
+                                         
+                                     }];
+    editButton.backgroundColor = [UIColor darkGrayColor];
+    
+    return @[deleteButton, editButton];
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // needs to exist for the "edit" and "delete" buttons on left swipe
+    
+}
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-
+    
+    [[cell viewWithTag:3] removeFromSuperview];
+    [[cell viewWithTag:4] removeFromSuperview];
+    [[cell viewWithTag:5] removeFromSuperview];
+    
+    UITextField *textField = [[UITextField alloc] init];
+    textField.tag = 3;
+    textField.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:textField];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
+                                                     attribute:NSLayoutAttributeLeft
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeLeft
+                                                    multiplier:1
+                                                      constant:10]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1
+                                                      constant:10]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
+                                                     attribute:NSLayoutAttributeRight
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeRight
+                                                    multiplier:1
+                                                      constant:10]];
+    
+    textField.textAlignment = NSTextAlignmentLeft;
+    textField.font = [UIFont systemFontOfSize:30];
+    textField.textColor = [UIColor whiteColor];
+    textField.delegate = self;
+    
+    UILabel *subTitle = [[UILabel alloc] init];
+    subTitle.tag = 4;
+    subTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:subTitle];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:subTitle
+                                                     attribute:NSLayoutAttributeLeft
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeLeft
+                                                    multiplier:1
+                                                      constant:10]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:subTitle
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1
+                                                      constant:45]];
+    
+    
+    subTitle.textAlignment = NSTextAlignmentLeft;
+    subTitle.font = [UIFont systemFontOfSize:15];
+    subTitle.textColor = [UIColor whiteColor];
+    
+    UILabel *comingSoon = [[UILabel alloc] init];
+    comingSoon.tag = 5;
+    comingSoon.translatesAutoresizingMaskIntoConstraints = NO;
+    [cell.contentView addSubview:comingSoon];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:comingSoon
+                                                     attribute:NSLayoutAttributeLeft
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeLeft
+                                                    multiplier:1
+                                                      constant:10]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:comingSoon
+                                                     attribute:NSLayoutAttributeTop
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:cell
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1
+                                                      constant:90]];
+    
+    
+    comingSoon.textAlignment = NSTextAlignmentCenter;
+    comingSoon.font = [UIFont systemFontOfSize:15];
+    comingSoon.textColor = [UIColor whiteColor];
+    comingSoon.text = @"Color Picker Coming Soon!";
+    
+    if (self.rowOfExpandedCell == indexPath.row) {
+        textField.enabled = YES;
+        [textField becomeFirstResponder];
+        comingSoon.hidden = NO;
+    }else{
+        textField.enabled = NO;
+        comingSoon.hidden = YES;
+    }
+    
+    
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     cell.showsReorderControl = YES;
     
-    cell.textLabel.text = [[object valueForKey:@"title"] description];
+    textField.text = [[object valueForKey:@"title"] description];
     
     NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     int numKids = 0;
@@ -323,15 +510,42 @@
         numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];
     }
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d items", numKids];
-    cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont systemFontOfSize:30];
-    cell.detailTextLabel.textColor = [UIColor whiteColor];
-    cell.detailTextLabel.font = [UIFont systemFontOfSize:15];
+    subTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
+    
     
     int tempInt = [itemInCell.list_color intValue];
-    UIColor *tempColor = [self returnUIColor:tempInt];
-    cell.backgroundColor = tempColor;
+    if (self.rowOfExpandedCell != -1) {
+        if (self.rowOfExpandedCell == indexPath.row){
+            
+            UIColor *tempColor = [self returnUIColor:tempInt :1];
+            cell.backgroundColor = tempColor;
+        
+        }else{
+            
+            UIColor *tempColor = [self returnUIColor:tempInt :0.3];
+            cell.backgroundColor = tempColor;
+            
+        }
+    }else{
+        UIColor *tempColor = [self returnUIColor:tempInt :1];
+        cell.backgroundColor = tempColor;
+    }
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    NSLog(@"hit the cell at %@", indexPath);
+
+    if (self.rowOfExpandedCell == -1) {
+        [self performSegueWithIdentifier:@"showList" sender:self];
+    }else{
+        if (indexPath.row != self.rowOfExpandedCell) {
+            //Save item and reload table
+            self.rowOfExpandedCell = -1;
+            [self.tableView reloadSections:[[NSIndexSet alloc]initWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+        
+        }
+    }
     
 }
 
@@ -433,15 +647,5 @@
 {
     [self.tableView endUpdates];
 }
-
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
 
 @end
