@@ -49,13 +49,21 @@
         NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-        NSDictionary *params = nil;
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         if (itemToAdd.parent == NULL) {
-            params = @{@"title": itemToAdd.title, @"parent": @""};
-            
+            params[@"title"] = itemToAdd.title;
+            params[@"parent"] = @"";
         }else{
-            params = @{@"title": itemToAdd.title, @"parent": itemToAdd.parent, @"order": itemToAdd.order};
+            params[@"title"] = itemToAdd.title;
+            params[@"parent"] = itemToAdd.parent;
+            params[@"order"] = itemToAdd.order;
         }
+        
+        
+        if (itemToAdd.type) {
+            params[@"type"] = itemToAdd.type;
+        }
+        
         
         [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"Successful JSON ADD ITEM");

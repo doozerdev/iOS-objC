@@ -131,6 +131,9 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
             NSString *idtemp = [eachArrayElement objectForKey:@"id"];
             newItem.itemId = idtemp;
             
+            NSString *typeTemp = [eachArrayElement objectForKey:@"type"];
+            newItem.type = typeTemp;
+            
             int r = arc4random_uniform(5);
             newItem.list_color = [NSNumber numberWithInt:r];
             

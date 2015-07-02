@@ -22,7 +22,7 @@
 @property (nonatomic, retain) NSString *solutions;
 @property (nonatomic, retain) NSDate *updated_at;
 @property (nonatomic, retain) NSNumber *children_undone;
-@property (nonatomic, retain) NSNumber *header_type;
+@property (nonatomic, retain) NSString *type;
 
 @property (nonatomic, retain) NSString *itemId;
 @property (nonatomic, retain) NSNumber *list_color;

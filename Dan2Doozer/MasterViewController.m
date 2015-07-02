@@ -249,10 +249,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if (self.rowOfExpandedCell == (int)indexPath.row) {
-        NSLog(@"returning 125 for height for row %ld", (long)indexPath.row);
         return 125;
     }else{
-        NSLog(@"returning 75 for height for row %ld", (long)indexPath.row);
         return 75;
     }
 }
@@ -533,8 +531,6 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSLog(@"hit the cell at %@", indexPath);
 
     if (self.rowOfExpandedCell == -1) {
         [self performSegueWithIdentifier:@"showList" sender:self];

@@ -81,20 +81,58 @@
 }
 
 - (void)addHeaderItems{
+    Item *displayedList = self.displayList;
+    NSLog(@"displayed list is = %@", displayedList.title);
     NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
     int headerCount = 0;
     for (Item *eachItem in itemsOnList) {
-        if (eachItem.header_type.intValue == 1){
+        if ([eachItem.type isEqualToString:@"completed_header"]){
             headerCount += 1;
         }
     }
     if (headerCount == 0) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        
+        int completedCount = 0;
+        for (Item *eachItem in itemsOnList) {
+            if (eachItem.done.intValue == 1) {
+                completedCount += 1;
+            }
+        }
+        
+        int orderValue = 0;
+        
+        if (completedCount == 0){
+            if ([itemsOnList count] == 0) {
+                NSLog(@"case 1");
+                orderValue = 134217728;
+            }else{
+                NSLog(@"case 2");
+                
+                Item *lastItem = [itemsOnList objectAtIndex:([itemsOnList count] - 1)];
+                orderValue = lastItem.order.intValue + 65536;
+            }
+        }else{
+            int indexOfFirstCompleted = (int)[itemsOnList count] - completedCount;
+            if (indexOfFirstCompleted == 0) {
+                NSLog(@"case 3");
+                
+                Item *firstItem = [itemsOnList objectAtIndex:0];
+                orderValue = firstItem.order.intValue / 2;
+            }else{
+                NSLog(@"case 4");
+                
+                Item *firstCompleted = [itemsOnList objectAtIndex:indexOfFirstCompleted];
+                Item *lastUnCompleted = [itemsOnList objectAtIndex:(indexOfFirstCompleted-1)];
+                orderValue = ((firstCompleted.order.intValue - lastUnCompleted.order.intValue) / 2) + lastUnCompleted.order.intValue;
+            }
+        }
+        
         Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
         newItem.title = @"COMPLETED";
-        newItem.header_type = [NSNumber numberWithInt:1];
-        newItem.order = [NSNumber numberWithInt:134217728];
+        newItem.type = @"completed_header";
+        newItem.order = [NSNumber numberWithInt:orderValue];
         
         Item *parentList = self.displayList;
         
@@ -117,6 +155,8 @@
         
         [DoozerSyncManager syncWithServer:self.managedObjectContext];
 
+    }else{
+        NSLog(@"header found and equal to = %d", headerCount);
     }
     
 }
@@ -202,7 +242,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.header_type);
+    NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
 
         UIGestureRecognizerState state = longPress.state;
     
@@ -214,7 +254,7 @@
                 
                 if (indexPath) {
                     
-                    if (clickedItem.header_type.intValue == 1) {
+                    if ([clickedItem.type isEqualToString:@"completed_header"]) {
                         self.allowDragging = NO;
                     }else{
                         self.allowDragging = YES;
@@ -257,7 +297,7 @@
                 
             case UIGestureRecognizerStateChanged: {
                 if (self.allowDragging) {
-                    if (clickedItem.header_type.intValue == 1){
+                    if ([clickedItem.type isEqualToString:@"completed_header"]){
                         self.stillWithinSection = NO;
                     }
                 
@@ -579,7 +619,7 @@
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    if (clickedItem.header_type.intValue == 1) {
+    if ([clickedItem.type isEqualToString:@"completed_header"]) {
         
         if (self.showCompleted) {
             self.showCompleted = NO;
@@ -600,14 +640,14 @@
 
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = object.title;
-    cell.detailTextLabel.text = object.order.stringValue;
     
     NSNumber *done = object.done;
-    if (object.header_type.intValue == 1) {
+    if ([object.type isEqualToString:@"completed_header"]) {
         Item *listForTitle = self.displayList;
         cell.backgroundColor = [self returnUIColor:[listForTitle.list_color intValue]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
+    }else{
+        cell.backgroundColor = [UIColor whiteColor];
     }
     
     if ([done intValue] == 1) {
