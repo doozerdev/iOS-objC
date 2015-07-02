@@ -17,6 +17,8 @@
 		A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */; };
 		A2301B5C1AF43CAE00E2267D /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5B1AF43CAE00E2267D /* Item.m */; };
 		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
+		A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290401B45D7C80070662C /* ParentCustomCell.m */; };
+		A24290441B45E3260070662C /* ColorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290431B45E3260070662C /* ColorHelper.m */; };
 		A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */; };
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
@@ -63,6 +65,10 @@
 		A2301B5B1AF43CAE00E2267D /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		A2301B5D1AF6E04F00E2267D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		A2301B5E1AF6E04F00E2267D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		A242903F1B45D7C80070662C /* ParentCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParentCustomCell.h; sourceTree = "<group>"; };
+		A24290401B45D7C80070662C /* ParentCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParentCustomCell.m; sourceTree = "<group>"; };
+		A24290421B45E3260070662C /* ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorHelper.h; sourceTree = "<group>"; };
+		A24290431B45E3260070662C /* ColorHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorHelper.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		A27342491B0EDA4E00C1E219 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
@@ -213,6 +219,8 @@
 			children = (
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
+				A242903F1B45D7C80070662C /* ParentCustomCell.h */,
+				A24290401B45D7C80070662C /* ParentCustomCell.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
 				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB55411B311B8200D19660 /* ItemViewController.h */,
@@ -234,6 +242,8 @@
 				A2301B5B1AF43CAE00E2267D /* Item.m */,
 				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
 				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
+				A24290421B45E3260070662C /* ColorHelper.h */,
+				A24290431B45E3260070662C /* ColorHelper.m */,
 			);
 			name = ItemManagement;
 			sourceTree = "<group>";
@@ -375,9 +385,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2301B5C1AF43CAE00E2267D /* Item.m in Sources */,
+				A24290441B45E3260070662C /* ColorHelper.m in Sources */,
 				A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */,
 				A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
+				A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */,
 				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
 				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
@@ -533,7 +545,7 @@
 				);
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -557,7 +569,7 @@
 				);
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

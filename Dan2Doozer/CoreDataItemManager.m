@@ -13,11 +13,14 @@ NSFetchedResultsController *_fetchedResultsController;
 
 @implementation CoreDataItemManager
 
-+(int)findNumberOfUncompletedChildren :(NSString *)parent :(NSManagedObjectContext *)managedObjectContext{
++(int)findNumberOfUncompletedChildren :(NSString *)parent{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
@@ -31,7 +34,7 @@ NSFetchedResultsController *_fetchedResultsController;
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:@"CoreData"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"CoreData"];
     //aFetchedResultsController.delegate = self;
     _fetchedResultsController = aFetchedResultsController;
     [NSFetchedResultsController deleteCacheWithName:@"CoreData"];
@@ -47,13 +50,11 @@ NSFetchedResultsController *_fetchedResultsController;
     NSArray *fetchedObjects = [_fetchedResultsController fetchedObjects];
     int numberOfUncompletedChildren = 0;
     
-    for (id item in fetchedObjects)
+    for (Item *item in fetchedObjects)
     {
-        NSString *test = [item valueForKey:@"parent"];
-        if ([test isEqualToString:parent]) {
+        if ([item.parent isEqualToString:parent]) {
             
-            NSNumber *checkUndone = [item valueForKey:@"done"];
-            if ([checkUndone intValue] == 0){
+            if (item.done.intValue == 0  && ![item.type isEqualToString:@"completed_header"]){
                 numberOfUncompletedChildren+=1;
             }
         }

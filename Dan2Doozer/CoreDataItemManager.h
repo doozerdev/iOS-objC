@@ -10,7 +10,7 @@
 
 @interface CoreDataItemManager : Item
 
-+(int)findNumberOfUncompletedChildren :(NSString *)parent :(NSManagedObjectContext *)managedObjectContext;
++(int)findNumberOfUncompletedChildren :(NSString *)parent;
 
 
 @end

@@ -16,6 +16,8 @@
 #import "CoreDataItemManager.h"
 #import "DoozerSettingsManager.h"
 #import "DoozerSyncManager.h"
+#import "ParentCustomCell.h"
+#import "ColorHelper.h"
 
 @interface MasterViewController () <UITextFieldDelegate>
 
@@ -24,29 +26,7 @@
 
 @implementation MasterViewController
 
-- (UIColor *)returnUIColor:(int)numPicker :(float)alpha {
-    UIColor *returnValue = nil;
-    
-    if (numPicker == 0) {
-        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:alpha]; //blue
-    }
-    else if (numPicker == 1){
-        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:alpha]; //green
-    }
-    else if (numPicker == 2){
-        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:alpha]; //red
-    }
-    else if (numPicker == 3){
-        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:alpha]; //purple
-    }
-    else if (numPicker == 4){
-        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:alpha]; //yellow
-    }
-    else{
-        returnValue = [UIColor whiteColor];
-    }
-    return returnValue;
-}
+
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
@@ -80,6 +60,7 @@
 
     return YES;
 }
+
 
 - (IBAction)addListButton:(id)sender {
     
@@ -240,17 +221,79 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    NSLog(@"start fo cellforrowatindexpath at row %ld", (long)indexPath.row);
 
-    [self configureCell:cell atIndexPath:indexPath];
+    ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    
+    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.itemInCell = itemInCell;
+
+    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    int numKids = 0;
+    if ([launchCount intValue] == 0) {
+        numKids = itemInCell.children_undone.intValue;
+    }else{
+        numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId];
+    }
+    
+    cell.cellItemTitle.text = itemInCell.title;
+    cell.cellItemTitle.textColor = [UIColor whiteColor];
+    cell.cellItemTitle.font = [UIFont systemFontOfSize:30];
+    
+    cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
+    cell.cellItemSubTitle.textColor = [UIColor whiteColor];
+    cell.cellItemSubTitle.font = [UIFont systemFontOfSize:15];
+    
+    if (self.rowOfExpandedCell == indexPath.row) {
+        cell.cellItemTitle.enabled = YES;
+        cell.cellItemTitle.delegate = self;
+        [cell.cellItemTitle becomeFirstResponder];
+        [cell.cellItemTitle performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
+        cell.RedButton.hidden = NO;
+        cell.YellowButton.hidden = NO;
+        cell.GreenButton.hidden = NO;
+        cell.BlueButton.hidden = NO;
+        cell.PurpleButton.hidden = NO;
+
+    }else{
+        cell.cellItemTitle.enabled = NO;
+        cell.RedButton.hidden = YES;
+        cell.YellowButton.hidden = YES;
+        cell.GreenButton.hidden = YES;
+        cell.BlueButton.hidden = YES;
+        cell.PurpleButton.hidden = YES;
+
+    }
+    
+    int tempInt = [itemInCell.list_color intValue];
+    if (self.rowOfExpandedCell != -1) {
+        if (self.rowOfExpandedCell == indexPath.row){
+            
+            cell.backgroundColor = [ColorHelper returnUIColor:tempInt :1];
+            
+        }else{
+            
+            cell.backgroundColor = [ColorHelper returnUIColor:tempInt :0.3];
+            
+        }
+    }else{
+        cell.backgroundColor = [ColorHelper returnUIColor:tempInt :1];
+    }
+    
     return cell;
 }
 
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 
-    if (self.rowOfExpandedCell == (int)indexPath.row) {
+
+    //NSLog(@"in height for row at index path");
+
+    if (self.rowOfExpandedCell == indexPath.row) {
+        //NSLog(@"setting height to 125");
         return 125;
     }else{
+        //NSLog(@"setting height to 75");
         return 75;
     }
 }
@@ -377,11 +420,6 @@
                                          
                                          [self.tableView reloadSections:[[NSIndexSet alloc]initWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
                                          
-                                         //NSArray *path = [[NSArray alloc]initWithObjects:indexPath, nil];
-                                    
-                                         //[self.tableView reloadRowsAtIndexPaths:path withRowAnimation:UITableViewRowAnimationNone];
-                                         
-                                         
                                      }];
     editButton.backgroundColor = [UIColor darkGrayColor];
     
@@ -391,143 +429,6 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     // needs to exist for the "edit" and "delete" buttons on left swipe
     
-}
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    [[cell viewWithTag:3] removeFromSuperview];
-    [[cell viewWithTag:4] removeFromSuperview];
-    [[cell viewWithTag:5] removeFromSuperview];
-    
-    UITextField *textField = [[UITextField alloc] init];
-    textField.tag = 3;
-    textField.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:textField];
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
-                                                     attribute:NSLayoutAttributeLeft
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeLeft
-                                                    multiplier:1
-                                                      constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
-                                                     attribute:NSLayoutAttributeTop
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeTop
-                                                    multiplier:1
-                                                      constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField
-                                                     attribute:NSLayoutAttributeRight
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeRight
-                                                    multiplier:1
-                                                      constant:10]];
-    
-    textField.textAlignment = NSTextAlignmentLeft;
-    textField.font = [UIFont systemFontOfSize:30];
-    textField.textColor = [UIColor whiteColor];
-    textField.delegate = self;
-    
-    UILabel *subTitle = [[UILabel alloc] init];
-    subTitle.tag = 4;
-    subTitle.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:subTitle];
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:subTitle
-                                                     attribute:NSLayoutAttributeLeft
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeLeft
-                                                    multiplier:1
-                                                      constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:subTitle
-                                                     attribute:NSLayoutAttributeTop
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeTop
-                                                    multiplier:1
-                                                      constant:45]];
-    
-    
-    subTitle.textAlignment = NSTextAlignmentLeft;
-    subTitle.font = [UIFont systemFontOfSize:15];
-    subTitle.textColor = [UIColor whiteColor];
-    
-    UILabel *comingSoon = [[UILabel alloc] init];
-    comingSoon.tag = 5;
-    comingSoon.translatesAutoresizingMaskIntoConstraints = NO;
-    [cell.contentView addSubview:comingSoon];
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:comingSoon
-                                                     attribute:NSLayoutAttributeLeft
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeLeft
-                                                    multiplier:1
-                                                      constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:comingSoon
-                                                     attribute:NSLayoutAttributeTop
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:cell
-                                                     attribute:NSLayoutAttributeTop
-                                                    multiplier:1
-                                                      constant:90]];
-    
-    
-    comingSoon.textAlignment = NSTextAlignmentCenter;
-    comingSoon.font = [UIFont systemFontOfSize:15];
-    comingSoon.textColor = [UIColor whiteColor];
-    comingSoon.text = @"Color Picker Coming Soon!";
-    
-    if (self.rowOfExpandedCell == indexPath.row) {
-        textField.enabled = YES;
-        [textField becomeFirstResponder];
-        comingSoon.hidden = NO;
-    }else{
-        textField.enabled = NO;
-        comingSoon.hidden = YES;
-    }
-    
-    
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    cell.showsReorderControl = YES;
-    
-    textField.text = [[object valueForKey:@"title"] description];
-    
-    NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-    int numKids = 0;
-    if ([launchCount intValue] == 0) {
-        numKids = itemInCell.children_undone.intValue;
-    }else{
-        numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId:self.managedObjectContext];
-    }
-    
-    subTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
-    
-    
-    int tempInt = [itemInCell.list_color intValue];
-    if (self.rowOfExpandedCell != -1) {
-        if (self.rowOfExpandedCell == indexPath.row){
-            
-            UIColor *tempColor = [self returnUIColor:tempInt :1];
-            cell.backgroundColor = tempColor;
-        
-        }else{
-            
-            UIColor *tempColor = [self returnUIColor:tempInt :0.3];
-            cell.backgroundColor = tempColor;
-            
-        }
-    }else{
-        UIColor *tempColor = [self returnUIColor:tempInt :1];
-        cell.backgroundColor = tempColor;
-    }
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -544,6 +445,7 @@
     }
     
 }
+
 
 #pragma mark - Fetched results controller
 
@@ -629,7 +531,8 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            //[self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
