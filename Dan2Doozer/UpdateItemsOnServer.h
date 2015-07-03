@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/Coredata.h>
+#import "Item.h"
 
 @interface UpdateItemsOnServer : NSObject
 
@@ -16,6 +17,8 @@
 }
 
 - (void)updateItemsOnServer: (NSMutableArray *)itemsToUpdate :(NSManagedObjectContext *)passOnContext :(void(^)(int))handler;
+
++(void)updateThisItem:(Item *)itemToUpdate;
 
 
 @end

@@ -3,10 +3,10 @@
     <entity name="ItemRecord">
         <attribute name="archive" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="children_undone" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="String" valueTransformerName="NSKeyedUnarchiveFromDataTransformerName" syncable="YES"/>
         <attribute name="done" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="duedate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="list_color" optional="YES" attributeType="Integer 32" valueTransformerName="NSKeyedUnarchiveFromDataTransformerName" defaultValueString="0" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="parent" optional="YES" attributeType="String" syncable="YES"/>

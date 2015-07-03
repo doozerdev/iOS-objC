@@ -9,6 +9,8 @@
 #import "UpdateItemsOnServer.h"
 #import "AFNetworking.h"
 #import "Item.h"
+#import "AppDelegate.h"
+#import "DoozerSyncManager.h"
 
 @implementation UpdateItemsOnServer
 
@@ -52,11 +54,18 @@
         if (itemToUpdate.archive == NULL) {
             params[@"title"] = itemToUpdate.title;
             params[@"order"] = itemToUpdate.order;
-            params[@"parent"] = itemToUpdate.parent;
-            params[@"notes"] = itemToUpdate.notes;
             params[@"done"] = [NSNumber numberWithBool: itemToUpdate.done.boolValue];
             if (itemToUpdate.duedate) {
                 params[@"duedate"] = itemToUpdate.duedate;
+            }
+            if (itemToUpdate.parent) {
+                params[@"parent"] = itemToUpdate.parent;
+            }
+            if (itemToUpdate.notes){
+                params[@"notes"] = itemToUpdate.notes;
+            }
+            if (itemToUpdate.color){
+                params[@"color"] = itemToUpdate.color;
             }
         }else{
             params[@"archive"] = itemToUpdate.archive;
@@ -101,6 +110,33 @@
     }
 
     }
+}
+
++(void)updateThisItem:(Item *)itemToUpdate{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSString *itemIdCharacter = [itemToUpdate.itemId substringToIndex:1];
+    //NSLog(@"first char = %@", itemIdCharacter);
+    
+    if ([itemIdCharacter isEqualToString:@"1"]) {
+        //do nothing
+    }else{
+        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+        [newArrayOfItemsToUpdate addObject:itemToUpdate.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [DoozerSyncManager syncWithServer:context];
+    
     
 }
 

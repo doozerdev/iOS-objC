@@ -58,12 +58,12 @@
             params[@"parent"] = itemToAdd.parent;
             params[@"order"] = itemToAdd.order;
         }
-        
-        
         if (itemToAdd.type) {
             params[@"type"] = itemToAdd.type;
         }
-        
+        if (itemToAdd.color){
+            params[@"color"] = itemToAdd.color;
+        }
         
         [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"Successful JSON ADD ITEM");

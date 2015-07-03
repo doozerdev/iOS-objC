@@ -25,7 +25,7 @@
 @property (nonatomic, retain) NSString *type;
 
 @property (nonatomic, retain) NSString *itemId;
-@property (nonatomic, retain) NSNumber *list_color;
+@property (nonatomic, retain) NSString *color;
 
 
 

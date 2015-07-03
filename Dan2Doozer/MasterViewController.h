@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <QuartzCore/QuartzCore.h>
+
 
 @class DetailViewController;
 @class ListViewController;

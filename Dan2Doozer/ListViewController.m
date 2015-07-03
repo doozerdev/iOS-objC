@@ -11,6 +11,7 @@
 #import "Item.h"
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
+#import "ColorHelper.h"
 
 
 @interface ListViewController ()
@@ -20,31 +21,6 @@
 
 @implementation ListViewController
 
-- (UIColor *)returnUIColor:(int)numPicker{
-    UIColor *returnValue = nil;
-    
-    if (numPicker == 0) {
-        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:1]; //blue
-    }
-    else if (numPicker == 1){
-        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:1]; //green
-    }
-    else if (numPicker == 2){
-        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:1]; //red
-    }
-    else if (numPicker == 3){
-        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:1]; //purple
-    }
-    else if (numPicker == 4){
-        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:1]; //yellow
-    }
-    else{
-        returnValue = [UIColor whiteColor];
-    }
-    
-    return returnValue;
-    
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -54,8 +30,7 @@
     
     [self addHeaderItems];
     
-    UIColor *tempColor = [self returnUIColor:[listForTitle.list_color intValue]];
-    self.view.backgroundColor = tempColor;
+    self.view.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
     
     //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
     //self.navigationController.navigationBar.barTintColor = tempColor;
@@ -644,7 +619,7 @@
     NSNumber *done = object.done;
     if ([object.type isEqualToString:@"completed_header"]) {
         Item *listForTitle = self.displayList;
-        cell.backgroundColor = [self returnUIColor:[listForTitle.list_color intValue]];
+        cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }else{
         cell.backgroundColor = [UIColor whiteColor];

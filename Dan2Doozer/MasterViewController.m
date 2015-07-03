@@ -18,6 +18,7 @@
 #import "DoozerSyncManager.h"
 #import "ParentCustomCell.h"
 #import "ColorHelper.h"
+#import "UpdateItemsOnServer.h"
 
 @interface MasterViewController () <UITextFieldDelegate>
 
@@ -55,8 +56,7 @@
     // Force any text fields that might be being edited to end so the text is stored
     [self.view.window endEditing: YES];
     
-    //add funtion here to save item!
-
+    [UpdateItemsOnServer updateThisItem:itemInCell];
 
     return YES;
 }
@@ -109,9 +109,9 @@
         newItem.title = name;
         
         newItem.parent = nil;
+        
         int r = arc4random_uniform(5);
-        newItem.list_color = [NSNumber numberWithInt:r];
-
+        newItem.color = [ColorHelper returnUIColorString:r];
         
         double timestamp = [[NSDate date] timeIntervalSince1970];
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
@@ -207,6 +207,48 @@
     }
 }
 
+-(void) redButtonPressed:(UIButton*)button{
+    int row = (int)button.tag;
+    NSLog(@"red button pressed at row %d", row);
+
+    [self changeListColor:row :0];
+}
+
+-(void) yellowButtonPressed:(UIButton*)button{
+    int row = (int)button.tag;
+    [self changeListColor:row :1];
+}
+
+-(void) greenButtonPressed:(UIButton*)button{
+    int row = (int)button.tag;
+    [self changeListColor:row :2];
+}
+
+-(void) blueButtonPressed:(UIButton*)button{
+    int row = (int)button.tag;
+    [self changeListColor:row :3];
+}
+
+-(void) purpleButtonPressed:(UIButton*)button{
+    int row = (int)button.tag; 
+    [self changeListColor:row :4];
+}
+
+
+-(void)changeListColor:(int)rowIndex :(int)colorIndex{
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:0];
+    Item *itemToChangeColor = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    itemToChangeColor.color = [ColorHelper returnUIColorString:colorIndex];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    
+    [UpdateItemsOnServer updateThisItem:itemToChangeColor];
+}
+
+
+
+
+
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -218,6 +260,7 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -244,6 +287,7 @@
     cell.cellItemSubTitle.textColor = [UIColor whiteColor];
     cell.cellItemSubTitle.font = [UIFont systemFontOfSize:15];
     
+    
     if (self.rowOfExpandedCell == indexPath.row) {
         cell.cellItemTitle.enabled = YES;
         cell.cellItemTitle.delegate = self;
@@ -265,21 +309,63 @@
 
     }
     
-    int tempInt = [itemInCell.list_color intValue];
     if (self.rowOfExpandedCell != -1) {
         if (self.rowOfExpandedCell == indexPath.row){
             
-            cell.backgroundColor = [ColorHelper returnUIColor:tempInt :1];
+            cell.backgroundColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
             
         }else{
             
-            cell.backgroundColor = [ColorHelper returnUIColor:tempInt :0.3];
+            cell.backgroundColor = [ColorHelper getUIColorFromString:itemInCell.color :0.3];
             
         }
     }else{
-        cell.backgroundColor = [ColorHelper returnUIColor:tempInt :1];
+        cell.backgroundColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
     }
     
+    cell.RedButton.tag = indexPath.row;
+    [cell.RedButton addTarget:self action:@selector(redButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.RedButton.backgroundColor = [ColorHelper getUIColorFromString:[ColorHelper returnUIColorString:0] :1];
+    [cell.RedButton.layer setBorderWidth:0];
+
+    cell.YellowButton.tag = indexPath.row;
+    [cell.YellowButton addTarget:self action:@selector(yellowButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.YellowButton.backgroundColor = [ColorHelper getUIColorFromString:[ColorHelper returnUIColorString:1] :1];
+    [cell.YellowButton.layer setBorderWidth:0];
+
+    cell.GreenButton.tag = indexPath.row;
+    [cell.GreenButton addTarget:self action:@selector(greenButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.GreenButton.backgroundColor = [ColorHelper getUIColorFromString:[ColorHelper returnUIColorString:2] :1];
+    [cell.GreenButton.layer setBorderWidth:0];
+
+    cell.BlueButton.tag = indexPath.row;
+    [cell.BlueButton addTarget:self action:@selector(blueButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.BlueButton.backgroundColor = [ColorHelper getUIColorFromString:[ColorHelper returnUIColorString:3] :1];
+    [cell.BlueButton.layer setBorderWidth:0];
+
+    cell.PurpleButton.tag = indexPath.row;
+    [cell.PurpleButton addTarget:self action:@selector(purpleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.PurpleButton.backgroundColor = [ColorHelper getUIColorFromString:[ColorHelper returnUIColorString:4] :1];
+    [cell.PurpleButton.layer setBorderWidth:0];
+
+    
+    if ([itemInCell.color isEqualToString:@"255,107,107,1"]) {
+        [cell.RedButton.layer setBorderWidth:3.0];
+        [cell.RedButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    }else if([itemInCell.color isEqualToString:@"236,183,0,1"]){
+        [cell.YellowButton.layer setBorderWidth:3.0];
+        [cell.YellowButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    }else if([itemInCell.color isEqualToString:@"134,194,63,1"]){
+        [cell.GreenButton.layer setBorderWidth:3.0];
+        [cell.GreenButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    }else if([itemInCell.color isEqualToString:@"46,179,193,1"]){
+        [cell.BlueButton.layer setBorderWidth:3.0];
+        [cell.BlueButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    }else if([itemInCell.color isEqualToString:@"198,99,175,1"]){
+        [cell.PurpleButton.layer setBorderWidth:3.0];
+        [cell.PurpleButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
+    }
+
     return cell;
 }
 

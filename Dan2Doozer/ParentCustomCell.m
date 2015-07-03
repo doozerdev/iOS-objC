@@ -21,7 +21,8 @@
 
 
 - (void)awakeFromNib {
-    // Initialization code
+    
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -31,10 +32,8 @@
 
 
 
-- (IBAction)RedButton:(id)sender {
-    
-    NSLog(@"red button was pushed");
-}
+
+
 
 
 @end

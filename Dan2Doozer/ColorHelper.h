@@ -10,7 +10,9 @@
 
 @interface ColorHelper : UIColor
 
-+ (UIColor *)returnUIColor:(int)numPicker :(float)alpha;
++ (NSString *)returnUIColorString:(int)numPicker;
 
++ (UIColor *)getUIColorFromString:(NSString *)colorString :(float)alpha;
 
+    
 @end

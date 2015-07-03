@@ -10,30 +10,43 @@
 
 @implementation ColorHelper
 
-+ (UIColor *)returnUIColor:(int)numPicker :(float)alpha {
-    UIColor *returnValue = nil;
-    
-    if (numPicker == 0) {
-        returnValue = [UIColor colorWithRed:46/255. green:179/255. blue:193/255. alpha:alpha]; //blue
++ (NSString *)returnUIColorString:(int)numPicker{
+    switch (numPicker) {
+        case 0:
+            return @"255,107,107,1"; //red
+            break;
+        case 1:
+            return @"236,183,0,1"; //yellow
+            break;
+        case 2:
+            return @"134,194,63,1"; //green
+            break;
+        case 3:
+            return @"46,179,193,1"; //blue
+            break;
+        case 4:
+            return @"198,99,175,1"; //purple
+            break;
+        default:
+            return @"0,0,0,0";
+            break;
     }
-    else if (numPicker == 1){
-        returnValue = [UIColor colorWithRed:134/255. green:194/255. blue:63/255. alpha:alpha]; //green
-    }
-    else if (numPicker == 2){
-        returnValue = [UIColor colorWithRed:255/255. green:107/255. blue:107/255. alpha:alpha]; //red
-    }
-    else if (numPicker == 3){
-        returnValue = [UIColor colorWithRed:198/255. green:99/255. blue:175/255. alpha:alpha]; //purple
-    }
-    else if (numPicker == 4){
-        returnValue = [UIColor colorWithRed:236/255. green:183/255. blue:0/255. alpha:alpha]; //yellow
-    }
-    else{
-        returnValue = [UIColor whiteColor];
-    }
-    return returnValue;
 }
 
++ (UIColor *)getUIColorFromString:(NSString *)colorString :(float)alpha{
+    
+    NSArray *rgbValues = [colorString componentsSeparatedByString:@","];
+    NSLog(@"the RGB values are %@", rgbValues);
+    
+    NSString *red = [rgbValues objectAtIndex:0];
+    NSString *green = [rgbValues objectAtIndex:1];
+    NSString *blue = [rgbValues objectAtIndex:2];
+    
+    
+    UIColor *color = [UIColor colorWithRed:red.intValue/255. green:green.intValue/255. blue:blue.intValue/255. alpha:alpha];
+    
+    return color;
+}
 
 
 @end

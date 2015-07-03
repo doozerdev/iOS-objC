@@ -13,8 +13,6 @@
 @interface ParentCustomCell : UITableViewCell
 
 @property (nonatomic, strong) Item *itemInCell;
-//@property (nonatomic) BOOL isThisCellExpanded;
-//@property (nonatomic) BOOL isAnyCellExpanded;
 
 @property (nonatomic, weak) IBOutlet UITextField *cellItemTitle;
 @property (nonatomic, weak) IBOutlet UILabel *cellItemSubTitle;

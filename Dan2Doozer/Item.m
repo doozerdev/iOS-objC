@@ -24,7 +24,7 @@
 @synthesize type;
 
 @synthesize itemId;
-@synthesize list_color;
+@synthesize color;
 
 
 @end
