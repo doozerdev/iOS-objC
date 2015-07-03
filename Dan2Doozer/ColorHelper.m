@@ -36,12 +36,10 @@
 + (UIColor *)getUIColorFromString:(NSString *)colorString :(float)alpha{
     
     NSArray *rgbValues = [colorString componentsSeparatedByString:@","];
-    NSLog(@"the RGB values are %@", rgbValues);
     
     NSString *red = [rgbValues objectAtIndex:0];
     NSString *green = [rgbValues objectAtIndex:1];
     NSString *blue = [rgbValues objectAtIndex:2];
-    
     
     UIColor *color = [UIColor colorWithRed:red.intValue/255. green:green.intValue/255. blue:blue.intValue/255. alpha:alpha];
     

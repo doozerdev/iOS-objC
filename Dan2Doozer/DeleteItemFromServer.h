@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/Coredata.h>
+#import "Item.h"
 
 
 @interface DeleteItemFromServer : NSObject
@@ -17,5 +18,8 @@
 }
 
 - (void)deleteItemFromServer: (NSMutableArray *)itemsToDelete :(void(^)(int))handler;
+
++ (void)deleteThisList:(Item *)listToDelete;
+
 
 @end

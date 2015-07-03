@@ -11,7 +11,6 @@
 #import "MasterViewController.h"
 #import "ListViewController.h"
 #import "LoginViewController.h"
-#import "Item.h"
 #import "AFNetworking.h"
 #import "CoreDataItemManager.h"
 #import "DoozerSettingsManager.h"
@@ -19,6 +18,7 @@
 #import "ParentCustomCell.h"
 #import "ColorHelper.h"
 #import "UpdateItemsOnServer.h"
+#import "DeleteItemFromServer.h"
 
 @interface MasterViewController () <UITextFieldDelegate>
 
@@ -71,6 +71,7 @@
                                           otherButtonTitles:@"add", nil];
     
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert setTag:1];
     [alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeYes;
     [alert textFieldAtIndex:0].autocapitalizationType = UITextAutocapitalizationTypeSentences;
     
@@ -79,57 +80,67 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        NSString *name = [alertView textFieldAtIndex:0].text;
-        
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-        
-        
-        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-        
-        
-        NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
-        long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
-        
-        
-        if (numberOfResults == 0){
-            newItem.order = [NSNumber numberWithLong:16777216];
+    if (alertView.tag == 1) {
+        if (buttonIndex == 1) {
+            NSString *name = [alertView textFieldAtIndex:0].text;
+            
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+            
+            
+            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            
+            
+            NSArray *itemArray = self.fetchedResultsController.fetchedObjects;
+            long numberOfResults = [self.fetchedResultsController.fetchedObjects count];
+            
+            
+            if (numberOfResults == 0){
+                newItem.order = [NSNumber numberWithLong:16777216];
+            }
+            else{
+                //find the lowest order value in the array of items
+                NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
+                NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
+                [itemArray sortedArrayUsingDescriptors:sortDescriptors];
+                Item *firstObject = [itemArray objectAtIndex:0];
+                long lowestOrder = ([firstObject.order longValue]/2);
+                newItem.order = [NSNumber numberWithLong:lowestOrder];
+            }
+            
+            newItem.title = name;
+            
+            newItem.parent = nil;
+            
+            int r = arc4random_uniform(5);
+            newItem.color = [ColorHelper returnUIColorString:r];
+            
+            double timestamp = [[NSDate date] timeIntervalSince1970];
+            newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+            
+            NSMutableArray *newArrayOfListsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+            [newArrayOfListsToAdd addObject:newItem.itemId];
+            [[NSUserDefaults standardUserDefaults] setObject:newArrayOfListsToAdd forKey:@"listsToAdd"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            
+            [DoozerSyncManager syncWithServer:self.managedObjectContext];
         }
-        else{
-            //find the lowest order value in the array of items
-            NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
-            NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
-            [itemArray sortedArrayUsingDescriptors:sortDescriptors];
-            Item *firstObject = [itemArray objectAtIndex:0];
-            long lowestOrder = ([firstObject.order longValue]/2);
-            newItem.order = [NSNumber numberWithLong:lowestOrder];
+    }else if (alertView.tag == 2){
+        if (buttonIndex == 1){
+                        
+            [DeleteItemFromServer deleteThisList:self.itemToDelete];
+            self.itemToDelete = nil;
+            
         }
-        
-        newItem.title = name;
-        
-        newItem.parent = nil;
-        
-        int r = arc4random_uniform(5);
-        newItem.color = [ColorHelper returnUIColorString:r];
-        
-        double timestamp = [[NSDate date] timeIntervalSince1970];
-        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-        
-        NSMutableArray *newArrayOfListsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
-        [newArrayOfListsToAdd addObject:newItem.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfListsToAdd forKey:@"listsToAdd"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
     }
+
 }
 
 - (void)awakeFromNib {
@@ -264,8 +275,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"start fo cellforrowatindexpath at row %ld", (long)indexPath.row);
-
     ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -454,39 +463,19 @@
                                     {
                                         Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
                                         
-                                        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-                                        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+                                        NSString *message = [NSString stringWithFormat:@"Are you sure you want to delete '%@' and all tasks in the list?", itemToDelete.title];
                                         
-                                        NSMutableArray *listsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
-                                        NSMutableArray *newListsToAdd = [[NSMutableArray alloc]init];
-                                        int matchCount = 0;
-                                        for(id eachElement in listsToAdd){
-                                            if ([itemToDelete.itemId isEqualToString:eachElement]){
-                                                matchCount +=1;
-                                            }else{
-                                                [newListsToAdd addObject:eachElement];
-                                            }
-                                        }
-                                        [[NSUserDefaults standardUserDefaults] setObject:newListsToAdd forKey:@"listsToAdd"];
-                                        [[NSUserDefaults standardUserDefaults] synchronize];
+                                        UIAlertView *deleteList = [[UIAlertView alloc] initWithTitle:message
+                                                                                             message:nil
+                                                                                            delegate:self
+                                                                                   cancelButtonTitle:@"Cancel"
+                                                                                   otherButtonTitles:@"Delete", nil];
                                         
-                                        if (matchCount == 0){
-                                            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-                                            [itemsToDelete addObject:itemToDelete.itemId];
-                                            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
-                                            [[NSUserDefaults standardUserDefaults] synchronize];
-                                            
-                                            NSLog(@"items to delete = %@", itemsToDelete);
-                                        }
+                                        deleteList.alertViewStyle = UIAlertViewStyleDefault;
+                                        [deleteList setTag:2];
+                                        self.itemToDelete = itemToDelete;
+                                        [deleteList show];
                                         
-                                        // Save the context.
-                                        NSError *error = nil;
-                                        if (![context save:&error]) {
-                                            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                                            abort();
-                                        }
-                                        
-                                        [DoozerSyncManager syncWithServer:self.managedObjectContext];
                                     }];
     deleteButton.backgroundColor = [UIColor lightGrayColor];
     

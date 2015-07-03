@@ -44,7 +44,7 @@
         NSError *firsterror = nil;
         NSArray *results = [passOnContext executeFetchRequest:fetchRequest error:&firsterror];
         Item *itemToAdd = [results objectAtIndex:0];
-        NSLog(@"loopcount = %d and itemIDToAdd is = %@ and parentID is = %@", loopcount, itemIdToAdd, itemToAdd.parent);
+        //NSLog(@"loopcount = %d and itemIDToAdd is = %@ and parentID is = %@", loopcount, itemIdToAdd, itemToAdd.parent);
     
         NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

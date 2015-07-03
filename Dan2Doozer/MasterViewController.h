@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <QuartzCore/QuartzCore.h>
+#import "Item.h"
+
 
 
 @class DetailViewController;
@@ -25,6 +27,7 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic) int rowOfExpandedCell;
+@property (strong, nonatomic) Item *itemToDelete;
 
 
 

@@ -9,6 +9,8 @@
 #import "DeleteItemFromServer.h"
 #import "AFNetworking.h"
 #import "Item.h"
+#import "AppDelegate.h"
+#import "DoozerSyncManager.h"
 
 @implementation DeleteItemFromServer
 
@@ -72,5 +74,45 @@
 
     }
 }
+
++ (void)deleteThisList:(Item *)listToDelete{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    [context deleteObject:listToDelete];
+    
+    NSMutableArray *listsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+    NSMutableArray *newListsToAdd = [[NSMutableArray alloc]init];
+    int matchCount = 0;
+    for(id eachElement in listsToAdd){
+        if ([listToDelete.itemId isEqualToString:eachElement]){
+            matchCount +=1;
+        }else{
+            [newListsToAdd addObject:eachElement];
+        }
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:newListsToAdd forKey:@"listsToAdd"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    if (matchCount == 0){
+        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+        [itemsToDelete addObject:listToDelete.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        NSLog(@"items to delete = %@", itemsToDelete);
+    }
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [DoozerSyncManager syncWithServer:context];
+}
+
 
 @end
