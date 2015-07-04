@@ -40,23 +40,22 @@
 // It is important for you to hide the keyboard
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [textField resignFirstResponder];
     NSString *currentText = textField.text;
     
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0]];
     
-    NSLog(@"old item title is %@", itemInCell.title);
-    
     itemInCell.title = currentText;
-    NSLog(@"new item title is %@", itemInCell.title);
     
-    NSLog(@"row of expanded row is %d", self.rowOfExpandedCell);
     self.rowOfExpandedCell = -1;
     
-    // Force any text fields that might be being edited to end so the text is stored
+    // Force any text fields that might be being edited to end
     [self.view.window endEditing: YES];
     
     [UpdateItemsOnServer updateThisItem:itemInCell];
+    
+    [textField resignFirstResponder];
+    
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 
     return YES;
 }
@@ -251,8 +250,7 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:0];
     Item *itemToChangeColor = [self.fetchedResultsController objectAtIndexPath:indexPath];
     itemToChangeColor.color = [ColorHelper returnUIColorString:colorIndex];
-    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    
+   
     [UpdateItemsOnServer updateThisItem:itemToChangeColor];
 }
 
@@ -606,6 +604,9 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
+            
+            NSLog(@"NSFectchedResultsChangeUpdate");
+            
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             //[self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;

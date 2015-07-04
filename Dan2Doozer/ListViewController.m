@@ -36,7 +36,6 @@
     //self.navigationController.navigationBar.barTintColor = tempColor;
     
     self.navigationItem.title = listForTitle.title;
-    //self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipe:)];
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
@@ -47,11 +46,12 @@
     [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [self.tableView addGestureRecognizer:recognizer];
     
-    
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
     
+    //self.tableView.bounces=NO;
+    //self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
     
 }
 
@@ -233,7 +233,6 @@
                         self.allowDragging = NO;
                     }else{
                         self.allowDragging = YES;
-                        self.stillWithinSection = YES;
                         
                         _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
                         
@@ -272,107 +271,109 @@
                 
             case UIGestureRecognizerStateChanged: {
                 if (self.allowDragging) {
-                    if ([clickedItem.type isEqualToString:@"completed_header"]){
-                        self.stillWithinSection = NO;
+                        
+                    CGPoint center = snapshot.center;
+                    center.y = location.y;
+                    snapshot.center = center;
+                    
+                    // Is destination valid and is it different from source?
+                    if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
+                        
+                        NSLog(@"moving cells ----------------");
+                        // ... move the rows.
+                        [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
+                        
+                        // ... and update source so it is in sync with UI changes.
+                        sourceIndexPath = indexPath;
                     }
-                
-                    //NSLog(@"UIGestureRecognizerStateChanged");
-                    if (self.stillWithinSection) {
-                        
-                        CGPoint center = snapshot.center;
-                        center.y = location.y;
-                        snapshot.center = center;
-                        
-                        // Is destination valid and is it different from source?
-                        if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
-                            
-                            // ... update data source.
-                            //[self.objects exchangeObjectAtIndex:indexPath.row withObjectAtIndex:sourceIndexPath.row];
-                            
-                            NSLog(@"moving cells ----------------");
-                            // ... move the rows.
-                            [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
-                            
-                            // ... and update source so it is in sync with UI changes.
-                            sourceIndexPath = indexPath;
-                        }
-                        
-                    }
-                    NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
+                    
+                NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
 
                 break;
-            }
+                }
             }
                 
             case UIGestureRecognizerStateEnded: {
                 
                 if (self.allowDragging) {
-                    
-                
-                //NSLog(@"UIGestureRecognizerStateEnded");
-
-                
-                Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];;
-                
-                NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-                
-                NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
-                Item *previousItem = nil;
-                Item *followingItem  = nil;
-                
-                if(_superOriginalIndex.row < sourceIndexPath.row){
-                    if (sourceIndexPath.row == (numberOfObjects - 1)) {
-                        Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
-                        int newItemNewOrder = originalLastItem.order.intValue + 1048576;
-                        reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
-                        
-                    }else{
-                        previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
-                        followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row+1];
-                        
-                        int previousItemOrder = [previousItem.order intValue];
-                        int followingItemOrder = [followingItem.order intValue];
-                        int newOrder = (previousItemOrder + followingItemOrder)/2;
-                        reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                    Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+                    NSArray *itemsInTable = self.fetchedResultsController.fetchedObjects;
+                    int headerOrderValue = 0;
+                    for (Item *currentItem in itemsInTable){
+                        if ([currentItem.type isEqualToString:@"completed_header"]) {
+                            headerOrderValue = currentItem.order.intValue;
+                        }
                     }
                     
-                }else{
-                    if (sourceIndexPath.row == 0) {
-                        Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
-                        int newItemNewOrder = originalFirstItem.order.intValue / 2;
-                        reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
-                    }else{
-                        previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row-1];
-                        followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                    NSLog(@"completed order value is %d", headerOrderValue);
+                    
+                    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+                    
+                    NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
+                    Item *previousItem = nil;
+                    Item *followingItem  = nil;
+                    
+                    if(_superOriginalIndex.row < sourceIndexPath.row){
+                        if (sourceIndexPath.row == (numberOfObjects - 1)) {
+                            Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                            int newItemNewOrder = originalLastItem.order.intValue + 1048576;
+                            reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                            
+                        }else{
+                            previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                            followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row+1];
+                            
+                            int previousItemOrder = [previousItem.order intValue];
+                            int followingItemOrder = [followingItem.order intValue];
+                            int newOrder = (previousItemOrder + followingItemOrder)/2;
+                            reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                        }
                         
-                        int previousItemOrder = [previousItem.order intValue];
-                        int followingItemOrder = [followingItem.order intValue];
-                        int newOrder = (previousItemOrder + followingItemOrder)/2;
-                        reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                    }else{
+                        if (sourceIndexPath.row == 0) {
+                            Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                            int newItemNewOrder = originalFirstItem.order.intValue / 2;
+                            reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                        }else{
+                            previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row-1];
+                            followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                            
+                            int previousItemOrder = [previousItem.order intValue];
+                            int followingItemOrder = [followingItem.order intValue];
+                            int newOrder = (previousItemOrder + followingItemOrder)/2;
+                            reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                        }
                     }
+                    
+                    NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
+                    
+                    if (reorderedItem.order.intValue > headerOrderValue) {
+                        reorderedItem.done = [NSNumber numberWithInt:1];
+                    }else{
+                        reorderedItem.done = [NSNumber numberWithInt:0];
+                    }
+                    
+                    NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
+                    //NSLog(@"first char = %@", itemIdCharacter);
+                    
+                    if ([itemIdCharacter isEqualToString:@"1"]) {
+                        //do nothing
+                    }else{
+                        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+                        [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
+                        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
+                    
+                    
+                    NSError *error = nil;
+                    if (![context save:&error]) {
+                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                        abort();
+                    }
+                    [DoozerSyncManager syncWithServer:self.managedObjectContext];
+                    [self.tableView reloadData];
                 }
-                
-                NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
-                //NSLog(@"first char = %@", itemIdCharacter);
-                
-                if ([itemIdCharacter isEqualToString:@"1"]) {
-                    //do nothing
-                }else{
-                    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-                    [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
-                    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                }
-                
-                
-                NSError *error = nil;
-                if (![context save:&error]) {
-                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                    abort();
-                }
-                [DoozerSyncManager syncWithServer:self.managedObjectContext];
-                [self.tableView reloadData];
-            }
                 
             default: {
                 // Clean up.
@@ -570,6 +571,20 @@
 }
 
 #pragma mark - Table View
+/*
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == self.tableView) {
+ 
+        if (scrollView.contentOffset.y < 0) {
+            scrollView.contentOffset = CGPointZero;
+        }
+ 
+        
+        NSLog(@"scroll happens");
+    }
+}
+*/
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[self.fetchedResultsController sections] count];
@@ -614,30 +629,61 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = object.title;
     
     NSNumber *done = object.done;
     if ([object.type isEqualToString:@"completed_header"]) {
+        
+        NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
+        
+        int doneCount = 0;
+        for (Item* eachItem in itemsOnList) {
+            if (eachItem.done.intValue == 1) {
+                doneCount +=1;
+            }
+        }
+        
+        
         Item *listForTitle = self.displayList;
+        if (self.showCompleted) {
+            cell.textLabel.text = [NSString stringWithFormat:@"\U000025BC\U0000FE0E %@ (%d)", object.title, doneCount];
+        }else{
+            cell.textLabel.text = [NSString stringWithFormat:@"\U000025B6\U0000FE0E %@ (%d)", object.title, doneCount];
+        }
+        
         cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }else{
-        cell.backgroundColor = [UIColor whiteColor];
-    }
-    
-    if ([done intValue] == 1) {
-        cell.textLabel.textColor = [UIColor lightGrayColor];
+        cell.textLabel.textColor = [UIColor whiteColor];
         cell.textLabel.font = [UIFont systemFontOfSize:16];
         cell.textLabel.textAlignment = NSTextAlignmentLeft;
-        if (self.showCompleted) {
-            cell.hidden = NO;
+    }else{
+        if ([done intValue] == 1) {
+            NSString *titleText = object.title;
+            
+            NSDictionary* attributes = @{
+                                         NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]
+                                         };
+            
+            NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:titleText attributes:attributes];
+            cell.textLabel.attributedText = attrText;
+            
+            cell.textLabel.textColor = [UIColor whiteColor];
+            cell.textLabel.font = [UIFont systemFontOfSize:16];
+            cell.textLabel.textAlignment = NSTextAlignmentLeft;
+            cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
+
+            if (self.showCompleted) {
+                cell.hidden = NO;
+            }else{
+                cell.hidden = YES;
+            }
         }else{
-            cell.hidden = YES;
+            cell.textLabel.text = object.title;
+            cell.textLabel.textColor = [UIColor blackColor];
+            cell.textLabel.font = [UIFont systemFontOfSize:16];
+            cell.textLabel.textAlignment = NSTextAlignmentLeft;
+            cell.backgroundColor = [UIColor whiteColor];
+
         }
-    }else{
-        cell.textLabel.textColor = [UIColor blackColor];
-        cell.textLabel.font = [UIFont systemFontOfSize:16];
-        cell.textLabel.textAlignment = NSTextAlignmentLeft;
     }
 }
 
