@@ -111,8 +111,16 @@
             
             newItem.parent = nil;
             
-            int r = arc4random_uniform(5);
-            newItem.color = [ColorHelper returnUIColorString:r];
+            NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
+            
+            newItem.color = [ColorHelper returnUIColorString:colorPicker.intValue];
+            int newColorPickerValue = 1 + colorPicker.intValue;
+            if (newColorPickerValue > 4) {
+                newColorPickerValue = 0;
+            }
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             
             double timestamp = [[NSDate date] timeIntervalSince1970];
             newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
@@ -476,7 +484,6 @@
                                         
                                     }];
     deleteButton.backgroundColor = [UIColor lightGrayColor];
-    
     
     UITableViewRowAction *editButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Edit" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                      {

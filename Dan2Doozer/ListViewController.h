@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UINavigationItem *listNavBar;
 @property BOOL allowDragging;
 @property BOOL showCompleted;
+@property CGPoint startPosition;
 
 @end
 

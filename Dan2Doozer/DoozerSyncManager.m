@@ -13,6 +13,7 @@
 #import "AddItemsToServer.h"
 #import "UpdateItemsOnServer.h"
 #import "DeleteItemFromServer.h"
+#import "ColorHelper.h"
 
 //NSFetchedResultsController *_fetchedResultsController;
 //NSMutableArray *_itemsArray;
@@ -113,6 +114,9 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
         if (length == 0 && inDeleteQueue == NO){
             Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:passOnContext];
             
+            //NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
+            //NSLog(@"archive value is = %@", archiveValue);
+            
             NSString *title = [eachArrayElement objectForKey:@"title"];
             newItem.title = title;
             
@@ -134,10 +138,32 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
             NSString *typeTemp = [eachArrayElement objectForKey:@"type"];
             newItem.type = typeTemp;
             
-            NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
-            newItem.color = colorTemp;
+            if (!newItem.parent) {
+                NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
+                if (colorTemp.length < 1) {
+                    NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
+                    
+                    colorTemp = [ColorHelper returnUIColorString:colorPicker.intValue];
+                    int newColorPickerValue = 1 + colorPicker.intValue;
+                    if (newColorPickerValue > 4) {
+                        newColorPickerValue = 0;
+                    }
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+                newItem.color = colorTemp;
+                NSLog(@"setting color = %@", colorTemp);
+
+            }
+            
+            NSString *donestring = [eachArrayElement objectForKey:@"done"];
+            NSLog(@"done as a string = %@", donestring);
+            
             
             NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
+            NSLog(@"done as a number = %@", donetemp);
+            
+            
             newItem.done = donetemp;
             
             NSString *notes = [eachArrayElement objectForKey:@"notes"];

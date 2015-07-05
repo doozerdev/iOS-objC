@@ -71,6 +71,15 @@ NSString *sessionID = nil;
         [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
+    if(colorPicker){
+        //do nothing
+    }else{
+        //create the initial items to delete array
+        NSNumber *colorPicker = [NSNumber numberWithInteger:0];
+        [[NSUserDefaults standardUserDefaults] setObject:colorPicker forKey:@"colorPicker"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

@@ -12,6 +12,7 @@
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
 #import "ColorHelper.h"
+#import "AppDelegate.h"
 
 
 @interface ListViewController ()
@@ -37,23 +38,210 @@
     
     self.navigationItem.title = listForTitle.title;
     
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipe:)];
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
-    [self.tableView addGestureRecognizer:recognizer];
-    
-    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightSwipe:)];
-    recognizer.delegate = self;
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
-    [self.tableView addGestureRecognizer:recognizer];
-    
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
     
-    //self.tableView.bounces=NO;
-    //self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLineEtched;
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
+    [self.tableView addGestureRecognizer:panGesture];
+    panGesture.delegate = self;
     
 }
+
+-(void)swiperight:(UIPanGestureRecognizer*)panGesture;
+{
+    static CGPoint startPoint = { 0.f, 0.f };
+    static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
+    CGPoint location = [panGesture locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+
+    
+    switch (panGesture.state) {
+        case UIGestureRecognizerStateBegan:{
+            NSLog(@"pan began ---------------");
+            startPoint = location;
+            snapshot = [self customSnapshoForSwiping:cell];
+
+            break;
+        }
+        case UIGestureRecognizerStateChanged:{
+            CGPoint location = [panGesture locationInView:self.view];
+            
+            if(location.x-startPoint.x > 10){
+                // Take a snapshot of the selected row using helper method.
+                
+                // Add the snapshot as subview, centered at cell's center...
+                //__block CGPoint center = cell.center;
+                
+                CGPoint offset = { (cell.center.x+(location.x-startPoint.x)), cell.center.y };
+                NSLog(@"offset value = %f", offset.x);
+                snapshot.center = offset;
+                snapshot.alpha = 1.0;
+                [self.tableView addSubview:snapshot];
+                cell.hidden = YES;
+                
+            }
+               
+            break;
+        }
+        case UIGestureRecognizerStateEnded:{
+            NSLog(@"pan ended ---------------");
+            
+            if (location.x-startPoint.x >= 50) {
+                
+                CGRect screenRect = [[UIScreen mainScreen] bounds];
+                CGFloat screenWidth = screenRect.size.width;
+                
+                [UIView animateWithDuration:0.4
+                                      delay:0.0
+                                    options: UIViewAnimationOptionCurveLinear
+                                 animations:^
+                 {
+                     CGRect frame = snapshot.frame;
+                     frame.origin.x = (screenWidth);
+                     snapshot.frame = frame;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     NSLog(@"Completed");
+                     Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                     [self cleanUpSwipedItem:swipedItem];
+                     
+                 }];
+
+            }else if(location.x-startPoint.x > 10 && location.x-startPoint.x < 50){
+                
+                [UIView animateWithDuration:0.2
+                                      delay:0.0
+                                    options: UIViewAnimationOptionCurveEaseOut
+                                 animations:^
+                 {
+                     CGRect frame = snapshot.frame;
+                     frame.origin.x = (0);
+                     snapshot.frame = frame;
+                 }
+                                 completion:^(BOOL finished)
+                 {
+                     NSLog(@"ReturniedCell");
+                     [snapshot removeFromSuperview];
+                     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                 }];
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+-(void)cleanUpSwipedItem:(Item *)swipedItem{
+
+    if (![swipedItem.type isEqualToString:@"completed_header"]) {
+        NSLog(@"item title to toggle = %@", swipedItem.title);
+        
+        NSArray *listArray = [self.fetchedResultsController fetchedObjects];
+        NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
+        NSMutableArray *allItemOrderValues = [[NSMutableArray alloc] init];
+        
+        int unCompletedCount = 0;
+        
+        for (id eachElement in listArray){
+            Item *theItem = eachElement;
+            [allItemOrderValues addObject:theItem.order];
+            if ([theItem.done intValue] == 1) {
+                [completedItemOrderValues addObject:theItem.order];
+            }else{
+                unCompletedCount += 1;
+            }
+        }
+        
+        int completedMinOrder = [[completedItemOrderValues valueForKeyPath:@"@min.intValue"] intValue];
+        int maxItemOrder = [[allItemOrderValues valueForKeyPath:@"@max.intValue"] intValue];
+        
+        
+        
+        NSNumber *num = [NSNumber numberWithInt:completedMinOrder];
+        
+        int indexOfFirstCompleted = 0;
+        
+        if ([num intValue] == 0) {
+            int newOrderForCompletedItem = maxItemOrder + 10000000;
+            NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
+            swipedItem.order = orderForCompleted;
+            
+            if([swipedItem.done intValue] == 0){
+                swipedItem.done = [NSNumber numberWithBool:true];
+            }else{
+                swipedItem.done = [NSNumber numberWithBool:false];
+            }
+            
+        }
+        else{
+            int loopcount = 0;
+            
+            for(id eachElement in allItemOrderValues){
+                NSNumber *placeholder = eachElement;
+                int value = [placeholder intValue];
+                if (value == completedMinOrder)
+                {
+                    indexOfFirstCompleted = loopcount;
+                }
+                loopcount ++;
+            }
+            
+            int indexOfCompletedHeader = indexOfFirstCompleted - 1;
+            int indexOfLastUncompleted = indexOfFirstCompleted - 2;
+            int newOrderForCompletedItem = 0;
+            
+            NSNumber *monkey = [allItemOrderValues objectAtIndex:indexOfCompletedHeader];
+            int orderValOfCompletedHeader = [monkey intValue];
+            
+            if([swipedItem.done intValue] == 0){
+                swipedItem.done = [NSNumber numberWithBool:true];
+                newOrderForCompletedItem = ((completedMinOrder - orderValOfCompletedHeader)/2)+orderValOfCompletedHeader;
+            }else{
+                swipedItem.done = [NSNumber numberWithBool:false];
+                
+                
+                int lastUncompletedOrder = 0;
+                if (unCompletedCount > 1){
+                    lastUncompletedOrder = [[allItemOrderValues objectAtIndex:indexOfLastUncompleted] intValue];
+                }
+                newOrderForCompletedItem = ((orderValOfCompletedHeader-lastUncompletedOrder)/2)+lastUncompletedOrder;
+            }
+            
+            swipedItem.order = [NSNumber numberWithInt:newOrderForCompletedItem];
+        }
+        
+        NSString *itemIdCharacter = [swipedItem.itemId substringToIndex:1];
+        
+        if ([itemIdCharacter isEqualToString:@"1"]) {
+            //do nothing
+        }else{
+            NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+            [newArrayOfItemsToUpdate addObject:swipedItem.itemId];
+            [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        // Save the context.
+        
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSManagedObjectContext* context = appDelegate.managedObjectContext;
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer {
+    //This allows the custom PanGesture to be simultaneiously monitoring with the built-in swipe left to reveal delete button
+    return YES;
+}
+
 
 - (void)addHeaderItems{
     Item *displayedList = self.displayList;
@@ -207,7 +395,6 @@
         
     }
 }
-
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
@@ -400,18 +587,9 @@
             }
         }
         }
-
     }
 
-
-
-
-- (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
-{
-    //do you left swipe stuff here.
- 
-}
-
+/*
 - (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
 {
     
@@ -510,7 +688,7 @@
 
     
 }
-
+*/
 
 - (void)setDisplayList:(id)newDisplayList {
     if (_displayList != newDisplayList) {
@@ -721,10 +899,10 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         if (matchCount == 0){
-        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-        [itemsToDelete addObject:itemToDelete.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+            [itemsToDelete addObject:itemToDelete.itemId];
+            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
 
         }
         
@@ -869,6 +1047,25 @@
     snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
     snapshot.layer.shadowRadius = 5.0;
     snapshot.layer.shadowOpacity = 0.4;
+    
+    return snapshot;
+}
+
+- (UIView *)customSnapshoForSwiping:(UIView *)inputView {
+    
+    // Make an image from the input view.
+    UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
+    [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // Create an image view.
+    UIView *snapshot = [[UIImageView alloc] initWithImage:image];
+    snapshot.layer.masksToBounds = NO;
+    snapshot.layer.cornerRadius = 0.0;
+    //snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
+    //snapshot.layer.shadowRadius = 5.0;
+    //snapshot.layer.shadowOpacity = 0.4;
     
     return snapshot;
 }

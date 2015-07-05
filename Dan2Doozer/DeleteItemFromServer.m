@@ -43,7 +43,7 @@
         NSString *URL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@/archive", itemIdToDelete];
         
         [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"successful JSON delete");
+            NSLog(@"successful JSON delete %@", responseObject);
             
             NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
             
