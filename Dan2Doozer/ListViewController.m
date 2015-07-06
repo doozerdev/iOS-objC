@@ -46,28 +46,55 @@
     [self.tableView addGestureRecognizer:panGesture];
     panGesture.delegate = self;
     
+    self.isScrolling = NO;
+    self.longPressActive = NO;
+    self.isRightSwiping = NO;
+    
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)sender
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    //ensure that the end of scroll is fired.
+    [self performSelector:@selector(scrollViewDidEndScrollingAnimation:) withObject:nil afterDelay:0.3];
+    self.isScrolling = YES;
+}
+
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    self.isScrolling = NO;
 }
 
 -(void)swiperight:(UIPanGestureRecognizer*)panGesture;
 {
-    if (!self.longPressActive) {
-        static CGPoint startPoint = { 0.f, 0.f };
-        static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
-        CGPoint location = [panGesture locationInView:self.tableView];
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-        NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        UITableViewCell *originalCell = [self.tableView cellForRowAtIndexPath:originalIndexPath];
-        Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
 
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        CGFloat screenWidth = screenRect.size.width;
+    static CGPoint startPoint = { 0.f, 0.f };
+    static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
+    CGPoint location = [panGesture locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *originalCell = [self.tableView cellForRowAtIndexPath:originalIndexPath];
+    Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
+    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    BOOL swipeOnHiddenItem = NO;
 
+    if (!self.showCompleted && (swipedItem.done.intValue == 1)) {
+        NSLog(@"don't allow swiping!");
+        swipeOnHiddenItem = YES;
+    }
+    
+    if ((!self.longPressActive && !self.isScrolling && !swipeOnHiddenItem) || self.isRightSwiping) {
+        
         switch (panGesture.state) {
             case UIGestureRecognizerStateBegan:{
                 NSLog(@"pan began ---------------");
                 startPoint = location;
                 snapshot = [self customSnapshoForSwiping:cell];
+
 
                 break;
             }
@@ -75,6 +102,8 @@
                 CGPoint location = [panGesture locationInView:self.view];
                 
                 if(location.x-startPoint.x > 10 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                    
+                    self.isRightSwiping = YES;
                     
                     // Add the snapshot as subview, centered at cell's center...
                     
@@ -137,6 +166,8 @@
                                  eachItem.notes = @" ";
                              }
                          }
+                         self.isRightSwiping = NO;
+
                      }];
 
                 }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]){
@@ -155,7 +186,8 @@
                          NSLog(@"ReturniedCell");
                          [snapshot removeFromSuperview];
                          swipedItem.notes = @" ";
-                         //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                         self.isRightSwiping = NO;
+
                     }];
                
                 }
@@ -165,12 +197,7 @@
                     [snapshot removeFromSuperview];
                     originalCell.hidden = NO;
                     swipedItem.notes = @" ";
-                    /*
-                    if (swipeRightBegan) {
-                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                        swipeRightBegan = NO;
-                    }
-                    */
+                    self.isRightSwiping = NO;
 
                 }
                 
@@ -179,6 +206,8 @@
             }
             default:{
                 [snapshot removeFromSuperview];
+                self.isRightSwiping = NO;
+
             }
                 
                 break;
@@ -457,7 +486,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
+    //NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
 
         UIGestureRecognizerState state = longPress.state;
     
@@ -525,11 +554,28 @@
                         // ... move the rows.
                         [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                         
+                        Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                        int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
+                        
+                        
+                        if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
+                            NSLog(@"passing the completed header");
+                            self.showCompleted = YES;
+                            int currentRow = (int)indexPath.row+1;
+                            
+                            NSMutableArray *indexPaths = [[NSMutableArray alloc]init];
+                            for(int r = currentRow; r<totalRows; r++){
+                                [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:0]];
+                                
+                                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
+                                cell.hidden = NO;
+                            }
+                        }
                         // ... and update source so it is in sync with UI changes.
                         sourceIndexPath = indexPath;
                     }
                     
-                NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
+                //NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
 
                 break;
                 }
@@ -547,7 +593,7 @@
                         }
                     }
                     
-                    NSLog(@"completed order value is %d", headerOrderValue);
+                    //NSLog(@"completed order value is %d", headerOrderValue);
                     
                     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
                     
@@ -587,8 +633,9 @@
                         }
                     }
                     
-                    NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
+                    //NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
                     
+                    //dropping an uncompleted item into the 'completed' zone. Set the item's 'done' value appropriately.
                     if (reorderedItem.order.intValue > headerOrderValue) {
                         reorderedItem.done = [NSNumber numberWithInt:1];
                     }else{
@@ -621,7 +668,7 @@
             default: {
                 // Clean up.
                 self.longPressActive = NO;
-                NSLog(@"In clean up of Long Press method");
+                //NSLog(@"In clean up of Long Press method");
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:sourceIndexPath];
                 cell.hidden = NO;
                 cell.alpha = 0.0;
@@ -765,7 +812,7 @@
             }
         }
         
-        NSLog(@"completed count for header is -------- %d", doneCount);
+        //NSLog(@"completed count for header is -------- %d", doneCount);
         
         
         Item *listForTitle = self.displayList;
@@ -800,6 +847,7 @@
                 cell.hidden = NO;
             }else{
                 cell.hidden = YES;
+
             }
         }else{
             cell.textLabel.attributedText = nil;

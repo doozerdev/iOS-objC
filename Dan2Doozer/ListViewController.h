@@ -28,6 +28,8 @@
 @property BOOL showCompleted;
 @property CGPoint startPosition;
 @property BOOL longPressActive;
+@property BOOL isScrolling;
+@property BOOL isRightSwiping;
 
 @end
 
