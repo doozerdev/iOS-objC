@@ -26,6 +26,7 @@
 
 @property (nonatomic, retain) NSString *itemId;
 @property (nonatomic, retain) NSString *color;
+@property (nonatomic, retain) NSString *forceUpdateString;
 
 
 

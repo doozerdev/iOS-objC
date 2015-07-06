@@ -73,7 +73,7 @@
         NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"Successful JSON update, %@", responseObject);
+            NSLog(@"Successful JSON update");
 
             NSError *error = nil;
             if (![passOnContext save:&error]) {

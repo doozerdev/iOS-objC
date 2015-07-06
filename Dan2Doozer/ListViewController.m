@@ -50,88 +50,139 @@
 
 -(void)swiperight:(UIPanGestureRecognizer*)panGesture;
 {
-    static CGPoint startPoint = { 0.f, 0.f };
-    static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
-    CGPoint location = [panGesture locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    if (!self.longPressActive) {
+        static CGPoint startPoint = { 0.f, 0.f };
+        static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
+        CGPoint location = [panGesture locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+        NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        UITableViewCell *originalCell = [self.tableView cellForRowAtIndexPath:originalIndexPath];
+        Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
 
-    
-    switch (panGesture.state) {
-        case UIGestureRecognizerStateBegan:{
-            NSLog(@"pan began ---------------");
-            startPoint = location;
-            snapshot = [self customSnapshoForSwiping:cell];
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
 
-            break;
-        }
-        case UIGestureRecognizerStateChanged:{
-            CGPoint location = [panGesture locationInView:self.view];
-            
-            if(location.x-startPoint.x > 10){
-                // Take a snapshot of the selected row using helper method.
-                
-                // Add the snapshot as subview, centered at cell's center...
-                //__block CGPoint center = cell.center;
-                
-                CGPoint offset = { (cell.center.x+(location.x-startPoint.x)), cell.center.y };
-                NSLog(@"offset value = %f", offset.x);
-                snapshot.center = offset;
-                snapshot.alpha = 1.0;
-                [self.tableView addSubview:snapshot];
-                cell.hidden = YES;
-                
+        switch (panGesture.state) {
+            case UIGestureRecognizerStateBegan:{
+                NSLog(@"pan began ---------------");
+                startPoint = location;
+                snapshot = [self customSnapshoForSwiping:cell];
+
+                break;
             }
+            case UIGestureRecognizerStateChanged:{
+                CGPoint location = [panGesture locationInView:self.view];
+                
+                if(location.x-startPoint.x > 10 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                    
+                    // Add the snapshot as subview, centered at cell's center...
+                    
+                    CGPoint offset = { ((location.x-startPoint.x) + screenWidth/2), originalCell.center.y };
+
+                    snapshot.center = offset;
+                    snapshot.alpha = 1.0;
+                    [self.tableView addSubview:snapshot];
+                    originalCell.hidden = NO;
+                    Item *parent = self.displayList;
+                    originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
+                    originalCell.textLabel.text = @"\U00002714\U0000FE0E";
+                    
+                    if (swipedItem.done.intValue == 1) {
+                        if ((location.x-startPoint.x) > screenWidth/3) {
+                            originalCell.textLabel.textColor = [UIColor lightGrayColor];
+                        }else{
+                            originalCell.textLabel.textColor = [UIColor whiteColor];
+                        }
+                    }else{
+                        if ((location.x-startPoint.x) > screenWidth/3) {
+                            originalCell.textLabel.textColor = [UIColor whiteColor];
+
+                        }else{
+                            originalCell.textLabel.textColor = [UIColor lightGrayColor];
+                        }
+                    }
+                    originalCell.textLabel.font = [UIFont boldSystemFontOfSize:26];
+                    
+                }
+                   
+                break;
+            }
+            case UIGestureRecognizerStateEnded:{
+                NSLog(@"pan ended ---------------");
+                
+                if (location.x-startPoint.x >= screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]) {
+                    
+                    [UIView animateWithDuration:0.4
+                                          delay:0.0
+                                        options: UIViewAnimationOptionCurveLinear
+                                     animations:^
+                     {
+                         CGRect frame = snapshot.frame;
+                         frame.origin.x = (screenWidth);
+                         snapshot.frame = frame;
+                     }
+                                     completion:^(BOOL finished)
+                     {
+                         NSLog(@"Completed");
+                         [self cleanUpSwipedItem:swipedItem];
+                         [snapshot removeFromSuperview];
+                         
+                         NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
+                         for (Item *eachItem in itemsOnList) {
+                             if ([eachItem.type isEqualToString:@"completed_header"]) {
+                
+                                 //set the notes field to a blank string, so that CoreData updates the header
+                                 //for completed items and prompts a reload of completed items count
+                                 eachItem.notes = @" ";
+                             }
+                         }
+                     }];
+
+                }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                    
+                    [UIView animateWithDuration:0.2
+                                          delay:0.0
+                                        options: UIViewAnimationOptionCurveEaseOut
+                                     animations:^
+                     {
+                         CGRect frame = snapshot.frame;
+                         frame.origin.x = (0);
+                         snapshot.frame = frame;
+                     }
+                                     completion:^(BOOL finished)
+                     {
+                         NSLog(@"ReturniedCell");
+                         [snapshot removeFromSuperview];
+                         swipedItem.notes = @" ";
+                         //[self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    }];
                
-            break;
-        }
-        case UIGestureRecognizerStateEnded:{
-            NSLog(@"pan ended ---------------");
-            
-            if (location.x-startPoint.x >= 50) {
+                }
                 
-                CGRect screenRect = [[UIScreen mainScreen] bounds];
-                CGFloat screenWidth = screenRect.size.width;
-                
-                [UIView animateWithDuration:0.4
-                                      delay:0.0
-                                    options: UIViewAnimationOptionCurveLinear
-                                 animations:^
-                 {
-                     CGRect frame = snapshot.frame;
-                     frame.origin.x = (screenWidth);
-                     snapshot.frame = frame;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     NSLog(@"Completed");
-                     Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-                     [self cleanUpSwipedItem:swipedItem];
-                     
-                 }];
+                else{
+                    NSLog(@"Catch all case for ENDED");
+                    [snapshot removeFromSuperview];
+                    originalCell.hidden = NO;
+                    swipedItem.notes = @" ";
+                    /*
+                    if (swipeRightBegan) {
+                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                        swipeRightBegan = NO;
+                    }
+                    */
 
-            }else if(location.x-startPoint.x > 10 && location.x-startPoint.x < 50){
+                }
                 
-                [UIView animateWithDuration:0.2
-                                      delay:0.0
-                                    options: UIViewAnimationOptionCurveEaseOut
-                                 animations:^
-                 {
-                     CGRect frame = snapshot.frame;
-                     frame.origin.x = (0);
-                     snapshot.frame = frame;
-                 }
-                                 completion:^(BOOL finished)
-                 {
-                     NSLog(@"ReturniedCell");
-                     [snapshot removeFromSuperview];
-                     [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                 }];
+                break;
+                
             }
-            break;
+            default:{
+                [snapshot removeFromSuperview];
+            }
+                
+                break;
         }
-        default:
-            break;
     }
 }
 
@@ -241,6 +292,8 @@
     //This allows the custom PanGesture to be simultaneiously monitoring with the built-in swipe left to reveal delete button
     return YES;
 }
+
+
 
 
 - (void)addHeaderItems{
@@ -414,6 +467,8 @@
         switch (state) {
             case UIGestureRecognizerStateBegan: {
                 
+                self.longPressActive = YES;
+                
                 if (indexPath) {
                     
                     if ([clickedItem.type isEqualToString:@"completed_header"]) {
@@ -560,10 +615,13 @@
                     }
                     [DoozerSyncManager syncWithServer:self.managedObjectContext];
                     [self.tableView reloadData];
+
                 }
                 
             default: {
                 // Clean up.
+                self.longPressActive = NO;
+                NSLog(@"In clean up of Long Press method");
                 UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:sourceIndexPath];
                 cell.hidden = NO;
                 cell.alpha = 0.0;
@@ -589,106 +647,6 @@
         }
     }
 
-/*
-- (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
-{
-    
-    NSArray *listArray = [self.fetchedResultsController fetchedObjects];
-    NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
-    NSMutableArray *allItemOrderValues = [[NSMutableArray alloc] init];
-
-    for (id eachElement in listArray){
-        Item *theItem = eachElement;
-        [allItemOrderValues addObject:theItem.order];
-        if ([theItem.done intValue] == 1) {
-            [completedItemOrderValues addObject:theItem.order];
-        }
-    }
-    
-    int completedMinOrder = [[completedItemOrderValues valueForKeyPath:@"@min.intValue"] intValue];
-    int maxItemOrder = [[allItemOrderValues valueForKeyPath:@"@max.intValue"] intValue];
-    
-    CGPoint location = [gestureRecognizer locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    Item *itemToToggleComplete = [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
- 
-    NSNumber *num = [NSNumber numberWithInt:completedMinOrder];
-    
-    int indexOfFirstCompleted = 0;
-    
-    if ([num intValue] == 0) {
-        int newOrderForCompletedItem = maxItemOrder + 10000000;
-        NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
-        itemToToggleComplete.order = orderForCompleted;
-        
-        if([itemToToggleComplete.done intValue] == 0){
-            itemToToggleComplete.done = [NSNumber numberWithBool:true];
-        }else{
-            itemToToggleComplete.done = [NSNumber numberWithBool:false];
-        }
-        
-    }
-    else{
-        int loopcount = 0;
-        
-        for(id eachElement in allItemOrderValues){
-            NSNumber *placeholder = eachElement;
-            int value = [placeholder intValue];
-            if (value == completedMinOrder)
-            {
-                indexOfFirstCompleted = loopcount;
-            }
-            loopcount ++;
-        }
-        
-        int indexOfCompletedHeader = indexOfFirstCompleted - 1;
-        int indexOfLastUncompleted = indexOfFirstCompleted - 2;
-        int newOrderForCompletedItem = 0;
-        
-        NSNumber *monkey = [allItemOrderValues objectAtIndex:indexOfCompletedHeader];
-        int orderValOfCompletedHeader = [monkey intValue];
-
-        if([itemToToggleComplete.done intValue] == 0){
-            itemToToggleComplete.done = [NSNumber numberWithBool:true];
-            newOrderForCompletedItem = ((completedMinOrder - orderValOfCompletedHeader)/2)+orderValOfCompletedHeader;
-        }else{
-            itemToToggleComplete.done = [NSNumber numberWithBool:false];
-            int lastUncompletedOrder = [[allItemOrderValues objectAtIndex:indexOfLastUncompleted] intValue];
-            newOrderForCompletedItem = ((orderValOfCompletedHeader-lastUncompletedOrder)/2)+lastUncompletedOrder;
-
-        }
-        
-        itemToToggleComplete.order = [NSNumber numberWithInt:newOrderForCompletedItem];
-    }
-    
-
-    
-    
-    NSString *itemIdCharacter = [itemToToggleComplete.itemId substringToIndex:1];
-    //NSLog(@"first char = %@", itemIdCharacter);
-    
-    if ([itemIdCharacter isEqualToString:@"1"]) {
-        //do nothing
-    }else{
-        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-        [newArrayOfItemsToUpdate addObject:itemToToggleComplete.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-            // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    //[self.tableView reloadData];
-    [DoozerSyncManager syncWithServer:self.managedObjectContext];
-
-    
-}
-*/
 
 - (void)setDisplayList:(id)newDisplayList {
     if (_displayList != newDisplayList) {
@@ -749,19 +707,6 @@
 }
 
 #pragma mark - Table View
-/*
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView == self.tableView) {
- 
-        if (scrollView.contentOffset.y < 0) {
-            scrollView.contentOffset = CGPointZero;
-        }
- 
-        
-        NSLog(@"scroll happens");
-    }
-}
-*/
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -820,6 +765,8 @@
             }
         }
         
+        NSLog(@"completed count for header is -------- %d", doneCount);
+        
         
         Item *listForTitle = self.displayList;
         if (self.showCompleted) {
@@ -855,6 +802,7 @@
                 cell.hidden = YES;
             }
         }else{
+            cell.textLabel.attributedText = nil;
             cell.textLabel.text = object.title;
             cell.textLabel.textColor = [UIColor blackColor];
             cell.textLabel.font = [UIFont systemFontOfSize:16];

@@ -25,6 +25,7 @@
 
 @synthesize itemId;
 @synthesize color;
+@synthesize forceUpdateString;
 
 
 @end

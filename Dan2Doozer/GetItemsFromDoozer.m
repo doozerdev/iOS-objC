@@ -40,7 +40,7 @@
 
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         itemsArray = [jsonDict objectForKey:@"items"];
-        NSLog(@" heres' the server response =%@", itemsArray);
+        //NSLog(@" heres' the server response =%@", itemsArray);
         NSLog(@"Count of items from doozer server = %lu", itemsArray.count);
         
         _completionHandler(itemsArray);

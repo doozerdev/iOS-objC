@@ -27,6 +27,7 @@
 @property BOOL allowDragging;
 @property BOOL showCompleted;
 @property CGPoint startPosition;
+@property BOOL longPressActive;
 
 @end
 
