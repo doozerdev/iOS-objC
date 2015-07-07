@@ -163,6 +163,9 @@
     
     self.rowOfExpandedCell = -1;
     
+    self.navigationController.hidesBarsOnSwipe = YES;
+
+    
     // Do any additional setup after loading the view, typically from a nib.
     
     //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;

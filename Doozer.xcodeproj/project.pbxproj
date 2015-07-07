@@ -19,6 +19,7 @@
 		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
 		A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290401B45D7C80070662C /* ParentCustomCell.m */; };
 		A24290441B45E3260070662C /* ColorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290431B45E3260070662C /* ColorHelper.m */; };
+		A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A253AD281B4AEF1200D896E1 /* ListCustomCell.m */; };
 		A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */; };
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
@@ -69,6 +70,8 @@
 		A24290401B45D7C80070662C /* ParentCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParentCustomCell.m; sourceTree = "<group>"; };
 		A24290421B45E3260070662C /* ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorHelper.h; sourceTree = "<group>"; };
 		A24290431B45E3260070662C /* ColorHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorHelper.m; sourceTree = "<group>"; };
+		A253AD271B4AEF1200D896E1 /* ListCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListCustomCell.h; sourceTree = "<group>"; };
+		A253AD281B4AEF1200D896E1 /* ListCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListCustomCell.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		A27342491B0EDA4E00C1E219 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
@@ -162,6 +165,7 @@
 				A29CD7ED1B2007D7000FA1B0 /* ItemManagement */,
 				A29CD7EB1B200772000FA1B0 /* ServerCommunications */,
 				A29CD7EC1B2007A3000FA1B0 /* ViewControllers */,
+				A253AD2A1B4AEF2C00D896E1 /* CustomCells */,
 				A2301B3B1AF41A7C00E2267D /* Main.storyboard */,
 				A2301B3E1AF41A7C00E2267D /* Images.xcassets */,
 				A2301B401AF41A7C00E2267D /* LaunchScreen.xib */,
@@ -197,6 +201,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A253AD2A1B4AEF2C00D896E1 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				A242903F1B45D7C80070662C /* ParentCustomCell.h */,
+				A24290401B45D7C80070662C /* ParentCustomCell.m */,
+				A253AD271B4AEF1200D896E1 /* ListCustomCell.h */,
+				A253AD281B4AEF1200D896E1 /* ListCustomCell.m */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
 		A29CD7EB1B200772000FA1B0 /* ServerCommunications */ = {
 			isa = PBXGroup;
 			children = (
@@ -219,8 +234,6 @@
 			children = (
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
-				A242903F1B45D7C80070662C /* ParentCustomCell.h */,
-				A24290401B45D7C80070662C /* ParentCustomCell.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
 				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB55411B311B8200D19660 /* ItemViewController.h */,
@@ -392,6 +405,7 @@
 				A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */,
 				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
 				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
+				A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */,
 				A2FB55431B311B8200D19660 /* ItemViewController.m in Sources */,

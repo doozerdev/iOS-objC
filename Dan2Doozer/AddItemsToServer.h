@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/Coredata.h>
+#import "Item.h"
 
 
 @interface AddItemsToServer : NSObject
@@ -17,6 +18,8 @@
 }
 
 - (void)addItemsToServer: (NSMutableArray *)itemsToAdd :(NSManagedObjectContext *)passOnContext :(void(^)(int))handler;
+
++(void)addThisItem:(Item *)itemToAdd;
 
 
 

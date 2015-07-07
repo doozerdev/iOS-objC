@@ -32,16 +32,16 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"testCell" forIndexPath:indexPath];
     
-    NSLog(@" cell text = %@", cell.textLabel.text);
+    //NSLog(@" cell text = %@", cell.textLabel.text);
     
     UITextField *fieldTitle = (UITextField *)[self.view viewWithTag:301];
     UITextField *fieldNotes = (UITextField *)[self.view viewWithTag:302];
     UITextField *fieldDueDate = (UITextField *)[self.view viewWithTag:303];
-    
+    /*
     NSLog(@" Text Field text = %@", fieldTitle.text);
     NSLog(@" Text Field text = %@", fieldNotes.text);
     NSLog(@" Text Field text = %@", fieldDueDate.text);
-    
+    */
     
     NSDateFormatter* df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"yyyy-MM-dd"];

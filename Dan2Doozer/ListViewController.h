@@ -31,5 +31,8 @@
 @property BOOL isScrolling;
 @property BOOL isRightSwiping;
 
+@property (nonatomic) int rowOfNewItem;
+
+
 @end
 

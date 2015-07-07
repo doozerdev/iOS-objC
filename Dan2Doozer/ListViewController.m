@@ -13,15 +13,13 @@
 #import "DoozerSyncManager.h"
 #import "ColorHelper.h"
 #import "AppDelegate.h"
+#import "ListCustomCell.h"
+#import "AddItemsToServer.h"
 
-
-@interface ListViewController ()
-
-
+@interface ListViewController () <UITextFieldDelegate>
 @end
 
 @implementation ListViewController
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,38 +42,40 @@
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
     [self.tableView addGestureRecognizer:panGesture];
+    
     panGesture.delegate = self;
     
+    self.navigationController.hidesBarsOnSwipe = YES;
+
     self.isScrolling = NO;
     self.longPressActive = NO;
     self.isRightSwiping = NO;
+    self.rowOfNewItem = -1;
     
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)sender
-{
+-(void)scrollViewDidScroll:(UIScrollView *)sender {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     //ensure that the end of scroll is fired.
     [self performSelector:@selector(scrollViewDidEndScrollingAnimation:) withObject:nil afterDelay:0.3];
+    
     self.isScrolling = YES;
 }
 
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.isScrolling = NO;
 }
 
--(void)swiperight:(UIPanGestureRecognizer*)panGesture;
-{
+-(void)swiperight:(UIPanGestureRecognizer*)panGesture; {
 
     static CGPoint startPoint = { 0.f, 0.f };
     static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
     CGPoint location = [panGesture locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    UITableViewCell *originalCell = [self.tableView cellForRowAtIndexPath:originalIndexPath];
+    ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    ListCustomCell *originalCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
     Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -83,7 +83,7 @@
     BOOL swipeOnHiddenItem = NO;
 
     if (!self.showCompleted && (swipedItem.done.intValue == 1)) {
-        NSLog(@"don't allow swiping!");
+        //NSLog(@"don't allow swiping!");
         swipeOnHiddenItem = YES;
     }
     
@@ -91,7 +91,7 @@
         
         switch (panGesture.state) {
             case UIGestureRecognizerStateBegan:{
-                NSLog(@"pan began ---------------");
+                //NSLog(@"pan began ---------------");
                 startPoint = location;
                 snapshot = [self customSnapshoForSwiping:cell];
 
@@ -115,30 +115,31 @@
                     originalCell.hidden = NO;
                     Item *parent = self.displayList;
                     originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
-                    originalCell.textLabel.text = @"\U00002714\U0000FE0E";
+                    originalCell.cellItemTitle.attributedText = nil;
+                    originalCell.cellItemTitle.text = @"\U00002714\U0000FE0E";
                     
                     if (swipedItem.done.intValue == 1) {
                         if ((location.x-startPoint.x) > screenWidth/3) {
-                            originalCell.textLabel.textColor = [UIColor lightGrayColor];
+                            originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
                         }else{
-                            originalCell.textLabel.textColor = [UIColor whiteColor];
+                            originalCell.cellItemTitle.textColor = [UIColor whiteColor];
                         }
                     }else{
                         if ((location.x-startPoint.x) > screenWidth/3) {
-                            originalCell.textLabel.textColor = [UIColor whiteColor];
+                            originalCell.cellItemTitle.textColor = [UIColor whiteColor];
 
                         }else{
-                            originalCell.textLabel.textColor = [UIColor lightGrayColor];
+                            originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
                         }
                     }
-                    originalCell.textLabel.font = [UIFont boldSystemFontOfSize:26];
+                    originalCell.cellItemTitle.font = [UIFont boldSystemFontOfSize:26];
                     
                 }
                    
                 break;
             }
             case UIGestureRecognizerStateEnded:{
-                NSLog(@"pan ended ---------------");
+                //NSLog(@"pan ended ---------------");
                 
                 if (location.x-startPoint.x >= screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]) {
                     
@@ -322,9 +323,6 @@
     return YES;
 }
 
-
-
-
 - (void)addHeaderItems{
     Item *displayedList = self.displayList;
     NSLog(@"displayed list is = %@", displayedList.title);
@@ -408,76 +406,125 @@
 
 - (IBAction)addItemButton:(id)sender {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new item"
-                                                    message:nil
-                                                   delegate:self
-                                          cancelButtonTitle:@"cancel"
-                                          otherButtonTitles:@"add", nil];
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
     
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeYes;
-    [alert textFieldAtIndex:0].autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
+    long numberOfResults = [itemArray count];
     
-    [alert show];
+    NSArray *visibleRows = [self.tableView indexPathsForVisibleRows];
+    NSIndexPath *topRowPath = [visibleRows objectAtIndex:0];
+    Item *topItem = [self.fetchedResultsController objectAtIndexPath:topRowPath];
     
-}
-
-
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        NSString *name = [alertView textFieldAtIndex:0].text;
+    if (numberOfResults == 0) {
+        newItem.order = [NSNumber numberWithLong:16777216];
+        NSLog(@"Zero items in list - setting order value to 16777216");
+    } else if (topRowPath.row == 0){
+        newItem.order = [NSNumber numberWithInt:topItem.order.intValue/2];
+        NSLog(@"top row is 0, cutting it's order value in half");
+    }
+    else{
+        Item *secondItem = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0]];
+        int newOrderValue = (secondItem.order.intValue - topItem.order.intValue)/2 + topItem.order.intValue;
+        newItem.order = [NSNumber numberWithInt:newOrderValue];
+       // newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath. inSection:<#(NSInteger)#>]
         
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-        
-        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-        NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
-        long numberOfResults = [itemArray count];
-        
-        if (numberOfResults == 0){
-            newItem.order = [NSNumber numberWithLong:16777216];
-        }
-        else{
-            //find the lowest order value in the array of items
-            NSSortDescriptor *sortByOrder = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES selector:@selector(compare:)];
-            NSArray *sortDescriptors = [NSArray arrayWithObject: sortByOrder];
-            [itemArray sortedArrayUsingDescriptors:sortDescriptors];
-            Item *firstObject = [itemArray objectAtIndex:0];
-            long lowestOrder = ([firstObject.order longValue]/2);
-            newItem.order = [NSNumber numberWithLong:lowestOrder];
-        }
-        
-        newItem.title = name;
-        
-        newItem.done = 0;
-        newItem.notes = @" ";
-        
-        Item *parentList = self.displayList;
-        
-        newItem.parent = parentList.itemId;
-        
-        double timestamp = [[NSDate date] timeIntervalSince1970];
-        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-        
-        NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-        [newArrayOfItemsToAdd addObject:newItem.itemId];
-        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-            
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
-
+        NSLog(@"top item order = %@, second item order = %@, newItem order = %@", topItem.order, secondItem.order, newItem.order);
         
     }
+        
+    newItem.done = 0;
+    newItem.notes = @" ";
+    
+    Item *parentList = self.displayList;
+    
+    newItem.parent = parentList.itemId;
+    
+    double timestamp = [[NSDate date] timeIntervalSince1970];
+    newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    NSIndexPath *newItemIndexPath = [[NSIndexPath alloc] init];
+
+    if (topRowPath.row == 0){
+    newItemIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    }
+    else{
+    newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0];
+    }
+    
+    ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:newItemIndexPath];
+    self.rowOfNewItem = (int)newItemIndexPath.row;
+    cell.cellItemTitle.enabled = YES;
+    cell.cellItemTitle.delegate = self;
+    
+    for (int i = 0; i <= (int)numberOfResults; i++) {
+
+        if (i != self.rowOfNewItem) {
+            NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
+            Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
+            itemToReload.forceUpdateString = @" ";
+            NSLog(@"row to load = %d", i);
+        }
+    }
+    [cell.cellItemTitle becomeFirstResponder];
+
+
 }
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    NSLog(@"text field is beginning editting");
+    //[textField performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    // It is important for you to hide the keyboard
+
+     NSString *currentText = textField.text;
+     
+     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]];
+     
+     itemInCell.title = currentText;
+    
+     // Force any text fields that might be being edited to end
+     [self.view.window endEditing: YES];
+    
+     NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+     [newArrayOfItemsToAdd addObject:itemInCell.itemId];
+     [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+     [[NSUserDefaults standardUserDefaults] synchronize];
+     
+     [textField resignFirstResponder];
+     
+     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    self.rowOfNewItem = -1;
+    [self.tableView reloadData];
+    
+    [DoozerSyncManager syncWithServer:self.managedObjectContext];
+    
+    return YES;
+}
+ 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
@@ -493,6 +540,8 @@
         static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
         static NSIndexPath  *sourceIndexPath = nil; ///< Initial index path, where gesture begins.
     
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+
         switch (state) {
             case UIGestureRecognizerStateBegan: {
                 
@@ -509,7 +558,6 @@
                         
                         sourceIndexPath = indexPath;
                         
-                        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
                         
                         // Take a snapshot of the selected row using helper method.
                         snapshot = [self customSnapshoFromView:cell];
@@ -567,7 +615,7 @@
                             for(int r = currentRow; r<totalRows; r++){
                                 [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:0]];
                                 
-                                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
+                                ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
                                 cell.hidden = NO;
                             }
                         }
@@ -660,6 +708,13 @@
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                         abort();
                     }
+                    
+                    
+                    //TODO figure out why the cell sometimes doesn't show!!!!!!!!!!
+                    //cell.hidden = NO;
+                    
+                    
+                    
                     [DoozerSyncManager syncWithServer:self.managedObjectContext];
                     [self.tableView reloadData];
 
@@ -669,7 +724,7 @@
                 // Clean up.
                 self.longPressActive = NO;
                 //NSLog(@"In clean up of Long Press method");
-                UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:sourceIndexPath];
+                ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
                 cell.hidden = NO;
                 cell.alpha = 0.0;
                 
@@ -693,7 +748,6 @@
         }
         }
     }
-
 
 - (void)setDisplayList:(id)newDisplayList {
     if (_displayList != newDisplayList) {
@@ -729,7 +783,6 @@
 }
  
 #pragma mark - Segues
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showItem"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -754,8 +807,6 @@
 }
 
 #pragma mark - Table View
-
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[self.fetchedResultsController sections] count];
 }
@@ -767,9 +818,10 @@
     //return [[self findChildren] count];
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemCell" forIndexPath:indexPath];
+    //NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
+    
+    ListCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemCell" forIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
@@ -778,27 +830,42 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    if ([clickedItem.type isEqualToString:@"completed_header"]) {
+
+    if (self.rowOfNewItem != -1) {
+        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
+        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
         
-        if (self.showCompleted) {
-            self.showCompleted = NO;
-        }else{
-            self.showCompleted = YES;
-        }
+        itemToSave.title = cell.cellItemTitle.text;
+        NSLog(@"title to save = %@", itemToSave.title);
+
+        [AddItemsToServer addThisItem:itemToSave];
         
+        self.rowOfNewItem = -1;
         [self.tableView reloadData];
-        
     }else{
-        [self performSegueWithIdentifier:@"showItem" sender:self];
+        if ([clickedItem.type isEqualToString:@"completed_header"]) {
+            
+            if (self.showCompleted) {
+                self.showCompleted = NO;
+            }else{
+                self.showCompleted = YES;
+            }
+            
+            [self.tableView reloadData];
+            
+        }else{
+            [self performSegueWithIdentifier:@"showItem" sender:self];
+        }
     }
-    
 }
 
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //NSLog(@"Configuring -------- Cell for item == %@", object.title);
+
+    cell.cellItemTitle.enabled = NO;
     
     NSNumber *done = object.done;
     if ([object.type isEqualToString:@"completed_header"]) {
@@ -813,20 +880,25 @@
         }
         
         //NSLog(@"completed count for header is -------- %d", doneCount);
-        
-        
+
         Item *listForTitle = self.displayList;
+        NSString *titleText = nil;
         if (self.showCompleted) {
-            cell.textLabel.text = [NSString stringWithFormat:@"\U000025BC\U0000FE0E %@ (%d)", object.title, doneCount];
+            titleText = [NSString stringWithFormat:@"\U000025BC\U0000FE0E %@ (%d)", object.title, doneCount];
         }else{
-            cell.textLabel.text = [NSString stringWithFormat:@"\U000025B6\U0000FE0E %@ (%d)", object.title, doneCount];
+            titleText = [NSString stringWithFormat:@"\U000025B6\U0000FE0E %@ (%d)", object.title, doneCount];
         }
+        NSDictionary* attributes = @{};
+        NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:titleText attributes:attributes];
+        cell.cellItemTitle.attributedText = attrText;
         
         cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.textLabel.font = [UIFont systemFontOfSize:16];
-        cell.textLabel.textAlignment = NSTextAlignmentLeft;
+        cell.cellItemTitle.textColor = [UIColor whiteColor];
+        cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+        cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
+        
+
     }else{
         if ([done intValue] == 1) {
             NSString *titleText = object.title;
@@ -836,11 +908,11 @@
                                          };
             
             NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:titleText attributes:attributes];
-            cell.textLabel.attributedText = attrText;
+            cell.cellItemTitle.attributedText = attrText;
             
-            cell.textLabel.textColor = [UIColor whiteColor];
-            cell.textLabel.font = [UIFont systemFontOfSize:16];
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
+            cell.cellItemTitle.textColor = [UIColor whiteColor];
+            cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+            cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
 
             if (self.showCompleted) {
@@ -850,12 +922,26 @@
 
             }
         }else{
-            cell.textLabel.attributedText = nil;
-            cell.textLabel.text = object.title;
-            cell.textLabel.textColor = [UIColor blackColor];
-            cell.textLabel.font = [UIFont systemFontOfSize:16];
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
-            cell.backgroundColor = [UIColor whiteColor];
+            cell.cellItemTitle.attributedText = nil;
+            cell.cellItemTitle.text = object.title;
+            cell.cellItemTitle.textColor = [UIColor blackColor];
+            cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+            cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
+            
+            if (self.rowOfNewItem == -1) {
+                cell.backgroundColor = [UIColor whiteColor];
+                //NSLog(@"setting background color to white for row %ld", (long)indexPath.row);
+            }else{
+                if (self.rowOfNewItem == indexPath.row) {
+                    cell.backgroundColor = [UIColor whiteColor];
+                    //NSLog(@"setting background color to white for row %ld", (long)indexPath.row);
+
+                }else{
+                    cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
+                    //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
+
+                }
+            }
 
         }
     }
@@ -865,7 +951,6 @@
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
-
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -914,13 +999,8 @@
     }
 }
 
-
 #pragma mark - Fetched results controller
-
-
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
+- (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
@@ -964,17 +1044,12 @@
     return _fetchedResultsController;
 }
 
-
-
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-{
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -991,12 +1066,12 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath
-{
+      newIndexPath:(NSIndexPath *)newIndexPath {
     UITableView *tableView = self.tableView;
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
+            NSLog(@"ChangeInsert index path to delete = %@", indexPath);
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
@@ -1006,30 +1081,27 @@
             break;
         
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
+            [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
          
             
         case NSFetchedResultsChangeMove:
+            NSLog(@"moving rows in CHANGEMOVE");
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView endUpdates];
 }
 
-
-
 #pragma mark - Helper methods
-
-//Used in the re-ordering of items - captures a snapshot of the cell to move around
-/** @brief Returns a customized snapshot of a given view. */
 - (UIView *)customSnapshoFromView:(UIView *)inputView {
-    
+    //Used in the re-ordering of items - captures a snapshot of the cell to move around
     // Make an image from the input view.
     UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
     [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -1059,13 +1131,9 @@
     UIView *snapshot = [[UIImageView alloc] initWithImage:image];
     snapshot.layer.masksToBounds = NO;
     snapshot.layer.cornerRadius = 0.0;
-    //snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
-    //snapshot.layer.shadowRadius = 5.0;
-    //snapshot.layer.shadowOpacity = 0.4;
-    
+
     return snapshot;
 }
-
 
 @end
 

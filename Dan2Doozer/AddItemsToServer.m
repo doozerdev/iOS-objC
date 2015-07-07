@@ -9,6 +9,8 @@
 #import "AddItemsToServer.h"
 #import "AFNetworking.h"
 #import "Item.h"
+#import "AppDelegate.h"
+#import "DoozerSyncManager.h"
 
 
 @implementation AddItemsToServer
@@ -88,6 +90,12 @@
                 NSError *firsterror2 = nil;
                 NSArray *results2 = [passOnContext executeFetchRequest:fetchRequest2 error:&firsterror2];
                 
+                
+                //Perhaps I should add a 'localID' field and keep the 'ServerID' as a separate field?
+                //this could allow me to update the server ID field in the background with less disruption.
+                //I would have to add lots of OR statements (i.e. serverID or localID to find a valid item).
+                
+                
                 for (id eachChild in results2){
                     Item *childToModifyParent = eachChild;
                     childToModifyParent.parent = newItemId;
@@ -146,6 +154,30 @@
     
     
     }
+}
+
++(void)addThisItem:(Item *)itemToAdd{
+    
+    NSLog(@" this got called!!!!!!!!!!!!!!!!");
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+ 
+    NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+    [newArrayOfItemsToAdd addObject:itemToAdd.itemId];
+    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [DoozerSyncManager syncWithServer:context];
+    
+    
 }
 
 
