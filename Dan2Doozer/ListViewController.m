@@ -54,6 +54,24 @@
     
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    
+    if (self.rowOfNewItem != -1) {
+        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
+        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
+        
+        itemToSave.title = cell.cellItemTitle.text;
+        NSLog(@"title to save = %@", itemToSave.title);
+        
+        [AddItemsToServer addThisItem:itemToSave];
+        
+        self.rowOfNewItem = -1;
+        [self.tableView reloadData];
+    }
+    
+}
+
 -(void)scrollViewDidScroll:(UIScrollView *)sender {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     //ensure that the end of scroll is fired.
@@ -405,6 +423,20 @@
 }
 
 - (IBAction)addItemButton:(id)sender {
+    
+    if (self.rowOfNewItem != -1) {
+        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
+        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
+        
+        itemToSave.title = cell.cellItemTitle.text;
+        NSLog(@"title to save = %@", itemToSave.title);
+        
+        [AddItemsToServer addThisItem:itemToSave];
+        
+        self.rowOfNewItem = -1;
+        [self.tableView reloadData];
+    }
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
