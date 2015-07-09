@@ -16,12 +16,14 @@
 @class DetailViewController;
 @class ListViewController;
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate>
+@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 
 //@property (strong, nonatomic) DetailViewController *detailViewController;
 @property (strong, nonatomic) ListViewController *listViewController;
 @property (strong, nonatomic) NSMutableArray *parentArray;
 @property (nonatomic) int numberOfUncompletedChildren;
+@property (strong, nonatomic) NSIndexPath *superOriginalIndex;
+
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

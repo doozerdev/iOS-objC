@@ -45,7 +45,7 @@
     
     panGesture.delegate = self;
     
-    self.navigationController.hidesBarsOnSwipe = YES;
+    //self.navigationController.hidesBarsOnSwipe = YES;
 
     self.isScrolling = NO;
     self.longPressActive = NO;

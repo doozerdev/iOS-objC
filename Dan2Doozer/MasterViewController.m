@@ -122,6 +122,11 @@
     //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
     //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.77 green:0.4 blue:0.68 alpha:1.0];
     
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
+                                               initWithTarget:self action:@selector(longPressGestureRecognized:)];
+    [self.tableView addGestureRecognizer:longPress];
+
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -146,6 +151,235 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+- (IBAction)longPressGestureRecognized:(id)sender {
+    
+    UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
+    
+    CGPoint location = [longPress locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    
+    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
+    
+    UIGestureRecognizerState state = longPress.state;
+    
+    static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
+    static NSIndexPath  *sourceIndexPath = nil; ///< Initial index path, where gesture begins.
+    
+    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan: {
+            
+            //self.longPressActive = YES;
+            
+            if (indexPath) {
+                
+                /*
+                if ([clickedItem.type isEqualToString:@"completed_header"]) {
+                    self.allowDragging = NO;
+                }else{
+                    self.allowDragging = YES;
+                 */
+                    
+                    _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
+                    
+                    sourceIndexPath = indexPath;
+                    
+                    
+                    // Take a snapshot of the selected row using helper method.
+                    snapshot = [self customSnapshoFromView:cell];
+                    
+                    // Add the snapshot as subview, centered at cell's center...
+                    __block CGPoint center = cell.center;
+                    snapshot.center = center;
+                    snapshot.alpha = 0.0;
+                    [self.tableView addSubview:snapshot];
+                    [UIView animateWithDuration:0.25 animations:^{
+                        
+                        // Offset for gesture location.
+                        center.y = location.y;
+                        snapshot.center = center;
+                        snapshot.transform = CGAffineTransformMakeScale(1.05, 1.05);
+                        snapshot.alpha = 0.98;
+                        cell.alpha = 0.0;
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        cell.hidden = YES;
+                        
+                    }];
+                //}
+                
+                
+            }
+            break;
+        }
+            
+        case UIGestureRecognizerStateChanged: {
+            //if (self.allowDragging) {
+                
+                CGPoint center = snapshot.center;
+                center.y = location.y;
+                snapshot.center = center;
+                
+                // Is destination valid and is it different from source?
+                if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
+                    
+                    NSLog(@"moving cells ----------------");
+                    // ... move the rows.
+                    [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
+                    
+                    Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                    int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
+                    
+                    
+                    if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
+                        NSLog(@"passing the completed header");
+                        //self.showCompleted = YES;
+                        int currentRow = (int)indexPath.row+1;
+                        
+                        NSMutableArray *indexPaths = [[NSMutableArray alloc]init];
+                        for(int r = currentRow; r<totalRows; r++){
+                            [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:0]];
+                            
+                            ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
+                            cell.hidden = NO;
+                        }
+                    }
+                    // ... and update source so it is in sync with UI changes.
+                    sourceIndexPath = indexPath;
+                }
+                
+                //NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
+                
+                break;
+            //}
+        }
+            
+        case UIGestureRecognizerStateEnded: {
+            
+            //if (self.allowDragging) {
+                Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+                NSArray *itemsInTable = self.fetchedResultsController.fetchedObjects;
+                int headerOrderValue = 0;
+                for (Item *currentItem in itemsInTable){
+                    if ([currentItem.type isEqualToString:@"completed_header"]) {
+                        headerOrderValue = currentItem.order.intValue;
+                    }
+                }
+                
+                //NSLog(@"completed order value is %d", headerOrderValue);
+                
+                NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+                
+                NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
+                Item *previousItem = nil;
+                Item *followingItem  = nil;
+                
+                if(_superOriginalIndex.row < sourceIndexPath.row){
+                    if (sourceIndexPath.row == (numberOfObjects - 1)) {
+                        Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                        int newItemNewOrder = originalLastItem.order.intValue + 1048576;
+                        reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                        
+                    }else{
+                        previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                        followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row+1];
+                        
+                        int previousItemOrder = [previousItem.order intValue];
+                        int followingItemOrder = [followingItem.order intValue];
+                        int newOrder = (previousItemOrder + followingItemOrder)/2;
+                        reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                    }
+                    
+                }else{
+                    if (sourceIndexPath.row == 0) {
+                        Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                        int newItemNewOrder = originalFirstItem.order.intValue / 2;
+                        reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                    }else{
+                        previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row-1];
+                        followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
+                        
+                        int previousItemOrder = [previousItem.order intValue];
+                        int followingItemOrder = [followingItem.order intValue];
+                        int newOrder = (previousItemOrder + followingItemOrder)/2;
+                        reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                    }
+                }
+                
+                //NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
+                
+                //dropping an uncompleted item into the 'completed' zone. Set the item's 'done' value appropriately.
+                if (reorderedItem.order.intValue > headerOrderValue) {
+                    reorderedItem.done = [NSNumber numberWithInt:1];
+                }else{
+                    reorderedItem.done = [NSNumber numberWithInt:0];
+                }
+                
+                NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
+                //NSLog(@"first char = %@", itemIdCharacter);
+                
+                if ([itemIdCharacter isEqualToString:@"1"]) {
+                    //do nothing
+                }else{
+                    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+                    [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
+                    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+                
+                
+                NSError *error = nil;
+                if (![context save:&error]) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+                
+                
+                //TODO figure out why the cell sometimes doesn't show!!!!!!!!!!
+                //cell.hidden = NO;
+                
+                
+                
+                [DoozerSyncManager syncWithServer:self.managedObjectContext];
+                [self.tableView reloadData];
+                
+            }
+            
+        default: {
+            // Clean up.
+            //self.longPressActive = NO;
+            //NSLog(@"In clean up of Long Press method");
+            ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
+            cell.hidden = NO;
+            cell.alpha = 0.0;
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                
+                snapshot.center = cell.center;
+                snapshot.transform = CGAffineTransformIdentity;
+                snapshot.alpha = 0.0;
+                cell.alpha = 1.0;
+                
+            } completion:^(BOOL finished) {
+                
+                sourceIndexPath = nil;
+                [snapshot removeFromSuperview];
+                snapshot = nil;
+                
+            }];
+            
+            break;
+        }
+    }
+}
+
+
+
 
 #pragma mark - Segues
 
@@ -699,6 +933,26 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
+}
+
+#pragma mark - Helper methods
+- (UIView *)customSnapshoFromView:(UIView *)inputView {
+    //Used in the re-ordering of items - captures a snapshot of the cell to move around
+    // Make an image from the input view.
+    UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
+    [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // Create an image view.
+    UIView *snapshot = [[UIImageView alloc] initWithImage:image];
+    snapshot.layer.masksToBounds = NO;
+    snapshot.layer.cornerRadius = 0.0;
+    snapshot.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
+    snapshot.layer.shadowRadius = 5.0;
+    snapshot.layer.shadowOpacity = 0.4;
+    
+    return snapshot;
 }
 
 @end
