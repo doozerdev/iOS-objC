@@ -69,14 +69,20 @@
     return YES;
 }
 
-/*
-- (IBAction)addListButton:(id)sender {
+
+- (IBAction)addItemButton:(id)sender {
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new list"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new item"
                                                     message:nil
                                                    delegate:self
                                           cancelButtonTitle:@"cancel"
-                                          otherButtonTitles:@"add", nil];
+                                          otherButtonTitles:nil];
+    
+    NSArray *listOfLists = self.fetchedResultsController.fetchedObjects;
+    
+    for(Item *eachList in listOfLists) {
+        [alert addButtonWithTitle:eachList.title];
+    }
     
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     [alert setTag:1];
@@ -86,10 +92,40 @@
     [alert show];
     
 }
- */
+
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-   if (alertView.tag == 2){
+    if (alertView.tag == 1){
+        
+        Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
+        NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
+        Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
+        
+        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        
+        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+        
+        newItem.title = [alertView textFieldAtIndex:0].text;
+        
+        long numberOfResults = [itemsOnTargetList count];
+        
+        if (numberOfResults == 0){
+            newItem.order = [NSNumber numberWithLong:16777216];
+        }
+        else{
+            newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
+        }
+        
+        newItem.done = 0;
+        newItem.notes = @" ";
+        newItem.parent = targetList.itemId;
+        
+        double timestamp = [[NSDate date] timeIntervalSince1970];
+        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+        
+        [AddItemsToServer addThisItem:newItem];
+        
+    }else if (alertView.tag == 2){
         if (buttonIndex == 1){
                         
             [DeleteItemFromServer deleteThisList:self.itemToDelete];
@@ -874,6 +910,47 @@
 	}
     
     return _fetchedResultsController;
+}    
+
+
+- (NSArray *)fetchItemsOnList: (NSString *)parentID
+{
+    
+    NSFetchRequest *fetchListRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+    [fetchListRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchListRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", parentID];
+    [fetchListRequest setPredicate:predicate];
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchListRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    
+    NSFetchedResultsController *lFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchListRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"FindList"];
+    lFetchedResultsController.delegate = self;
+    //self.fetchedResultsController = lFetchedResultsController;
+    [NSFetchedResultsController deleteCacheWithName:@"FindList"];
+    
+    
+    NSError *error = nil;
+    if (![lFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return lFetchedResultsController.fetchedObjects;
 }    
 
 

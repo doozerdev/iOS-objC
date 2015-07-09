@@ -157,7 +157,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="b82-Oq-taK">
                             <connections>
-                                <action selector="addListButton:" destination="7bK-jq-Zjz" id="qDl-FO-9xd"/>
+                                <action selector="addItemButton:" destination="7bK-jq-Zjz" id="co9-ko-Kvs"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
