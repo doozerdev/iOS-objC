@@ -29,6 +29,9 @@
 @property (nonatomic) int rowOfExpandedCell;
 @property (strong, nonatomic) Item *itemToDelete;
 
+//@property (nonatomic) int rowOfNewItem;
+
+
 
 
 @end

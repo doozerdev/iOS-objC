@@ -21,17 +21,12 @@
 
 
 - (void)awakeFromNib {
-    
-    //NSLog(@"custom cell awakFromNib");
-    
 
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     
-    //NSLog(@"cusomt cell setSelected");
-
 }
 
 

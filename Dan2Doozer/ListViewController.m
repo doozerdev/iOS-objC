@@ -521,6 +521,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     // It is important for you to hide the keyboard
 
+    NSLog(@"text field should end editing");
      NSString *currentText = textField.text;
      
      Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]];

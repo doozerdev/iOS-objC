@@ -52,13 +52,12 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        if (itemToAdd.parent == NULL) {
-            params[@"title"] = itemToAdd.title;
+        params[@"title"] = itemToAdd.title;
+        params[@"order"] = itemToAdd.order;
+        if (itemToAdd.parent == nil) {
             params[@"parent"] = @"";
         }else{
-            params[@"title"] = itemToAdd.title;
             params[@"parent"] = itemToAdd.parent;
-            params[@"order"] = itemToAdd.order;
         }
         if (itemToAdd.type) {
             params[@"type"] = itemToAdd.type;
@@ -163,11 +162,17 @@
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
- 
-    NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-    [newArrayOfItemsToAdd addObject:itemToAdd.itemId];
-    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (itemToAdd.parent == nil) {
+        NSMutableArray *newArrayOfListsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"]mutableCopy];
+        [newArrayOfListsToAdd addObject:itemToAdd.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfListsToAdd forKey:@"listsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }else{
+        NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+        [newArrayOfItemsToAdd addObject:itemToAdd.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 
     // Save the context.
     NSError *error = nil;
