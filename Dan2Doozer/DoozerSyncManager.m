@@ -111,7 +111,63 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
             }
         }
         
-        if (length == 0 && inDeleteQueue == NO){
+        NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
+        
+        if ([archiveValue isEqualToString:@"1"]) {
+            NSLog(@"item ID %@ has been deleted", itemId);
+        }
+
+        
+        
+        if (length > 0) {
+            //keep server copy if item is NOT in update queue. keep app copy if item IS in update queue.
+            
+            NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
+            NSLog(@"itemsToUpdate = %@", itemsToUpdate);
+            BOOL inUpdateQueue = NO;
+            
+            for (id eachItemInArray in itemsToUpdate) {
+                if ([eachItemInArray isEqualToString:idOfServerItem]){
+                    inUpdateQueue = YES;
+                }
+            }
+            
+            if (!inUpdateQueue) {
+                Item *existingItem = [results objectAtIndex:0];
+                
+                NSString *title = [eachArrayElement objectForKey:@"title"];
+                existingItem.title = title;
+                
+                NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
+                existingItem.order = [NSNumber numberWithInt:ordertemp.intValue];
+                
+                NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
+                existingItem.color = colorTemp;
+                
+                NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
+                existingItem.done = donetemp;
+                
+                NSString *notes = [eachArrayElement objectForKey:@"notes"];
+                existingItem.notes = notes;
+                if (existingItem.notes == nil) {
+                    existingItem.notes = @" ";
+                }
+                
+                NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
+                NSDateFormatter* df = [[NSDateFormatter alloc]init];
+                [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                NSDate* duedate = [df dateFromString:duedateString];
+                existingItem.duedate = duedate;
+                
+                NSError *error = nil;
+                if (![passOnContext save:&error]) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+            }
+        }
+        
+        if (length == 0 && !inDeleteQueue){
             Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:passOnContext];
             
             //NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
@@ -152,18 +208,10 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
                 newItem.color = colorTemp;
-                NSLog(@"setting color = %@", colorTemp);
 
             }
-            
-            NSString *donestring = [eachArrayElement objectForKey:@"done"];
-            NSLog(@"done as a string = %@", donestring);
-            
-            
+        
             NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
-            NSLog(@"done as a number = %@", donetemp);
-            
-            
             newItem.done = donetemp;
             
             NSString *notes = [eachArrayElement objectForKey:@"notes"];

@@ -53,14 +53,12 @@
     // Force any text fields that might be being edited to end
     [self.view.window endEditing: YES];
     
-    /*
-    if (self.rowOfNewItem != -1){
+    if (self.addingAnItem) {
         [AddItemsToServer addThisItem:itemInCell];
-        self.rowOfNewItem = -1;
+        self.addingAnItem = NO;
     }else{
-     */
         [UpdateItemsOnServer updateThisItem:itemInCell];
-    //}
+    }
     
     [textField resignFirstResponder];
     
@@ -68,6 +66,69 @@
 
     return YES;
 }
+
+
+
+- (void)addItemList {
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+    
+    Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
+    int numberOfResults = (int)[itemArray count];
+    self.rowOfExpandedCell = numberOfResults;
+    
+    if (numberOfResults == 0) {
+        newItem.order = [NSNumber numberWithInt:65536];
+    }else{
+        Item *lastItem = [itemArray objectAtIndex:numberOfResults-1];
+        newItem.order = [NSNumber numberWithInt:lastItem.order.intValue+65536];
+    }
+    
+    newItem.parent = nil;
+    //newItem.title = @" ";
+    
+    NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
+    
+    newItem.color = [ColorHelper returnUIColorString:colorPicker.intValue];
+    int newColorPickerValue = 1 + colorPicker.intValue;
+    if (newColorPickerValue > 4) {
+        newColorPickerValue = 0;
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    double timestamp = [[NSDate date] timeIntervalSince1970];
+    newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    self.addingAnItem = YES;
+    
+    NSIndexPath *newItemIndexPath = [NSIndexPath indexPathForRow:numberOfResults inSection:0];
+    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:newItemIndexPath];
+    cell.cellItemTitle.enabled = YES;
+    cell.cellItemTitle.delegate = self;
+    
+    if (numberOfResults > 0) {
+        for (int i = 0; i <= (int)numberOfResults; i++) {
+            if (i != self.rowOfExpandedCell) {
+                
+                NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
+                Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
+                itemToReload.forceUpdateString = @" ";
+            }
+        }
+    }
+    [cell.cellItemTitle becomeFirstResponder];
+}
+
 
 
 - (IBAction)addItemButton:(id)sender {
@@ -97,33 +158,52 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView.tag == 1){
         
-        Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
-        NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
-        Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
+        int numberOfLists = (int)[self.fetchedResultsController.fetchedObjects count];
         
-        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        //this is screwed up!!!
         
-        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
         
-        newItem.title = [alertView textFieldAtIndex:0].text;
         
-        long numberOfResults = [itemsOnTargetList count];
+        NSLog(@"button index is %ld, and numberof lists is %d", (long)buttonIndex, numberOfLists);
         
-        if (numberOfResults == 0){
-            newItem.order = [NSNumber numberWithLong:16777216];
+        
+        if (buttonIndex > numberOfLists || buttonIndex == 0) {
+            NSLog(@"cancel was pressed");
+        }else{
+
+            Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
+            NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
+            
+            NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+            
+            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            
+            newItem.title = [alertView textFieldAtIndex:0].text;
+            
+            long numberOfResults = [itemsOnTargetList count];
+            
+            if (numberOfResults == 0){
+                newItem.order = [NSNumber numberWithLong:16777216];
+            }
+            else{
+                Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
+
+                newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
+            }
+            
+            newItem.done = 0;
+            newItem.notes = @" ";
+            newItem.parent = targetList.itemId;
+            
+            double timestamp = [[NSDate date] timeIntervalSince1970];
+            newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+            
+            [AddItemsToServer addThisItem:newItem];
+            
+            [self.tableView reloadData];
+            
         }
-        else{
-            newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
-        }
         
-        newItem.done = 0;
-        newItem.notes = @" ";
-        newItem.parent = targetList.itemId;
-        
-        double timestamp = [[NSDate date] timeIntervalSince1970];
-        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-        
-        [AddItemsToServer addThisItem:newItem];
         
     }else if (alertView.tag == 2){
         if (buttonIndex == 1){
@@ -147,6 +227,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    self.addingAnItem = NO;
     self.rowOfExpandedCell = -1;
     //self.rowOfNewItem = -1;
     
@@ -487,69 +569,6 @@
 }
 
 
-
-- (void)addItemList {
-    //NSLog(@"self.rowOfNewItem at start of Add = %d", self.rowOfNewItem);
-    NSLog(@"self.rowOfExpandedCell at start of Add = %d", self.rowOfExpandedCell);
-    
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    
-    Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-    NSArray *itemArray = [self.fetchedResultsController fetchedObjects];
-    int numberOfResults = (int)[itemArray count];
-    self.rowOfExpandedCell = numberOfResults;
-    
-    if (numberOfResults == 0) {
-        newItem.order = [NSNumber numberWithInt:65536];
-    }else{
-        Item *lastItem = [itemArray objectAtIndex:numberOfResults-1];
-        newItem.order = [NSNumber numberWithInt:lastItem.order.intValue+65536];
-    }
-
-    newItem.parent = nil;
-    newItem.title = @" ";
-    
-    NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
-    
-    newItem.color = [ColorHelper returnUIColorString:colorPicker.intValue];
-    int newColorPickerValue = 1 + colorPicker.intValue;
-    if (newColorPickerValue > 4) {
-        newColorPickerValue = 0;
-    }
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    double timestamp = [[NSDate date] timeIntervalSince1970];
-    newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    [AddItemsToServer addThisItem:newItem];
-    
-    NSIndexPath *newItemIndexPath = [NSIndexPath indexPathForRow:numberOfResults inSection:0];
-    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:newItemIndexPath];
-    cell.cellItemTitle.enabled = YES;
-    cell.cellItemTitle.delegate = self;
-    
-    if (numberOfResults > 0) {
-        for (int i = 0; i <= (int)numberOfResults; i++) {
-            if (i != self.rowOfExpandedCell) {
-
-                NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
-                Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
-                itemToReload.forceUpdateString = @" ";
-            }
-        }
-    }
-    [cell.cellItemTitle becomeFirstResponder];
-}
-
-
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -602,7 +621,7 @@
             numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId];
         }
         
-        cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ -- %@", itemInCell.title, itemInCell.order];
+        cell.cellItemTitle.text = itemInCell.title;
         
         cell.cellItemSubTitle.hidden = NO;
         cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
@@ -847,7 +866,12 @@
             [cellToSave.cellItemTitle resignFirstResponder];
             [self.view.window endEditing: YES];
             
-            [UpdateItemsOnServer updateThisItem:itemToSave];
+            if (self.addingAnItem) {
+                [AddItemsToServer addThisItem:itemToSave];
+                self.addingAnItem = NO;
+            }else{
+                [UpdateItemsOnServer updateThisItem:itemToSave];
+            }
             
             self.rowOfExpandedCell = -1;
 

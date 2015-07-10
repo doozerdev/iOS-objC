@@ -31,6 +31,7 @@
 
 @property (nonatomic) int rowOfExpandedCell;
 @property (strong, nonatomic) Item *itemToDelete;
+@property BOOL addingAnItem;
 
 //@property (nonatomic) int rowOfNewItem;
 
