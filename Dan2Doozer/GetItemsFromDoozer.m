@@ -8,6 +8,7 @@
 
 #import "GetItemsFromDoozer.h"
 #import "AFNetworking.h"
+#import "DoozerSyncManager.h"
 
 
 @implementation GetItemsFromDoozer
@@ -59,6 +60,9 @@
               NSString * sessionID = nil;
               [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
               [[NSUserDefaults standardUserDefaults] synchronize];
+              
+              [DoozerSyncManager syncWithServer];
+              
               
           }
           

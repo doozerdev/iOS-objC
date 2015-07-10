@@ -111,6 +111,7 @@
                         [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         
+                        
                     }];
                     
                 }];
