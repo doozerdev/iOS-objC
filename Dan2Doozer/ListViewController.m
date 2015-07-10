@@ -332,7 +332,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+        [DoozerSyncManager syncWithServer];
     }
 }
 
@@ -414,7 +414,7 @@
             abort();
         }
         
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+        [DoozerSyncManager syncWithServer];
 
     }else{
         NSLog(@"header found and equal to = %d", headerCount);
@@ -553,7 +553,7 @@
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
     
-    [DoozerSyncManager syncWithServer:self.managedObjectContext];
+    [DoozerSyncManager syncWithServer];
     
     return YES;
 }
@@ -748,7 +748,7 @@
                     
                     
                     
-                    [DoozerSyncManager syncWithServer:self.managedObjectContext];
+                    [DoozerSyncManager syncWithServer];
                     [self.tableView reloadData];
 
                 }
@@ -1027,7 +1027,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+        [DoozerSyncManager syncWithServer];
         
     }
 }

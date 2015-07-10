@@ -24,7 +24,6 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     if ([FBSDKAccessToken currentAccessToken]) {
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
         [self performSegueWithIdentifier:@"showMasterView" sender:self];
     }
     else{

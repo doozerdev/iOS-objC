@@ -14,6 +14,7 @@
 #import "UpdateItemsOnServer.h"
 #import "DeleteItemFromServer.h"
 #import "ColorHelper.h"
+#import "AppDelegate.h"
 
 //NSFetchedResultsController *_fetchedResultsController;
 //NSMutableArray *_itemsArray;
@@ -21,22 +22,61 @@
 
 @implementation DoozerSyncManager
 
-+(void)syncWithServer :(NSManagedObjectContext *)passOnContext{
+
++(void)syncWithServer{
+
+//login to Doozer if needed
     
-NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
-NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
+    double currentTime = [[NSDate date] timeIntervalSince1970];
+    NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
     
-AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-[manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+
+    
+    if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
+        NSLog(@"needing to log in again....");
         
-NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-[[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-[[NSUserDefaults standardUserDefaults] synchronize];
+        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+        NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
+            NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            NSLog(@"returning message from login operation");
+            
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            
+            [self performSyncSteps];
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+        }];
+    }else{
+        NSLog(@"syncing without needing new doozer login---------------");
+
+        [self performSyncSteps];
+        
+    }
+    
+}
+
+
++(void)performSyncSteps{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
+    NSLog(@"launching the GET ITEMS FROM DOOZER operatrion");
     [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
-        [self copyFromServer :passOnContext :itemsBigArray];
+        [self copyFromServer :itemsBigArray];
         
         NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
         //NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
@@ -48,17 +88,17 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
         //NSLog(@"items to delete from server = %@", itemsToDelete);
         
         AddItemsToServer *moo = [[AddItemsToServer alloc] init];
-        [moo addItemsToServer:newArrayOfListsToAdd :passOnContext :^(int handler) {
-        
+        [moo addItemsToServer:newArrayOfListsToAdd :context :^(int handler) {
+            
             //NSLog(@"here's the completion handler variable = %d", handler);
             //NSLog(@"add lists successfully returned");
             
             AddItemsToServer *cluck = [[AddItemsToServer alloc] init];
-            [cluck addItemsToServer:newArrayOfItemsToAdd :passOnContext :^(int handler){
+            [cluck addItemsToServer:newArrayOfItemsToAdd :context :^(int handler){
                 
                 //NSLog(@"add items successfully returned");
                 UpdateItemsOnServer *baah = [[UpdateItemsOnServer alloc] init];
-                [baah updateItemsOnServer:itemsToUpdate :passOnContext :^(int handler){
+                [baah updateItemsOnServer:itemsToUpdate :context :^(int handler){
                     
                     //NSLog(@"update items successfully returned");
                     DeleteItemFromServer *meow = [[DeleteItemFromServer alloc] init];
@@ -80,27 +120,32 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
         }];
         
     }];
-        
-        
-} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-    NSLog(@"Error: %@", error);
-}];
+
     
 }
 
-+(void)copyFromServer:(NSManagedObjectContext *) passOnContext :(NSMutableArray *)inputArray{
+
+
++(void)copyFromServer :(NSMutableArray *)inputArray{
     
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+
+    //look at each item that comes back from the server and see if we want to keep it
     for (id eachArrayElement in inputArray) {
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:passOnContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setEntity:entity];
+        
+        //pull anything from CoreData that has a matching item ID
         NSString *itemId = [eachArrayElement objectForKey:@"id"];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId == %@", itemId];
         [fetchRequest setPredicate:predicate];
-        
         NSError *firsterror = nil;
-        NSArray *results = [passOnContext executeFetchRequest:fetchRequest error:&firsterror];
+        NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
+        NSLog(@"results = %@", results);
         NSUInteger length = [results count];
+        NSLog(@"length = %lu", (unsigned long)length);
         
         NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
         NSString *idOfServerItem = [eachArrayElement objectForKey:@"id"];
@@ -111,12 +156,17 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
             }
         }
         
+        /*
+         
+         TODO - fix this
+         
         NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
+        NSLog(@"archive value = %@", archiveValue);
         
         if ([archiveValue isEqualToString:@"1"]) {
             NSLog(@"item ID %@ has been deleted", itemId);
         }
-
+         */
         
         
         if (length > 0) {
@@ -160,7 +210,7 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
                 existingItem.duedate = duedate;
                 
                 NSError *error = nil;
-                if (![passOnContext save:&error]) {
+                if (![context save:&error]) {
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
@@ -168,13 +218,14 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
         }
         
         if (length == 0 && !inDeleteQueue){
-            Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:passOnContext];
+            Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
             
             //NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
             //NSLog(@"archive value is = %@", archiveValue);
             
             NSString *title = [eachArrayElement objectForKey:@"title"];
             newItem.title = title;
+            NSLog(@"creating an item of title %@", newItem.title);
             
             NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
             NSInteger ordertempInt = [ordertemp integerValue];
@@ -231,7 +282,7 @@ NSString * sessionID = [responseObject objectForKey:@"sessionId"];
             
             // Save the context.
             NSError *error = nil;
-            if (![passOnContext save:&error]) {
+            if (![context save:&error]) {
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 abort();
             }

@@ -227,7 +227,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    if (numberOfLaunches.intValue == 0) {
+        NSLog(@"first launch -- not syncing when loading main screen");
+    }else{
+        [DoozerSyncManager syncWithServer];
+
+    }
+
     self.addingAnItem = NO;
     self.rowOfExpandedCell = -1;
     //self.rowOfNewItem = -1;
@@ -463,7 +470,7 @@
                 
                 
                 
-                [DoozerSyncManager syncWithServer:self.managedObjectContext];
+                [DoozerSyncManager syncWithServer];
                 [self.tableView reloadData];
                 
             }

@@ -80,6 +80,15 @@ NSString *sessionID = nil;
         [[NSUserDefaults standardUserDefaults] setObject:colorPicker forKey:@"colorPicker"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"secondsSinceDoozerAuth"];
+    if(lastDoozerAuth){
+        //do nothing
+    }else{
+        //create the initial record of when logging in happened
+        lastDoozerAuth = [NSNumber numberWithInteger:0];
+        [[NSUserDefaults standardUserDefaults] setObject:lastDoozerAuth forKey:@"lastDoozerAuth"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -121,12 +130,23 @@ NSString *sessionID = nil;
 - (void)logIntoDoozerWithFacebook {
         
     if([FBSDKAccessToken currentAccessToken]){
+        
+        //[self performSelector:@selector(showListList) withObject:nil afterDelay:2];
+        //self.LoginStatusLabel.text = @"Checking server for items...";
+
+
+        
         self.LoginStatusLabel.text = @"Connecting to Doozer server...";
+
+        NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+        NSLog(@"number of launches = %@", numberOfLaunches);
+        
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
         NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
         NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            
             
             self.LoginStatusLabel.text = @"Checking server for items...";
         
@@ -135,8 +155,14 @@ NSString *sessionID = nil;
             [[NSUserDefaults standardUserDefaults] synchronize];
             GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
             [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
-                NSManagedObjectContext *currentContext = self.managedObjectContext;
-                [DoozerSyncManager copyFromServer :currentContext :itemsBigArray];
+                
+                NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
+                int secondsEpochInt = secondsSinceUnixEpoch;
+                NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
+                [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                [DoozerSyncManager copyFromServer :itemsBigArray];
                 
                 [self performSelector:@selector(showListList) withObject:nil afterDelay:2];
                 
@@ -145,6 +171,9 @@ NSString *sessionID = nil;
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
+         
+    
+        
     }
 }
 

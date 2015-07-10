@@ -29,8 +29,8 @@
 -(void) viewWillDisappear:(BOOL)animated {
     Item *checkItem = self.detailItem;
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"testCell" forIndexPath:indexPath];
+    //NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    //UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"testCell" forIndexPath:indexPath];
     
     //NSLog(@" cell text = %@", cell.textLabel.text);
     
@@ -74,7 +74,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-        [DoozerSyncManager syncWithServer:self.managedObjectContext];
+        [DoozerSyncManager syncWithServer];
     }
     
 

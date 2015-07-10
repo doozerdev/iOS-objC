@@ -111,7 +111,7 @@
         abort();
     }
     
-    [DoozerSyncManager syncWithServer:context];
+    [DoozerSyncManager syncWithServer];
 }
 
 

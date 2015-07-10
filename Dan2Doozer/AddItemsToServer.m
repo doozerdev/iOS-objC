@@ -180,7 +180,7 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
-    [DoozerSyncManager syncWithServer:context];
+    [DoozerSyncManager syncWithServer];
     
     
 }
