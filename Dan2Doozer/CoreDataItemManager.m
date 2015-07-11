@@ -62,5 +62,15 @@ NSFetchedResultsController *_fetchedResultsController;
     return numberOfUncompletedChildren;
 }
 
++(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems{
+    int itemOrderMultiplier = 1;
+    for (Item *eachItem in arrayOfItems) {
+        NSLog(@"%@ order is %@", eachItem.title, eachItem.order);
+        eachItem.order = [NSNumber numberWithInt:itemOrderMultiplier*32];
+        NSLog(@"%@ NEW order is %@", eachItem.title, eachItem.order);
+        itemOrderMultiplier += 1;
+    }
+    
+}
 
 @end

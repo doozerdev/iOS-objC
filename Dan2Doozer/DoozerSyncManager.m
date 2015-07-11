@@ -30,13 +30,13 @@
     double currentTime = [[NSDate date] timeIntervalSince1970];
     NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
     
-    NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
+    //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
 
     
     if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
-        NSLog(@"needing to log in again....");
+        NSLog(@"Sync starts with LOGIN");
         
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
         NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
@@ -59,7 +59,7 @@
             NSLog(@"Error: %@", error);
         }];
     }else{
-        NSLog(@"syncing without needing new doozer login---------------");
+        NSLog(@"Sync WITHOUT login needed");
 
         [self performSyncSteps];
         
@@ -74,7 +74,7 @@
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
-    NSLog(@"launching the GET ITEMS FROM DOOZER operatrion");
+    //NSLog(@"launching the GET ITEMS FROM DOOZER operatrion");
     [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
         [self copyFromServer :itemsBigArray];
         

@@ -23,8 +23,9 @@
 @property (nonatomic, retain) NSDate *updated_at;
 @property (nonatomic, retain) NSNumber *children_undone;
 @property (nonatomic, retain) NSString *type;
-
 @property (nonatomic, retain) NSString *itemId;
+
+@property (nonatomic, retain) NSString *localItemId;
 @property (nonatomic, retain) NSString *color;
 @property (nonatomic, retain) NSString *forceUpdateString;
 

@@ -15,6 +15,7 @@
 #import "AppDelegate.h"
 #import "ListCustomCell.h"
 #import "AddItemsToServer.h"
+#import "CoreDataItemManager.h"
 
 @interface ListViewController () <UITextFieldDelegate>
 @end
@@ -29,11 +30,13 @@
     
     [self addHeaderItems];
     
-    self.view.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
+    UIColor *tempColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
+    self.view.backgroundColor = tempColor;
     
     //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
     //self.navigationController.navigationBar.barTintColor = tempColor;
     
+    //self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@", listForTitle.title, listForTitle.itemId];
     self.navigationItem.title = listForTitle.title;
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
@@ -332,6 +335,10 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+        
+        NSLog(@"checking for rebalancing!!!!!!");
+        [self rebalanceListIfNeeded];
+        
         [DoozerSyncManager syncWithServer];
     }
 }
@@ -339,6 +346,26 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer {
     //This allows the custom PanGesture to be simultaneiously monitoring with the built-in swipe left to reveal delete button
     return YES;
+}
+
+-(void)rebalanceListIfNeeded{
+    NSLog(@"inside rebalance list if needed method");
+    
+    NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
+    BOOL rebalanceNeeded = NO;
+    int previousItemOrder = 0;
+    for (Item *eachItem in itemsOnList){
+        int diff = eachItem.order.intValue - previousItemOrder;
+        previousItemOrder = eachItem.order.intValue;
+        NSLog(@"diff ===== %d", diff);
+        if (diff < 2){
+            rebalanceNeeded = YES;
+        }
+    }
+    if (rebalanceNeeded) {
+        [CoreDataItemManager rebalanceItemOrderValues:itemsOnList];
+    }
+    
 }
 
 - (void)addHeaderItems{
@@ -503,11 +530,11 @@
             NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
             Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
             itemToReload.forceUpdateString = @" ";
-            NSLog(@"row to load = %d", i);
+            //NSLog(@"row to load = %d", i);
         }
     }
+    
     [cell.cellItemTitle becomeFirstResponder];
-
 
 }
 
@@ -552,6 +579,8 @@
     
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
+    
+    [self rebalanceListIfNeeded];
     
     [DoozerSyncManager syncWithServer];
     
@@ -746,8 +775,8 @@
                     //TODO figure out why the cell sometimes doesn't show!!!!!!!!!!
                     //cell.hidden = NO;
                     
-                    
-                    
+                    [self rebalanceListIfNeeded];
+
                     [DoozerSyncManager syncWithServer];
                     [self.tableView reloadData];
 
@@ -851,10 +880,16 @@
     //return [[self findChildren] count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    return 50;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
     
     ListCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemCell" forIndexPath:indexPath];
+
     [self configureCell:cell atIndexPath:indexPath];
     
     return cell;
@@ -871,6 +906,7 @@
         
         itemToSave.title = cell.cellItemTitle.text;
         NSLog(@"title to save = %@", itemToSave.title);
+        [self rebalanceListIfNeeded];
 
         [AddItemsToServer addThisItem:itemToSave];
         
@@ -894,7 +930,12 @@
 }
 
 - (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-
+    
+    UIView *viewToRemove = nil;
+    while((viewToRemove = [cell viewWithTag:5151]) != nil) {
+        [viewToRemove removeFromSuperview];        
+    }
+    
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     //NSLog(@"Configuring -------- Cell for item == %@", object.title);
 
@@ -912,8 +953,6 @@
             }
         }
         
-        //NSLog(@"completed count for header is -------- %d", doneCount);
-
         Item *listForTitle = self.displayList;
         NSString *titleText = nil;
         if (self.showCompleted) {
@@ -921,40 +960,43 @@
         }else{
             titleText = [NSString stringWithFormat:@"\U000025B6\U0000FE0E %@ (%d)", object.title, doneCount];
         }
-        NSDictionary* attributes = @{};
-        NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:titleText attributes:attributes];
-        cell.cellItemTitle.attributedText = attrText;
         
+        cell.cellItemTitle.attributedText = nil;
+        cell.cellItemTitle.text = titleText;
         cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellItemTitle.textColor = [UIColor whiteColor];
         cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         
-
     }else{
         if ([done intValue] == 1) {
             NSString *titleText = object.title;
             
-            NSDictionary* attributes = @{
-                                         NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]
-                                         };
-            
-            NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:titleText attributes:attributes];
-            cell.cellItemTitle.attributedText = attrText;
-            
+            cell.cellItemTitle.text = titleText;
             cell.cellItemTitle.textColor = [UIColor whiteColor];
             cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
 
             if (self.showCompleted) {
+                CGRect screenRect = [[UIScreen mainScreen] bounds];
+                CGFloat screenWidth = screenRect.size.width;
+                UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 25, screenWidth-30, 2)];
+                lineView.backgroundColor = [UIColor whiteColor];
+                lineView.tag = 5151;
+                [cell addSubview:lineView];
+
                 cell.hidden = NO;
+
             }else{
+
+
                 cell.hidden = YES;
 
             }
         }else{
+            
             cell.cellItemTitle.attributedText = nil;
             cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
@@ -972,10 +1014,8 @@
                 }else{
                     cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
                     //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
-
                 }
             }
-
         }
     }
 }
@@ -1114,7 +1154,7 @@
             break;
         
         case NSFetchedResultsChangeUpdate:
-            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
+            //NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
             [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;

@@ -12,5 +12,7 @@
 
 +(int)findNumberOfUncompletedChildren :(NSString *)parent;
 
++(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems;
 
+    
 @end

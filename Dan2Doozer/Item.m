@@ -22,6 +22,7 @@
 @synthesize updated_at;
 @synthesize children_undone;
 @synthesize type;
+@synthesize localItemId;
 
 @synthesize itemId;
 @synthesize color;
