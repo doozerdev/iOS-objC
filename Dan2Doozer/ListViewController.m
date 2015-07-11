@@ -43,6 +43,12 @@
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
     
+    /*
+    UILongPressGestureRecognizer *longPressScrollController = [[UILongPressGestureRecognizer alloc]
+                                               initWithTarget:self action:@selector(longPressScroll:)];
+    [self.tableView addGestureRecognizer:longPressScrollController];
+    */
+     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
     [self.tableView addGestureRecognizer:panGesture];
     
@@ -102,6 +108,7 @@
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenRect.size.width;
     BOOL swipeOnHiddenItem = NO;
+    int swipeThreshold = 100;
 
     if (!self.showCompleted && (swipedItem.done.intValue == 1)) {
         //NSLog(@"don't allow swiping!");
@@ -136,17 +143,16 @@
                     originalCell.hidden = NO;
                     Item *parent = self.displayList;
                     originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
-                    originalCell.cellItemTitle.attributedText = nil;
                     originalCell.cellItemTitle.text = @"\U00002714\U0000FE0E";
                     
                     if (swipedItem.done.intValue == 1) {
-                        if ((location.x-startPoint.x) > screenWidth/3) {
+                        if ((location.x-startPoint.x) > swipeThreshold) {
                             originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
                         }else{
                             originalCell.cellItemTitle.textColor = [UIColor whiteColor];
                         }
                     }else{
-                        if ((location.x-startPoint.x) > screenWidth/3) {
+                        if ((location.x-startPoint.x) > swipeThreshold) {
                             originalCell.cellItemTitle.textColor = [UIColor whiteColor];
 
                         }else{
@@ -162,11 +168,17 @@
             case UIGestureRecognizerStateEnded:{
                 //NSLog(@"pan ended ---------------");
                 
-                if (location.x-startPoint.x >= screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]) {
+                if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
                     
-                    [UIView animateWithDuration:0.4
+                    
+                    float velocity = 1000; //pixels per second
+                    
+                    float animationDuration = (screenWidth - (location.x - startPoint.x))/velocity;
+                    NSLog(@"animation duration = %f", animationDuration);
+                    
+                    [UIView animateWithDuration:animationDuration
                                           delay:0.0
-                                        options: UIViewAnimationOptionCurveLinear
+                                        options: UIViewAnimationOptionCurveEaseInOut
                                      animations:^
                      {
                          CGRect frame = snapshot.frame;
@@ -192,7 +204,7 @@
 
                      }];
 
-                }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < screenWidth/3 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]){
                     
                     [UIView animateWithDuration:0.2
                                           delay:0.0
@@ -357,7 +369,7 @@
     for (Item *eachItem in itemsOnList){
         int diff = eachItem.order.intValue - previousItemOrder;
         previousItemOrder = eachItem.order.intValue;
-        NSLog(@"diff ===== %d", diff);
+        //NSLog(@"diff ===== %d", diff);
         if (diff < 2){
             rebalanceNeeded = YES;
         }
@@ -586,12 +598,37 @@
     
     return YES;
 }
- 
+
+/*
+
+- (IBAction)longPressScroll:(id)sender {
+    
+    UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
+
+    //CGRect screenRect = [[UIScreen mainScreen] bounds];
+    
+    CGPoint locationOnScreen = [longPress locationInView:self.tableView.superview];
+    NSLog(@"NEW _____ location on Screen y axis = %f", locationOnScreen.y);
+    
+
+    if (locationOnScreen.y < 100) {
+        
+        CGRect newWindowPosition = CGRectMake(0, screenRect.size.height+1, 1.0, 1.0);
+        [self.tableView scrollRectToVisible:newWindowPosition animated:NO];
+    }
+
+
+}
+*/
+
+
+
 - (IBAction)longPressGestureRecognized:(id)sender {
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
     
     CGPoint location = [longPress locationInView:self.tableView];
+    
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -652,14 +689,27 @@
                 
             case UIGestureRecognizerStateChanged: {
                 if (self.allowDragging) {
-                        
+                    
                     CGPoint center = snapshot.center;
                     center.y = location.y;
                     snapshot.center = center;
                     
+                    /*
+                    CGRect screenRect = [[UIScreen mainScreen] bounds];
+                    
+                    CGPoint locationOnScreen = [longPress locationInView:self.tableView.superview];
+                    NSLog(@"location on Screen y axis = %f", locationOnScreen.y);
+                    
+                    if (locationOnScreen.y < 100) {
+                        
+                        CGRect newWindowPosition = CGRectMake(0, screenRect.size.height+1, 1.0, 1.0);
+                        [self.tableView scrollRectToVisible:newWindowPosition animated:NO];
+                    }
+                    */
+                    
                     // Is destination valid and is it different from source?
                     if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
-                        
+                    
                         NSLog(@"moving cells ----------------");
                         // ... move the rows.
                         [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
@@ -667,7 +717,7 @@
                         Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
                         int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
                         
-                        
+                        //if dragging into completed section, and they're currently hidden, show the completed cells
                         if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
                             NSLog(@"passing the completed header");
                             self.showCompleted = YES;
@@ -990,7 +1040,6 @@
                 cell.hidden = NO;
 
             }else{
-
 
                 cell.hidden = YES;
 
