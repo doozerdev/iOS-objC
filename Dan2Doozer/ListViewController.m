@@ -933,7 +933,7 @@
     
     UIView *viewToRemove = nil;
     while((viewToRemove = [cell viewWithTag:5151]) != nil) {
-        [viewToRemove removeFromSuperview];        
+        [viewToRemove removeFromSuperview];
     }
     
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -974,7 +974,7 @@
             NSString *titleText = object.title;
             
             cell.cellItemTitle.text = titleText;
-            cell.cellItemTitle.textColor = [UIColor whiteColor];
+            cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
             cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
@@ -982,8 +982,8 @@
             if (self.showCompleted) {
                 CGRect screenRect = [[UIScreen mainScreen] bounds];
                 CGFloat screenWidth = screenRect.size.width;
-                UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 25, screenWidth-30, 2)];
-                lineView.backgroundColor = [UIColor whiteColor];
+                UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 25, screenWidth-30, 1)];
+                lineView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
                 lineView.tag = 5151;
                 [cell addSubview:lineView];
 
