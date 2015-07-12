@@ -17,7 +17,7 @@
 #import "AddItemsToServer.h"
 #import "CoreDataItemManager.h"
 
-@interface ListViewController () <UITextFieldDelegate>
+@interface ListViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @end
 
 @implementation ListViewController
@@ -43,6 +43,7 @@
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
     
+    
     /*
     UILongPressGestureRecognizer *longPressScrollController = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressScroll:)];
@@ -51,8 +52,6 @@
      
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
     [self.tableView addGestureRecognizer:panGesture];
-    
-    panGesture.delegate = self;
     
     //self.navigationController.hidesBarsOnSwipe = YES;
 
@@ -95,6 +94,8 @@
 }
 
 -(void)swiperight:(UIPanGestureRecognizer*)panGesture; {
+
+    panGesture.delegate = self;
 
     static CGPoint startPoint = { 0.f, 0.f };
     static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
@@ -169,6 +170,8 @@
                 //NSLog(@"pan ended ---------------");
                 
                 if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
+                    
+                    NSLog(@"locationX is %f, startpointX is %f, and swipeThreshold is %d", location.x, startPoint.x, swipeThreshold);
                     
                     
                     float velocity = 1000; //pixels per second
@@ -355,7 +358,7 @@
     }
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIPanGestureRecognizer *)otherGestureRecognizer {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     //This allows the custom PanGesture to be simultaneiously monitoring with the built-in swipe left to reveal delete button
     return YES;
 }
