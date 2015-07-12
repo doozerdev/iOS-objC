@@ -1,0 +1,4 @@
+platform :ios, '7.0'
+pod 'AFNetworking', '~> 2.0'
+pod 'Facebook-iOS-SDK', '~> 3.20'
+pod 'GoogleAnalytics-iOS-SDK', '~> 3.10'

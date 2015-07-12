@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1815983E1AACD27000FF9EC9 /* DoozerSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1815983D1AACD27000FF9EC9 /* DoozerSessionManager.swift */; };
+		181598461AACF95D00FF9EC9 /* Locksmith.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181598441AACF95D00FF9EC9 /* Locksmith.swift */; };
+		181598471AACF95D00FF9EC9 /* LocksmithRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181598451AACF95D00FF9EC9 /* LocksmithRequest.swift */; };
+		181598491AACFA3900FF9EC9 /* DoozerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181598481AACFA3900FF9EC9 /* DoozerSettings.swift */; };
+		181CF0801AA96B45005D1421 /* DoozerServiceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181CF07F1AA96B45005D1421 /* DoozerServiceClient.swift */; };
+		18EF42291A887771000F360E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EF42281A887771000F360E /* LoginViewController.swift */; };
+		1C5180A2801549D081786F46 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8136E67EC6814FFCA0A0DD62 /* libPods.a */; };
+		37EED17C1A50DFE7006DE312 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EED17B1A50DFE7006DE312 /* SettingsViewController.swift */; };
+		F0184C951A07E562000D5084 /* OrderMaintenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0184C941A07E562000D5084 /* OrderMaintenance.swift */; };
+		F0184C961A07E562000D5084 /* OrderMaintenance.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0184C941A07E562000D5084 /* OrderMaintenance.swift */; };
+		F03AD09A193EAF2B002DDD35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AD099193EAF2B002DDD35 /* AppDelegate.swift */; };
+		F03AD09D193EAF2B002DDD35 /* Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F03AD09B193EAF2B002DDD35 /* Doozer.xcdatamodeld */; };
+		F03AD09F193EAF2B002DDD35 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AD09E193EAF2B002DDD35 /* HomeViewController.swift */; };
+		F03AD0A2193EAF2B002DDD35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F03AD0A0193EAF2B002DDD35 /* Main.storyboard */; };
+		F03AD0A4193EAF2B002DDD35 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F03AD0A3193EAF2B002DDD35 /* Images.xcassets */; };
+		F03AD0B0193EAF2B002DDD35 /* OrderMaintenanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03AD0AF193EAF2B002DDD35 /* OrderMaintenanceTests.swift */; };
+		F07645551A07159B00B9A814 /* ItemMaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076F76519F6B76800718E31 /* ItemMaster.swift */; };
+		F07645561A07162200B9A814 /* DoozerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08F2F0C19674FC000A78E5E /* DoozerItem.swift */; };
+		F076F76619F6B76800718E31 /* ItemMaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F076F76519F6B76800718E31 /* ItemMaster.swift */; };
+		F08F2F0D19674FC000A78E5E /* DoozerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08F2F0C19674FC000A78E5E /* DoozerItem.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F03AD0AA193EAF2B002DDD35 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F03AD08C193EAF2B002DDD35 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F03AD093193EAF2B002DDD35;
+			remoteInfo = Doozer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1815983D1AACD27000FF9EC9 /* DoozerSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoozerSessionManager.swift; sourceTree = "<group>"; };
+		181598441AACF95D00FF9EC9 /* Locksmith.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locksmith.swift; sourceTree = "<group>"; };
+		181598451AACF95D00FF9EC9 /* LocksmithRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocksmithRequest.swift; sourceTree = "<group>"; };
+		181598481AACFA3900FF9EC9 /* DoozerSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoozerSettings.swift; sourceTree = "<group>"; };
+		181CF07F1AA96B45005D1421 /* DoozerServiceClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoozerServiceClient.swift; sourceTree = "<group>"; };
+		18EF42281A887771000F360E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		37EED17B1A50DFE7006DE312 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		77A0854BBD987A9AC6D85E24 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		8136E67EC6814FFCA0A0DD62 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED695017346A40FB9B037E76 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		F0184C941A07E562000D5084 /* OrderMaintenance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderMaintenance.swift; sourceTree = "<group>"; };
+		F03AD094193EAF2B002DDD35 /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F03AD098193EAF2B002DDD35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F03AD099193EAF2B002DDD35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F03AD09C193EAF2B002DDD35 /* Doozer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Doozer.xcdatamodel; sourceTree = "<group>"; };
+		F03AD09E193EAF2B002DDD35 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		F03AD0A1193EAF2B002DDD35 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F03AD0A3193EAF2B002DDD35 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F03AD0A9193EAF2B002DDD35 /* DoozerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F03AD0AE193EAF2B002DDD35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F03AD0AF193EAF2B002DDD35 /* OrderMaintenanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMaintenanceTests.swift; sourceTree = "<group>"; };
+		F076F76519F6B76800718E31 /* ItemMaster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemMaster.swift; sourceTree = "<group>"; };
+		F08F2F0C19674FC000A78E5E /* DoozerItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoozerItem.swift; sourceTree = "<group>"; };
+		F0A128CC1A341A7B00240074 /* SwiftBridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftBridgingHeader.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F03AD091193EAF2B002DDD35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C5180A2801549D081786F46 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F03AD0A6193EAF2B002DDD35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		181598431AACF94F00FF9EC9 /* Locksmith */ = {
+			isa = PBXGroup;
+			children = (
+				181598441AACF95D00FF9EC9 /* Locksmith.swift */,
+				181598451AACF95D00FF9EC9 /* LocksmithRequest.swift */,
+			);
+			name = Locksmith;
+			sourceTree = "<group>";
+		};
+		23B0089C504A4387B55B8CE1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8136E67EC6814FFCA0A0DD62 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		30887A445925B3B4EAB258AD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ED695017346A40FB9B037E76 /* Pods.debug.xcconfig */,
+				77A0854BBD987A9AC6D85E24 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		F03AD08B193EAF2B002DDD35 = {
+			isa = PBXGroup;
+			children = (
+				F03AD096193EAF2B002DDD35 /* Doozer */,
+				F03AD0AC193EAF2B002DDD35 /* DoozerTests */,
+				F03AD095193EAF2B002DDD35 /* Products */,
+				23B0089C504A4387B55B8CE1 /* Frameworks */,
+				30887A445925B3B4EAB258AD /* Pods */,
+			);
+			indentWidth = 4;
+			sourceTree = "<group>";
+			tabWidth = 4;
+		};
+		F03AD095193EAF2B002DDD35 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F03AD094193EAF2B002DDD35 /* Doozer.app */,
+				F03AD0A9193EAF2B002DDD35 /* DoozerTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F03AD096193EAF2B002DDD35 /* Doozer */ = {
+			isa = PBXGroup;
+			children = (
+				181598431AACF94F00FF9EC9 /* Locksmith */,
+				F03AD099193EAF2B002DDD35 /* AppDelegate.swift */,
+				F03AD09E193EAF2B002DDD35 /* HomeViewController.swift */,
+				F03AD0A0193EAF2B002DDD35 /* Main.storyboard */,
+				F03AD0A3193EAF2B002DDD35 /* Images.xcassets */,
+				F03AD09B193EAF2B002DDD35 /* Doozer.xcdatamodeld */,
+				F03AD097193EAF2B002DDD35 /* Supporting Files */,
+				F08F2F0C19674FC000A78E5E /* DoozerItem.swift */,
+				F076F76519F6B76800718E31 /* ItemMaster.swift */,
+				F0184C941A07E562000D5084 /* OrderMaintenance.swift */,
+				F0A128CC1A341A7B00240074 /* SwiftBridgingHeader.h */,
+				37EED17B1A50DFE7006DE312 /* SettingsViewController.swift */,
+				18EF42281A887771000F360E /* LoginViewController.swift */,
+				181CF07F1AA96B45005D1421 /* DoozerServiceClient.swift */,
+				1815983D1AACD27000FF9EC9 /* DoozerSessionManager.swift */,
+				181598481AACFA3900FF9EC9 /* DoozerSettings.swift */,
+			);
+			path = Doozer;
+			sourceTree = "<group>";
+		};
+		F03AD097193EAF2B002DDD35 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F03AD098193EAF2B002DDD35 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F03AD0AC193EAF2B002DDD35 /* DoozerTests */ = {
+			isa = PBXGroup;
+			children = (
+				F03AD0AF193EAF2B002DDD35 /* OrderMaintenanceTests.swift */,
+				F03AD0AD193EAF2B002DDD35 /* Supporting Files */,
+			);
+			path = DoozerTests;
+			sourceTree = "<group>";
+		};
+		F03AD0AD193EAF2B002DDD35 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F03AD0AE193EAF2B002DDD35 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F03AD093193EAF2B002DDD35 /* Doozer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F03AD0B3193EAF2B002DDD35 /* Build configuration list for PBXNativeTarget "Doozer" */;
+			buildPhases = (
+				A215913ED92C45359AFDBB09 /* Check Pods Manifest.lock */,
+				F03AD090193EAF2B002DDD35 /* Sources */,
+				F03AD091193EAF2B002DDD35 /* Frameworks */,
+				F03AD092193EAF2B002DDD35 /* Resources */,
+				8A10E9B93FBC426B88170D20 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Doozer;
+			productName = Doozer;
+			productReference = F03AD094193EAF2B002DDD35 /* Doozer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F03AD0A8193EAF2B002DDD35 /* DoozerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F03AD0B6193EAF2B002DDD35 /* Build configuration list for PBXNativeTarget "DoozerTests" */;
+			buildPhases = (
+				F03AD0A5193EAF2B002DDD35 /* Sources */,
+				F03AD0A6193EAF2B002DDD35 /* Frameworks */,
+				F03AD0A7193EAF2B002DDD35 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F03AD0AB193EAF2B002DDD35 /* PBXTargetDependency */,
+			);
+			name = DoozerTests;
+			productName = DoozerTests;
+			productReference = F03AD0A9193EAF2B002DDD35 /* DoozerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F03AD08C193EAF2B002DDD35 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Doozer Enterprise LLC";
+				TargetAttributes = {
+					F03AD093193EAF2B002DDD35 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+					F03AD0A8193EAF2B002DDD35 = {
+						CreatedOnToolsVersion = 6.0;
+						TestTargetID = F03AD093193EAF2B002DDD35;
+					};
+				};
+			};
+			buildConfigurationList = F03AD08F193EAF2B002DDD35 /* Build configuration list for PBXProject "Doozer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F03AD08B193EAF2B002DDD35;
+			productRefGroup = F03AD095193EAF2B002DDD35 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F03AD093193EAF2B002DDD35 /* Doozer */,
+				F03AD0A8193EAF2B002DDD35 /* DoozerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F03AD092193EAF2B002DDD35 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F03AD0A2193EAF2B002DDD35 /* Main.storyboard in Resources */,
+				F03AD0A4193EAF2B002DDD35 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F03AD0A7193EAF2B002DDD35 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8A10E9B93FBC426B88170D20 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A215913ED92C45359AFDBB09 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F03AD090193EAF2B002DDD35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				181598461AACF95D00FF9EC9 /* Locksmith.swift in Sources */,
+				18EF42291A887771000F360E /* LoginViewController.swift in Sources */,
+				F03AD09F193EAF2B002DDD35 /* HomeViewController.swift in Sources */,
+				181598471AACF95D00FF9EC9 /* LocksmithRequest.swift in Sources */,
+				F08F2F0D19674FC000A78E5E /* DoozerItem.swift in Sources */,
+				181598491AACFA3900FF9EC9 /* DoozerSettings.swift in Sources */,
+				37EED17C1A50DFE7006DE312 /* SettingsViewController.swift in Sources */,
+				F0184C951A07E562000D5084 /* OrderMaintenance.swift in Sources */,
+				F03AD09D193EAF2B002DDD35 /* Doozer.xcdatamodeld in Sources */,
+				F03AD09A193EAF2B002DDD35 /* AppDelegate.swift in Sources */,
+				F076F76619F6B76800718E31 /* ItemMaster.swift in Sources */,
+				1815983E1AACD27000FF9EC9 /* DoozerSessionManager.swift in Sources */,
+				181CF0801AA96B45005D1421 /* DoozerServiceClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F03AD0A5193EAF2B002DDD35 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0184C961A07E562000D5084 /* OrderMaintenance.swift in Sources */,
+				F07645551A07159B00B9A814 /* ItemMaster.swift in Sources */,
+				F07645561A07162200B9A814 /* DoozerItem.swift in Sources */,
+				F03AD0B0193EAF2B002DDD35 /* OrderMaintenanceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F03AD0AB193EAF2B002DDD35 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F03AD093193EAF2B002DDD35 /* Doozer */;
+			targetProxy = F03AD0AA193EAF2B002DDD35 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F03AD0A0193EAF2B002DDD35 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F03AD0A1193EAF2B002DDD35 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F03AD0B1193EAF2B002DDD35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F03AD0B2193EAF2B002DDD35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F03AD0B4193EAF2B002DDD35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ED695017346A40FB9B037E76 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = Doozer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Doozer/SwiftBridgingHeader.h;
+			};
+			name = Debug;
+		};
+		F03AD0B5193EAF2B002DDD35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 77A0854BBD987A9AC6D85E24 /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = Doozer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Doozer/SwiftBridgingHeader.h;
+			};
+			name = Release;
+		};
+		F03AD0B7193EAF2B002DDD35 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = DoozerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		F03AD0B8193EAF2B002DDD35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = DoozerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				METAL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F03AD08F193EAF2B002DDD35 /* Build configuration list for PBXProject "Doozer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F03AD0B1193EAF2B002DDD35 /* Debug */,
+				F03AD0B2193EAF2B002DDD35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F03AD0B3193EAF2B002DDD35 /* Build configuration list for PBXNativeTarget "Doozer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F03AD0B4193EAF2B002DDD35 /* Debug */,
+				F03AD0B5193EAF2B002DDD35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F03AD0B6193EAF2B002DDD35 /* Build configuration list for PBXNativeTarget "DoozerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F03AD0B7193EAF2B002DDD35 /* Debug */,
+				F03AD0B8193EAF2B002DDD35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F03AD09B193EAF2B002DDD35 /* Doozer.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F03AD09C193EAF2B002DDD35 /* Doozer.xcdatamodel */,
+			);
+			currentVersion = F03AD09C193EAF2B002DDD35 /* Doozer.xcdatamodel */;
+			path = Doozer.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = F03AD08C193EAF2B002DDD35 /* Project object */;
+}
