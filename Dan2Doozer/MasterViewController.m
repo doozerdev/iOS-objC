@@ -227,6 +227,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self rebalanceListOrdersIfNeeded];
+    
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches.intValue == 0) {
         NSLog(@"first launch -- not syncing when loading main screen");
@@ -259,10 +261,8 @@
     
     self.rowOfExpandedCell = -1;
     
-    [self.tableView reloadData]; // to reload selected cell
+    [self.tableView reloadData]; // to reload selected cell    
     
-
-
 }
 
 - (void) viewWillDisappear: (BOOL) animated {
@@ -503,41 +503,6 @@
     }
 }
 
-
-
-
-#pragma mark - Segues
-
-
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    if ([[segue identifier] isEqualToString:@"showList"]) {
-        
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
-        
-        controller.managedObjectContext = self.managedObjectContext;
-        [controller setDisplayList:object];
-        
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
-        
-        UIBarButtonItem *newBackButton =
-        [[UIBarButtonItem alloc] initWithTitle:@""
-                                         style:UIBarButtonItemStylePlain
-                                        target:nil
-                                        action:nil];
-        [[self navigationItem] setBackBarButtonItem:newBackButton];
-        
-    }
-    if ([[segue identifier] isEqualToString:@"showSettings"]){
-        DoozerSettingsManager *controller = segue.destinationViewController;
-        controller.managedObjectContext = self.managedObjectContext;
-    }
-}
-
 -(void) redButtonPressed:(UIButton*)button{
     int row = (int)button.tag;
     NSLog(@"red button pressed at row %d", row);
@@ -575,6 +540,55 @@
     [UpdateItemsOnServer updateThisItem:itemToChangeColor];
 }
 
+-(void)rebalanceListOrdersIfNeeded{
+    NSLog(@"inside rebalance list if needed method");
+    
+    NSArray *itemLists = self.fetchedResultsController.fetchedObjects;
+    BOOL rebalanceNeeded = NO;
+    int previousItemOrder = 0;
+    for (Item *eachItem in itemLists){
+        int diff = eachItem.order.intValue - previousItemOrder;
+        previousItemOrder = eachItem.order.intValue;
+        //NSLog(@"diff ===== %d", diff);
+        if (diff < 256){
+            rebalanceNeeded = YES;
+        }
+    }
+    if (rebalanceNeeded) {
+        [CoreDataItemManager rebalanceItemOrderValues:itemLists];
+    }
+    
+}
+
+#pragma mark - Segues
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([[segue identifier] isEqualToString:@"showList"]) {
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
+        
+        controller.managedObjectContext = self.managedObjectContext;
+        [controller setDisplayList:object];
+        
+        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+        controller.navigationItem.leftItemsSupplementBackButton = YES;
+        
+        UIBarButtonItem *newBackButton =
+        [[UIBarButtonItem alloc] initWithTitle:@""
+                                         style:UIBarButtonItemStylePlain
+                                        target:nil
+                                        action:nil];
+        [[self navigationItem] setBackBarButtonItem:newBackButton];
+        
+    }
+    if ([[segue identifier] isEqualToString:@"showSettings"]){
+        DoozerSettingsManager *controller = segue.destinationViewController;
+        controller.managedObjectContext = self.managedObjectContext;
+    }
+}
 
 #pragma mark - Table View
 
@@ -629,6 +643,7 @@
         }
         
         cell.cellItemTitle.text = itemInCell.title;
+        //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", itemInCell.title, itemInCell.order];
         
         cell.cellItemSubTitle.hidden = NO;
         cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
