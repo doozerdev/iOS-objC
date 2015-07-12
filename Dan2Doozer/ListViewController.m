@@ -565,40 +565,55 @@
 
     NSLog(@"text field should end editing");
      NSString *currentText = textField.text;
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
      
-     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]];
-     
-     itemInCell.title = currentText;
+     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
      // Force any text fields that might be being edited to end
      [self.view.window endEditing: YES];
     
-     NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-     [newArrayOfItemsToAdd addObject:itemInCell.itemId];
-     [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
-     [[NSUserDefaults standardUserDefaults] synchronize];
-     
-     [textField resignFirstResponder];
-     
-     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    if (currentText.length == 0) {
+        NSLog(@"deleting just created row");
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+
+    }else{
+        [textField resignFirstResponder];
     
-    
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+        itemInCell.title = currentText;
+        
+        [self rebalanceListIfNeeded];
+        
+        [AddItemsToServer addThisItem:itemInCell];
+        
+        /*
+         NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+         [newArrayOfItemsToAdd addObject:itemInCell.itemId];
+         [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
+         [[NSUserDefaults standardUserDefaults] synchronize];
+         
+         [textField resignFirstResponder];
+        
+         //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+         
+        }
+        
+        [self rebalanceListIfNeeded];
+        
+        [DoozerSyncManager syncWithServer];
+         */
     }
-    
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
-    
-    [self rebalanceListIfNeeded];
-    
-    [DoozerSyncManager syncWithServer];
-    
     return YES;
 }
 
@@ -957,12 +972,19 @@
         ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
         Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
         
-        itemToSave.title = cell.cellItemTitle.text;
-        NSLog(@"title to save = %@", itemToSave.title);
-        [self rebalanceListIfNeeded];
+        NSString *currentText = cell.cellItemTitle.text;
+        if (currentText.length == 0) {
+            NSLog(@"deleting just created row");
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
 
-        [AddItemsToServer addThisItem:itemToSave];
-        
+        }else{
+            
+            itemToSave.title = currentText;
+            [self rebalanceListIfNeeded];
+
+            [AddItemsToServer addThisItem:itemToSave];
+        }
         self.rowOfNewItem = -1;
         [self.tableView reloadData];
     }else{

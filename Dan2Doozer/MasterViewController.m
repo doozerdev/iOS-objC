@@ -43,26 +43,36 @@
 {
     NSLog(@"text field ending editing");
     NSString *currentText = textField.text;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
     
-    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0]];
+    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     itemInCell.title = currentText;
-    
-    self.rowOfExpandedCell = -1;
+    /*
+    if (currentText.length == 0) {
+        NSLog(@"deleting just created row");
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        
+    }else{
+     */
+        NSLog(@"aboout to save the new list");
+
+        if (self.addingAnItem) {
+            [AddItemsToServer addThisItem:itemInCell];
+            self.addingAnItem = NO;
+        }else{
+            [UpdateItemsOnServer updateThisItem:itemInCell];
+        }
+    //}
     
     // Force any text fields that might be being edited to end
     [self.view.window endEditing: YES];
     
-    if (self.addingAnItem) {
-        [AddItemsToServer addThisItem:itemInCell];
-        self.addingAnItem = NO;
-    }else{
-        [UpdateItemsOnServer updateThisItem:itemInCell];
-    }
-    
     [textField resignFirstResponder];
-    
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    self.rowOfExpandedCell = -1;
+    [self.tableView reloadData];
+    //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 
     return YES;
 }
