@@ -43,6 +43,9 @@
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
     
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [self.tableView addGestureRecognizer:tapGesture];
+    
     
     /*
     UILongPressGestureRecognizer *longPressScrollController = [[UILongPressGestureRecognizer alloc]
@@ -578,6 +581,7 @@
     if (currentText.length == 0) {
         NSLog(@"deleting just created row");
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        
 
     }else{
         [textField resignFirstResponder];
@@ -588,29 +592,6 @@
         
         [AddItemsToServer addThisItem:itemInCell];
         
-        /*
-         NSMutableArray *newArrayOfItemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-         [newArrayOfItemsToAdd addObject:itemInCell.itemId];
-         [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToAdd forKey:@"itemsToAdd"];
-         [[NSUserDefaults standardUserDefaults] synchronize];
-         
-         [textField resignFirstResponder];
-        
-         //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-        
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-         
-        }
-        
-        [self rebalanceListIfNeeded];
-        
-        [DoozerSyncManager syncWithServer];
-         */
     }
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
@@ -915,7 +896,8 @@
 #pragma mark - Segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showItem"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        NSIndexPath *indexPath = sender;
 
         NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
@@ -963,6 +945,54 @@
     return cell;
 }
 
+-(void)handleTap:(UITapGestureRecognizer*)tapGesture; {
+    CGPoint location = [tapGesture locationInView:self.tableView];
+    
+    NSLog(@"location = %f,%f", location.x, location.y);
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    
+    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    if (self.rowOfNewItem != -1) {
+        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
+        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
+        
+        NSString *currentText = cell.cellItemTitle.text;
+        if (currentText.length == 0) {
+            NSLog(@"deleting just created row");
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
+            
+        }else{
+            
+            itemToSave.title = currentText;
+            [self rebalanceListIfNeeded];
+            
+            [AddItemsToServer addThisItem:itemToSave];
+        }
+        self.rowOfNewItem = -1;
+        [self.tableView reloadData];
+    }else{
+        if ([clickedItem.type isEqualToString:@"completed_header"]) {
+            
+            if (self.showCompleted) {
+                self.showCompleted = NO;
+            }else{
+                self.showCompleted = YES;
+            }
+            
+            [self.tableView reloadData];
+            
+        }else{
+            [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+        }
+    }
+    
+    
+}
+
+/*
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -1003,7 +1033,7 @@
         }
     }
 }
-
+*/
 - (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     UIView *viewToRemove = nil;

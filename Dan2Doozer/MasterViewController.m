@@ -27,7 +27,70 @@
 @end
 
 @implementation MasterViewController
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        self.clearsSelectionOnViewWillAppear = NO;
+        self.preferredContentSize = CGSizeMake(320.0, 600.0);
+    }
+}
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self rebalanceListOrdersIfNeeded];
+    
+    NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+    if (numberOfLaunches.intValue == 0) {
+        NSLog(@"first launch -- not syncing when loading main screen");
+    }else{
+        [DoozerSyncManager syncWithServer];
+        
+    }
+    
+    self.addingAnItem = NO;
+    self.rowOfExpandedCell = -1;
+    //self.rowOfNewItem = -1;
+    
+    //self.navigationController.hidesBarsOnSwipe = YES;
+    
+    
+    // Do any additional setup after loading the view, typically from a nib.
+    
+    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
+    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.77 green:0.4 blue:0.68 alpha:1.0];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
+                                               initWithTarget:self action:@selector(longPressGestureRecognized:)];
+    [self.tableView addGestureRecognizer:longPress];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [self.tableView addGestureRecognizer:tapGesture];
+    
+    
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.rowOfExpandedCell = -1;
+    
+    [self.tableView reloadData]; // to reload selected cell
+    
+}
+
+- (void) viewWillDisappear: (BOOL) animated {
+    [super viewWillDisappear: animated];
+    // Force any text fields that might be being edited to end
+    [self.view.window endEditing: YES];
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -41,21 +104,36 @@
 // It is important for you to hide the keyboard
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+
     NSLog(@"text field ending editing");
     NSString *currentText = textField.text;
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
     
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.view.window endEditing: YES];
+
+    NSLog(@"index path of added cell = %@", indexPath);
     
-    itemInCell.title = currentText;
-    /*
     if (currentText.length == 0) {
-        NSLog(@"deleting just created row");
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        if (self.addingAnItem) {
+
+            NSLog(@"deleting just created row");
+            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+            self.addingAnItem = NO;
+            
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+        }
         
     }else{
-     */
+        itemInCell.title = currentText;
+
+        [textField resignFirstResponder];
+
         NSLog(@"aboout to save the new list");
 
         if (self.addingAnItem) {
@@ -64,12 +142,9 @@
         }else{
             [UpdateItemsOnServer updateThisItem:itemInCell];
         }
-    //}
+    }
     
-    // Force any text fields that might be being edited to end
-    [self.view.window endEditing: YES];
     
-    [textField resignFirstResponder];
     self.rowOfExpandedCell = -1;
     [self.tableView reloadData];
     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
@@ -180,37 +255,45 @@
         if (buttonIndex > numberOfLists || buttonIndex == 0) {
             NSLog(@"cancel was pressed");
         }else{
+            
+            NSString *currentText = [alertView textFieldAtIndex:0].text;
+            if (currentText.length == 0) {
+                NSLog(@"no text was entered in the fielf");
+            }else{
 
-            Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
-            NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
-            
-            NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-            
-            Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-            
-            newItem.title = [alertView textFieldAtIndex:0].text;
-            
-            long numberOfResults = [itemsOnTargetList count];
-            
-            if (numberOfResults == 0){
-                newItem.order = [NSNumber numberWithLong:16777216];
-            }
-            else{
-                Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
+                Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
+                NSLog(@"adding an item to list = %@", targetList.title);
+                
+                NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
+                
+                NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+                
+                Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+                
+                newItem.title = currentText;
+                
+                long numberOfResults = [itemsOnTargetList count];
+                
+                if (numberOfResults == 0){
+                    newItem.order = [NSNumber numberWithLong:16777216];
+                }
+                else{
+                    Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
 
-                newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
+                    newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
+                }
+                
+                newItem.done = 0;
+                newItem.notes = @" ";
+                newItem.parent = targetList.itemId;
+                
+                double timestamp = [[NSDate date] timeIntervalSince1970];
+                newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+                
+                [AddItemsToServer addThisItem:newItem];
+                
+                [self.tableView reloadData];
             }
-            
-            newItem.done = 0;
-            newItem.notes = @" ";
-            newItem.parent = targetList.itemId;
-            
-            double timestamp = [[NSDate date] timeIntervalSince1970];
-            newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-            
-            [AddItemsToServer addThisItem:newItem];
-            
-            [self.tableView reloadData];
             
         }
         
@@ -225,68 +308,6 @@
     }
 
 }
-
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.preferredContentSize = CGSizeMake(320.0, 600.0);
-    }
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    [self rebalanceListOrdersIfNeeded];
-    
-    NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-    if (numberOfLaunches.intValue == 0) {
-        NSLog(@"first launch -- not syncing when loading main screen");
-    }else{
-        [DoozerSyncManager syncWithServer];
-
-    }
-
-    self.addingAnItem = NO;
-    self.rowOfExpandedCell = -1;
-    //self.rowOfNewItem = -1;
-    
-    //self.navigationController.hidesBarsOnSwipe = YES;
-
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    
-    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
-    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.77 green:0.4 blue:0.68 alpha:1.0];
-    
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
-                                               initWithTarget:self action:@selector(longPressGestureRecognized:)];
-    [self.tableView addGestureRecognizer:longPress];
-
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    self.rowOfExpandedCell = -1;
-    
-    [self.tableView reloadData]; // to reload selected cell    
-    
-}
-
-- (void) viewWillDisappear: (BOOL) animated {
-    [super viewWillDisappear: animated];
-    // Force any text fields that might be being edited to end
-    [self.view.window endEditing: YES];
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
@@ -311,19 +332,11 @@
             //self.longPressActive = YES;
             
             if (indexPath) {
-                
-                /*
-                if ([clickedItem.type isEqualToString:@"completed_header"]) {
-                    self.allowDragging = NO;
-                }else{
-                    self.allowDragging = YES;
-                 */
                     
                     _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
                     
                     sourceIndexPath = indexPath;
-                    
-                    
+                
                     // Take a snapshot of the selected row using helper method.
                     snapshot = [self customSnapshoFromView:cell];
                     
@@ -346,16 +359,11 @@
                         cell.hidden = YES;
                         
                     }];
-                //}
-                
-                
             }
             break;
         }
             
         case UIGestureRecognizerStateChanged: {
-            //if (self.allowDragging) {
-                
                 CGPoint center = snapshot.center;
                 center.y = location.y;
                 snapshot.center = center;
@@ -387,27 +395,11 @@
                     // ... and update source so it is in sync with UI changes.
                     sourceIndexPath = indexPath;
                 }
-                
-                //NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
-                
                 break;
-            //}
         }
             
         case UIGestureRecognizerStateEnded: {
-            
-            //if (self.allowDragging) {
                 Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
-                NSArray *itemsInTable = self.fetchedResultsController.fetchedObjects;
-                int headerOrderValue = 0;
-                for (Item *currentItem in itemsInTable){
-                    if ([currentItem.type isEqualToString:@"completed_header"]) {
-                        headerOrderValue = currentItem.order.intValue;
-                    }
-                }
-                
-                //NSLog(@"completed order value is %d", headerOrderValue);
-                
                 NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
                 
                 NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
@@ -446,15 +438,6 @@
                     }
                 }
                 
-                //NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
-                
-                //dropping an uncompleted item into the 'completed' zone. Set the item's 'done' value appropriately.
-                if (reorderedItem.order.intValue > headerOrderValue) {
-                    reorderedItem.done = [NSNumber numberWithInt:1];
-                }else{
-                    reorderedItem.done = [NSNumber numberWithInt:0];
-                }
-                
                 NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
                 //NSLog(@"first char = %@", itemIdCharacter);
                 
@@ -466,19 +449,13 @@
                     [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                 }
-                
-                
+            
                 NSError *error = nil;
                 if (![context save:&error]) {
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
-                
-                
-                //TODO figure out why the cell sometimes doesn't show!!!!!!!!!!
-                //cell.hidden = NO;
-                
-                
+
                 
                 [DoozerSyncManager syncWithServer];
                 [self.tableView reloadData];
@@ -487,8 +464,7 @@
             
         default: {
             // Clean up.
-            //self.longPressActive = NO;
-            //NSLog(@"In clean up of Long Press method");
+
             ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
             cell.hidden = NO;
             cell.alpha = 0.0;
@@ -576,7 +552,8 @@
     
     if ([[segue identifier] isEqualToString:@"showList"]) {
         
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        NSIndexPath *indexPath = sender;
         Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
         ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
         
@@ -616,6 +593,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"fetched items count = %lu, path = %@", (unsigned long)[self.fetchedResultsController.fetchedObjects count], indexPath);
     
     ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
@@ -626,7 +604,7 @@
 
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
         
-        NSLog(@"index path row = %ld", (long)indexPath.row);
+        //NSLog(@"index path row = %ld", (long)indexPath.row);
         cell.cellItemSubTitle.hidden = YES;
         cell.cellItemTitle.textAlignment = NSTextAlignmentCenter;
 
@@ -876,6 +854,69 @@
     
 }
 
+
+-(void)handleTap:(UITapGestureRecognizer*)tapGesture; {
+    CGPoint location = [tapGesture locationInView:self.tableView];
+    
+    NSLog(@"location = %f,%f", location.x, location.y);
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    
+    NSLog(@"indexpath selected is = %@", indexPath);
+    
+    if (self.rowOfExpandedCell == -1) {
+        if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
+            [self addItemList];
+        }else{
+            [self performSegueWithIdentifier:@"showList" sender:indexPath];
+        }
+    }else{
+        NSLog(@"row of expanded cell is %d", self.rowOfExpandedCell);
+        if (indexPath.row != self.rowOfExpandedCell) {
+            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+            NSIndexPath *rowToSave = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
+            Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:rowToSave];
+            ParentCustomCell *cellToSave = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:rowToSave];
+            NSString *currentText = cellToSave.cellItemTitle.text;
+            
+            if (self.addingAnItem) {
+                if (currentText.length == 0){
+                    NSLog(@"deleting just created row");
+                    [context deleteObject:[self.fetchedResultsController objectAtIndexPath:rowToSave]];
+                    
+                    NSError *error = nil;
+                    if (![context save:&error]) {
+                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                        abort();
+                    }
+                }else{
+                    itemToSave.title = currentText;
+                    
+                    [cellToSave.cellItemTitle resignFirstResponder];
+                    [self.view.window endEditing: YES];
+              
+                    [AddItemsToServer addThisItem:itemToSave];
+                }
+                self.addingAnItem = NO;
+
+            }else {
+                if (currentText.length == 0) {
+                    //discard teh zero lenght change
+                }else{
+                    itemToSave.title = currentText;
+                    [UpdateItemsOnServer updateThisItem:itemToSave];
+                    
+                }
+                [self.view.window endEditing: YES];
+                [cellToSave.cellItemTitle resignFirstResponder];
+
+            }
+            self.rowOfExpandedCell = -1;
+            [self.tableView reloadData];
+        }
+    }
+}
+
+/*
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     NSLog(@"indexpath selected is = %@", indexPath);
@@ -909,20 +950,10 @@
 
             [self.tableView reloadData];
            
-            /*
-            int count = (int)[self.fetchedResultsController.fetchedObjects count];
-            NSMutableArray *indexArray = [[NSMutableArray alloc]init];
-            for (int i =0; i <= count; i++) {
-                NSIndexPath *tempPath = [NSIndexPath indexPathForRow:i inSection:0];
-                [indexArray addObject:tempPath];
-            }
-            [self.tableView reloadRowsAtIndexPaths:indexArray withRowAnimation:UITableViewRowAnimationFade];
-            */
         }
     }
-    
 }
-
+*/
 
 #pragma mark - Fetched results controller
 
