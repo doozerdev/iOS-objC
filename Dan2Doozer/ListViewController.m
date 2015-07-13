@@ -985,11 +985,11 @@
             [self.tableView reloadData];
             
         }else{
-            [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+            if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0)) {
+                [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+            }
         }
     }
-    
-    
 }
 
 /*

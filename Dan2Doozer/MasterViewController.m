@@ -867,7 +867,9 @@
         if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
             [self addItemList];
         }else{
-            [self performSegueWithIdentifier:@"showList" sender:indexPath];
+            if (indexPath) {
+                [self performSegueWithIdentifier:@"showList" sender:indexPath];
+            }
         }
     }else{
         NSLog(@"row of expanded cell is %d", self.rowOfExpandedCell);
