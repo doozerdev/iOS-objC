@@ -368,7 +368,7 @@
 
 
 -(void)rebalanceListIfNeeded{
-    NSLog(@"inside rebalance list if needed method");
+    //NSLog(@"inside rebalance list if needed method");
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
@@ -735,7 +735,7 @@
                     // Is destination valid and is it different from source?
                     if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
                     
-                        NSLog(@"moving cells ----------------");
+                        //NSLog(@"moving cells ----------------");
                         // ... move the rows.
                         [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                         
@@ -744,7 +744,7 @@
                         
                         //if dragging into completed section, and they're currently hidden, show the completed cells
                         if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
-                            NSLog(@"passing the completed header");
+                            //NSLog(@"passing the completed header");
                             self.showCompleted = YES;
                             int currentRow = (int)indexPath.row+1;
                             

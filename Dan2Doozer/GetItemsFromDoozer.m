@@ -23,7 +23,7 @@
     NSString* dateString = [NSString stringWithFormat:@"%@", syncDate];
     
     double currentTime = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"current time is %f, and last sync time was %@", currentTime, dateString);
+    //NSLog(@"current time is %f, and last sync time was %@", currentTime, dateString);
     
     NSDictionary *params = nil;
     if (syncDate == NULL) {

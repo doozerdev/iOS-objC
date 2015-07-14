@@ -371,7 +371,7 @@
                 // Is destination valid and is it different from source?
                 if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
                     
-                    NSLog(@"moving cells ----------------");
+                    //NSLog(@"moving cells ----------------");
                     // ... move the rows.
                     [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                     
@@ -527,7 +527,7 @@
 }
 
 -(void)rebalanceListOrdersIfNeeded{
-    NSLog(@"inside rebalance list if needed method");
+    //NSLog(@"inside rebalance list if needed method");
     
     NSArray *itemLists = self.fetchedResultsController.fetchedObjects;
     BOOL rebalanceNeeded = NO;
@@ -593,7 +593,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"fetched items count = %lu, path = %@", (unsigned long)[self.fetchedResultsController.fetchedObjects count], indexPath);
+    //NSLog(@"fetched items count = %lu, path = %@", (unsigned long)[self.fetchedResultsController.fetchedObjects count], indexPath);
     
     ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
@@ -861,7 +861,7 @@
     NSLog(@"location = %f,%f", location.x, location.y);
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
-    NSLog(@"indexpath selected is = %@", indexPath);
+    //NSLog(@"indexpath selected is = %@", indexPath);
     
     if (self.rowOfExpandedCell == -1) {
         if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
