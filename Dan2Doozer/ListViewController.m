@@ -366,16 +366,42 @@
     return YES;
 }
 
+
 -(void)rebalanceListIfNeeded{
     NSLog(@"inside rebalance list if needed method");
     
-    NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    [fetchRequest setFetchBatchSize:20];
+    
+    
+    Item *parentItem = self.displayList;
+    NSString *currentParentId = parentItem.itemId;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", currentParentId];
+    [fetchRequest setPredicate:predicate];
+    
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+
+    NSFetchedResultsController *newFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"ListTemp"];
+    [NSFetchedResultsController deleteCacheWithName:@"ListTemp"];
+    
+    NSError *error = nil;
+    if (![newFetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+
+    NSArray *itemsOnList = newFetchedResultsController.fetchedObjects;
     BOOL rebalanceNeeded = NO;
     int previousItemOrder = 0;
     for (Item *eachItem in itemsOnList){
         int diff = eachItem.order.intValue - previousItemOrder;
         previousItemOrder = eachItem.order.intValue;
-        //NSLog(@"diff ===== %d", diff);
         if (diff < 2){
             rebalanceNeeded = YES;
         }

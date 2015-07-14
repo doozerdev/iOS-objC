@@ -16,8 +16,7 @@
 #import "ColorHelper.h"
 #import "AppDelegate.h"
 
-//NSFetchedResultsController *_fetchedResultsController;
-//NSMutableArray *_itemsArray;
+BOOL _syncOpActive;
 
 
 @implementation DoozerSyncManager
@@ -26,43 +25,47 @@
 +(void)syncWithServer{
 
 //login to Doozer if needed
-    
-    double currentTime = [[NSDate date] timeIntervalSince1970];
-    NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
-    
-    //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    if(_syncOpActive){
+        NSLog(@"sync op active! no additional sync this time");
+    }else{
+        _syncOpActive = YES;
+        double currentTime = [[NSDate date] timeIntervalSince1970];
+        NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
+        
+        //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
+        
+        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
 
-    
-    if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
-        NSLog(@"Sync starts with LOGIN");
         
-        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-        NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
+            NSLog(@"Sync starts with LOGIN");
             
-            NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            NSLog(@"returning message from login operation");
+            NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+            NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
             
-            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            
+            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+            [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                
+                NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+                [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                NSLog(@"returning message from login operation");
+                
+                [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+                [self performSyncSteps];
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"Error: %@", error);
+            }];
+        }else{
+            NSLog(@"Sync WITHOUT login needed");
+
             [self performSyncSteps];
             
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Error: %@", error);
-        }];
-    }else{
-        NSLog(@"Sync WITHOUT login needed");
-
-        [self performSyncSteps];
-        
+        }
     }
     
 }
@@ -110,6 +113,7 @@
                         NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
                         [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
+                        _syncOpActive = NO;
                         
                         
                     }];
@@ -144,9 +148,9 @@
         [fetchRequest setPredicate:predicate];
         NSError *firsterror = nil;
         NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
-        NSLog(@"results = %@", results);
+        //NSLog(@"results = %@", results);
         NSUInteger length = [results count];
-        NSLog(@"length = %lu", (unsigned long)length);
+        NSLog(@"does the server item match a local item = %lu", (unsigned long)length);
         
         NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
         NSString *idOfServerItem = [eachArrayElement objectForKey:@"id"];

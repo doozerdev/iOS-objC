@@ -8,6 +8,7 @@
 
 #import "CoreDataItemManager.h"
 #import "AppDelegate.h"
+#import "UpdateItemsOnServer.h"
 
 NSFetchedResultsController *_fetchedResultsController;
 
@@ -63,12 +64,14 @@ NSFetchedResultsController *_fetchedResultsController;
 }
 
 +(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems{
-    int orderStepValue = 1073741824/[arrayOfItems count];
+    //int orderStepValue = 1073741824/[arrayOfItems count];
+    int orderStepValue = 32;
     int itemOrderMultiplier = 1;
     for (Item *eachItem in arrayOfItems) {
         NSLog(@"%@ order is %@", eachItem.title, eachItem.order);
         eachItem.order = [NSNumber numberWithInt:itemOrderMultiplier*orderStepValue];
         NSLog(@"%@ NEW order is %@", eachItem.title, eachItem.order);
+        [UpdateItemsOnServer updateThisItem:eachItem];
         itemOrderMultiplier += 1;
     }
     
