@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44E46C46C83E9BD0B2F3592A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 808A8A0F4B6CF0A061F79A27 /* libPods.a */; };
 		A2301B2E1AF41A7C00E2267D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B2D1AF41A7C00E2267D /* main.m */; };
 		A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B301AF41A7C00E2267D /* AppDelegate.m */; };
 		A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */; };
@@ -14,7 +15,6 @@
 		A2301B3D1AF41A7C00E2267D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2301B3B1AF41A7C00E2267D /* Main.storyboard */; };
 		A2301B3F1AF41A7C00E2267D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2301B3E1AF41A7C00E2267D /* Images.xcassets */; };
 		A2301B421AF41A7C00E2267D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2301B401AF41A7C00E2267D /* LaunchScreen.xib */; };
-		A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */; };
 		A2301B5C1AF43CAE00E2267D /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5B1AF43CAE00E2267D /* Item.m */; };
 		A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B5E1AF6E04F00E2267D /* LoginViewController.m */; };
 		A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290401B45D7C80070662C /* ParentCustomCell.m */; };
@@ -30,6 +30,7 @@
 		A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */; };
 		A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */; };
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
+		A2C2F1EC1B57144800360A25 /* ColorHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2F1EB1B57144800360A25 /* ColorHelperTests.m */; };
 		A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55391B2F851700D19660 /* AddItemsToServer.m */; };
 		A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */; };
 		A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */; };
@@ -49,6 +50,7 @@
 /* Begin PBXFileReference section */
 		73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		808A8A0F4B6CF0A061F79A27 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B281AF41A7C00E2267D /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B2C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B2D1AF41A7C00E2267D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -62,7 +64,6 @@
 		A2301B411AF41A7C00E2267D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		A2301B471AF41A7C00E2267D /* DoozerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B4C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dan2DoozerTests.m; sourceTree = "<group>"; };
 		A2301B5A1AF43CAE00E2267D /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
 		A2301B5B1AF43CAE00E2267D /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		A2301B5D1AF6E04F00E2267D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -89,6 +90,7 @@
 		A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
 		A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataItemManager.h; sourceTree = "<group>"; };
 		A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataItemManager.m; sourceTree = "<group>"; };
+		A2C2F1EB1B57144800360A25 /* ColorHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorHelperTests.m; sourceTree = "<group>"; };
 		A2FB55381B2F851700D19660 /* AddItemsToServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemsToServer.h; sourceTree = "<group>"; };
 		A2FB55391B2F851700D19660 /* AddItemsToServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemsToServer.m; sourceTree = "<group>"; };
 		A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateItemsOnServer.h; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				A27439051B55F436002E7CA5 /* FBSDKLoginKit.framework in Frameworks */,
 				A27439031B55F428002E7CA5 /* FBSDKCoreKit.framework in Frameworks */,
 				A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */,
+				44E46C46C83E9BD0B2F3592A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +138,7 @@
 				A27439041B55F436002E7CA5 /* FBSDKLoginKit.framework */,
 				A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */,
 				A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */,
+				808A8A0F4B6CF0A061F79A27 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -189,8 +193,8 @@
 		A2301B4A1AF41A7C00E2267D /* Dan2DoozerTests */ = {
 			isa = PBXGroup;
 			children = (
-				A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */,
 				A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */,
+				A2C2F1EB1B57144800360A25 /* ColorHelperTests.m */,
 				A2301B4B1AF41A7C00E2267D /* Supporting Files */,
 			);
 			path = Dan2DoozerTests;
@@ -310,7 +314,7 @@
 		A2301B201AF41A7C00E2267D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Daniel Apone";
 				TargetAttributes = {
 					A2301B271AF41A7C00E2267D = {
@@ -427,7 +431,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A25619441B55A2C1005D5D29 /* MasterViewControllerTests.m in Sources */,
-				A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */,
+				A2C2F1EC1B57144800360A25 /* ColorHelperTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,6 +486,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -561,6 +566,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -585,6 +591,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -605,6 +612,7 @@
 				);
 				INFOPLIST_FILE = Dan2DoozerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "becca-corp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = DoozerTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
 			};
@@ -620,6 +628,7 @@
 				);
 				INFOPLIST_FILE = Dan2DoozerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "becca-corp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = DoozerTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Doozer.app/Doozer";
 			};
