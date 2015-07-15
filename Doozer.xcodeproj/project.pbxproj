@@ -20,6 +20,7 @@
 		A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290401B45D7C80070662C /* ParentCustomCell.m */; };
 		A24290441B45E3260070662C /* ColorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290431B45E3260070662C /* ColorHelper.m */; };
 		A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A253AD281B4AEF1200D896E1 /* ListCustomCell.m */; };
+		A25619441B55A2C1005D5D29 /* MasterViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */; };
 		A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */; };
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
@@ -72,6 +73,7 @@
 		A24290431B45E3260070662C /* ColorHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorHelper.m; sourceTree = "<group>"; };
 		A253AD271B4AEF1200D896E1 /* ListCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListCustomCell.h; sourceTree = "<group>"; };
 		A253AD281B4AEF1200D896E1 /* ListCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListCustomCell.m; sourceTree = "<group>"; };
+		A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterViewControllerTests.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		A27342491B0EDA4E00C1E219 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				A2301B4D1AF41A7C00E2267D /* Dan2DoozerTests.m */,
+				A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */,
 				A2301B4B1AF41A7C00E2267D /* Supporting Files */,
 			);
 			path = Dan2DoozerTests;
@@ -423,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A25619441B55A2C1005D5D29 /* MasterViewControllerTests.m in Sources */,
 				A2301B4E1AF41A7C00E2267D /* Dan2DoozerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
