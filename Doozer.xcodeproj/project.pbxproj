@@ -23,8 +23,8 @@
 		A25619441B55A2C1005D5D29 /* MasterViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */; };
 		A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */; };
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
-		A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */; };
-		A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */; };
+		A27439031B55F428002E7CA5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */; };
+		A27439051B55F436002E7CA5 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27439041B55F436002E7CA5 /* FBSDKLoginKit.framework */; };
 		A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */; };
 		A29CD7E41B1ACCAC000FA1B0 /* DoozerSettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */; };
 		A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */ = {isa = PBXBuildFile; fileRef = A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */; };
@@ -76,9 +76,9 @@
 		A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterViewControllerTests.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		A27342491B0EDA4E00C1E219 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
+		A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		A27439041B55F436002E7CA5 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		A2843E601AF71EF100FE47B6 /* ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
-		A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		A29CD7DF1B1ACAF5000FA1B0 /* DoozerSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoozerSyncManager.h; sourceTree = "<group>"; };
 		A29CD7E01B1ACAF5000FA1B0 /* DoozerSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoozerSyncManager.m; sourceTree = "<group>"; };
 		A29CD7E21B1ACCAC000FA1B0 /* DoozerSettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoozerSettingsManager.h; sourceTree = "<group>"; };
@@ -104,9 +104,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A27439051B55F436002E7CA5 /* FBSDKLoginKit.framework in Frameworks */,
+				A27439031B55F428002E7CA5 /* FBSDKCoreKit.framework in Frameworks */,
 				A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */,
-				A2843E681AFD6CE900FE47B6 /* FBSDKLoginKit.framework in Frameworks */,
-				A2843E661AFD67C200FE47B6 /* FBSDKCoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +132,8 @@
 		43E9D580928C3349D37B4FA4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A27439041B55F436002E7CA5 /* FBSDKLoginKit.framework */,
+				A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */,
 				A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */,
 			);
 			name = Frameworks;
@@ -140,8 +142,6 @@
 		A2301B1F1AF41A7C00E2267D = {
 			isa = PBXGroup;
 			children = (
-				A2843E671AFD6CE900FE47B6 /* FBSDKLoginKit.framework */,
-				A2843E651AFD67C200FE47B6 /* FBSDKCoreKit.framework */,
 				A2301B2A1AF41A7C00E2267D /* Dan2Doozer */,
 				A2301B4A1AF41A7C00E2267D /* Dan2DoozerTests */,
 				A2301B291AF41A7C00E2267D /* Products */,

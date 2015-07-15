@@ -33,8 +33,8 @@
     UIColor *tempColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
     self.view.backgroundColor = tempColor;
     
-    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
-    //self.navigationController.navigationBar.barTintColor = tempColor;
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barTintColor = tempColor;
     
     //self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@", listForTitle.title, listForTitle.itemId];
     self.navigationItem.title = listForTitle.title;
@@ -927,11 +927,15 @@
 
         NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-        ItemViewController *controller = (ItemViewController *)[[segue destinationViewController] topViewController];
-        controller.managedObjectContext = self.managedObjectContext;
-        [controller setDetailItem:object];
-        [controller setDisplayListOfItem:self.displayList];
+        //ItemViewController *controller = (ItemViewController *)[[segue destinationViewController] topViewController];
+        ItemViewController *itemController = segue.destinationViewController;
         
+        itemController.managedObjectContext = self.managedObjectContext;
+        [itemController setDetailItem:object];
+        [itemController setDisplayListOfItem:self.displayList];
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+        
+        /*
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
         
@@ -941,6 +945,7 @@
                                         target:nil
                                         action:nil];
         [[self navigationItem] setBackBarButtonItem:newBackButton];
+         */
     }
 }
 

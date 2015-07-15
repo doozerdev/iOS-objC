@@ -25,6 +25,9 @@
     
     self.UserNameLabel.text = [FBSDKProfile currentProfile].name;
     
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
+    
 }
 
 - (void)didReceiveMemoryWarning {

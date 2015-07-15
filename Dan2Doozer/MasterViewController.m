@@ -50,15 +50,8 @@
     
     self.addingAnItem = NO;
     self.rowOfExpandedCell = -1;
-    //self.rowOfNewItem = -1;
-    
-    //self.navigationController.hidesBarsOnSwipe = YES;
-    
-    
+
     // Do any additional setup after loading the view, typically from a nib.
-    
-    //self.navigationController.navigationBar.barStyle  = UIBarStyleBlackOpaque;
-    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.77 green:0.4 blue:0.68 alpha:1.0];
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
@@ -75,7 +68,9 @@
     [super viewWillAppear:animated];
     
     self.rowOfExpandedCell = -1;
-    
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
     [self.tableView reloadData]; // to reload selected cell
     
 }
@@ -555,11 +550,20 @@
         //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSIndexPath *indexPath = sender;
         Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
+        ListViewController *listController = segue.destinationViewController;
         
-        controller.managedObjectContext = self.managedObjectContext;
-        [controller setDisplayList:object];
+        //ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
         
+        //ListViewController *controller = (ListViewController *)[self.navigationController.viewControllers objectAtIndex:1];
+        
+        listController.managedObjectContext = self.managedObjectContext;
+        [listController setDisplayList:object];
+        
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        
+        /*
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
         
@@ -569,11 +573,15 @@
                                         target:nil
                                         action:nil];
         [[self navigationItem] setBackBarButtonItem:newBackButton];
-        
+        */
     }
     if ([[segue identifier] isEqualToString:@"showSettings"]){
         DoozerSettingsManager *controller = segue.destinationViewController;
         controller.managedObjectContext = self.managedObjectContext;
+        
+        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        
     }
 }
 
@@ -1074,32 +1082,43 @@
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
+            NSLog(@"NSFectchedResultsChangeInsert");
+
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
+            NSLog(@"NSFectchedResultsChangeDelete");
+
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
             
             NSLog(@"NSFectchedResultsChangeUpdate");
-            
-            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadData];
+            //[tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             //[self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
+            NSLog(@"NSFectchedResultsChangeMove");
+
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            NSLog(@"NSFectchedResultsChangeMove complete %@,%@", indexPath, newIndexPath);
+
+            
             break;
     }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+    NSLog(@"in the end updates thingy");
     [self.tableView endUpdates];
 }
+ 
 
 #pragma mark - Helper methods
 - (UIView *)customSnapshoFromView:(UIView *)inputView {
