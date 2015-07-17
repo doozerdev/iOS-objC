@@ -62,7 +62,6 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.tableView addGestureRecognizer:tapGesture];
     
-    
 }
 
 
@@ -70,12 +69,17 @@
     [super viewWillAppear:animated];
     
     self.rowOfExpandedCell = -1;
-    self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle  = UIBarStyleDefault;
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+    [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                            NSForegroundColorAttributeName: [UIColor blackColor],
+                                                            NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
+                                                            }];
     [self.tableView reloadData]; // to reload selected cell
     
 }
+
+
 
 - (void) viewWillDisappear: (BOOL) animated {
     [super viewWillDisappear: animated];
@@ -607,7 +611,7 @@
     
     ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
-    cell.cellItemTitle.font = [UIFont systemFontOfSize:30];
+    cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
     cell.cellItemTitle.textColor = [UIColor whiteColor];
 
 
@@ -621,6 +625,7 @@
         cell.cellItemTitle.text = [NSString stringWithFormat:@"\U0000254B\U0000FE0E"];
 
         cell.cellItemTitle.enabled = NO;
+        cell.tag = 111;
         cell.backgroundColor = [UIColor lightGrayColor];
         
         return cell;
@@ -646,7 +651,7 @@
         cell.cellItemSubTitle.hidden = NO;
         cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
         cell.cellItemSubTitle.textColor = [UIColor whiteColor];
-        cell.cellItemSubTitle.font = [UIFont systemFontOfSize:15];
+        cell.cellItemSubTitle.font = [UIFont fontWithName:@"Avenir" size:15];
         cell.cellItemSubTitle.textAlignment = NSTextAlignmentLeft;
         
         if (self.rowOfExpandedCell == indexPath.row) {

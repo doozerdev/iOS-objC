@@ -14,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="7bK-jq-Zjz" kind="relationship" relationship="rootViewController" id="tsl-Nk-0bq"/>
+                        <segue destination="7bK-jq-Zjz" kind="relationship" identifier="fromNavigationController" relationship="rootViewController" id="tsl-Nk-0bq"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8fS-aE-onr" sceneMemberID="firstResponder"/>
@@ -418,9 +418,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="dKf-Qd-zxh"/>
-                    <connections>
-                        <segue destination="n8z-vh-KDW" kind="unwind" unwindAction="unwindToList:" id="zOu-V1-TBe"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="amk-Je-9m6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -490,7 +487,6 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygx-FV-Pgj" sceneMemberID="firstResponder"/>
-                <exit id="n8z-vh-KDW" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="709" y="135"/>
         </scene>

@@ -66,12 +66,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     Item *displayItem = self.detailItem;
-    self.navigationItem.title = displayItem.title;
-    
     Item *displayListParent = self.displayListOfItem;
+
+    self.navigationItem.title = displayItem.title;
+    UIColor *tempColor = [ColorHelper getUIColorFromString:displayListParent.color :1];
+    self.view.backgroundColor = tempColor;
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
+    self.navigationController.navigationBar.barTintColor = tempColor;
+
+    [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                       NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                                       NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
+                                                                       }];
     
-    self.view.backgroundColor = [ColorHelper getUIColorFromString:displayListParent.color :1];
+    
 
 }
 
@@ -111,21 +121,21 @@
     [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-8]];
     [cell addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell.detailTextLabel attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     textField.textAlignment = NSTextAlignmentLeft;
-    textField.font = [UIFont systemFontOfSize:12];
+    textField.font = [UIFont fontWithName:@"Avenir" size:12];
     textField.textColor = [UIColor blackColor];
     
     if ((int)indexPath.row == 0) {
-        textField.font = [UIFont systemFontOfSize:16];
+        textField.font = [UIFont fontWithName:@"Avenir" size:16];
         textField.text = displayItem.title;
         cell.textLabel.text = @"Title";
         textField.tag = 301;
     }else if ((int)indexPath.row == 1){
-        textField.font = [UIFont systemFontOfSize:16];
+        textField.font = [UIFont fontWithName:@"Avenir" size:16];
         textField.text = displayItem.notes;
         cell.textLabel.text = @"Notes";
         textField.tag = 302;
     }else if ((int)indexPath.row == 2){
-        textField.font = [UIFont systemFontOfSize:16];
+        textField.font = [UIFont fontWithName:@"Avenir" size:16];
         NSString *mySmallerString = nil;
         if(displayItem.duedate){
             NSString *fullDateString = [NSString stringWithFormat:@"%@", displayItem.duedate];

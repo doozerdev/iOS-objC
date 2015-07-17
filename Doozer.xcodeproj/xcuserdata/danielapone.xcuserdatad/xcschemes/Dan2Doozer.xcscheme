@@ -52,6 +52,16 @@
                ReferencedContainer = "container:Doozer.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A2C2F1F21B588AEB00360A25"
+               BuildableName = "DoozerUITests.xctest"
+               BlueprintName = "DoozerUITests"
+               ReferencedContainer = "container:Doozer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

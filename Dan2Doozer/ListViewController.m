@@ -33,8 +33,13 @@
     UIColor *tempColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
     self.view.backgroundColor = tempColor;
     
-    self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
     self.navigationController.navigationBar.barTintColor = tempColor;
+    
+    [self.navigationController.navigationBar setTitleTextAttributes: @{
+                                                                       NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                                       NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
+                                                                       }];
     
     //self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@", listForTitle.title, listForTitle.itemId];
     self.navigationItem.title = listForTitle.title;
@@ -1102,7 +1107,7 @@
         cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellItemTitle.textColor = [UIColor whiteColor];
-        cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+        cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         
     }else{
@@ -1111,7 +1116,7 @@
             
             cell.cellItemTitle.text = titleText;
             cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
-            cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+            cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
 
@@ -1135,7 +1140,7 @@
             cell.cellItemTitle.attributedText = nil;
             cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
-            cell.cellItemTitle.font = [UIFont systemFontOfSize:16];
+            cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             
             if (self.rowOfNewItem == -1) {

@@ -16,12 +16,13 @@
 
 @end
 
-
+/*
 @interface MasterViewController (Test)
 
 - (void)addItemList;
 
 @end
+ */
 
 @implementation MasterViewControllerTests
 
@@ -38,8 +39,9 @@
 }
 
 
--(void)testAddItemList {
+-(void)testAddItem {
     
+    //[MasterViewController press: [self.masterVC.view viewWithTag:111]];
 }
 
 
