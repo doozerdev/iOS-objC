@@ -30,11 +30,7 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // Use recording to get started writing UI tests.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    
-
+- (void)addListAndItem {
     XCUIApplication *app = [[XCUIApplication alloc] init];
     XCUIElementQuery *tablesQuery = app.tables;
     [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:@"╋︎"] childrenMatchingType:XCUIElementTypeTextField].element tap];
@@ -50,7 +46,12 @@
     [app typeText:itemTimestamp];
     [app typeText:@"\r"];
     
-    //XCTAssertEqualObjects(<#expression1#>, <#expression2, ...#>)
+    [app pressForDuration:1];
+    [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:itemTimestamp] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    
+    NSString *itemName = [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:itemTimestamp] childrenMatchingType:XCUIElementTypeTextField].element value];
+    
+    XCTAssertEqualObjects(itemTimestamp, itemName, @"Item entered successfuly!");
     
 }
 

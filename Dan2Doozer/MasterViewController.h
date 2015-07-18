@@ -22,7 +22,7 @@
 @property (strong, nonatomic) ListViewController *listViewController;
 @property (strong, nonatomic) NSMutableArray *parentArray;
 @property (nonatomic) int numberOfUncompletedChildren;
-@property (strong, nonatomic) NSIndexPath *superOriginalIndex;
+@property (strong, nonatomic) NSIndexPath *originalIndex;
 
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -32,8 +32,6 @@
 @property (nonatomic) int rowOfExpandedCell;
 @property (strong, nonatomic) Item *itemToDelete;
 @property BOOL addingAnItem;
-
-
 
 
 @end

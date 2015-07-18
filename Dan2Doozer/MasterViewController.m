@@ -245,13 +245,8 @@
     if (alertView.tag == 1){
         
         int numberOfLists = (int)[self.fetchedResultsController.fetchedObjects count];
-        
-        //this is screwed up!!!
-        
-        
-        
+
         NSLog(@"button index is %ld, and numberof lists is %d", (long)buttonIndex, numberOfLists);
-        
         
         if (buttonIndex > numberOfLists || buttonIndex == 0) {
             NSLog(@"cancel was pressed");
@@ -316,28 +311,23 @@
     
     CGPoint location = [longPress locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-    
-    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    //NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
-    
+    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    ParentCustomCell *originalCell = [self.tableView cellForRowAtIndexPath:self.originalIndex];
+
     UIGestureRecognizerState state = longPress.state;
     
     static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
     static NSIndexPath  *sourceIndexPath = nil; ///< Initial index path, where gesture begins.
     
-    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    
     switch (state) {
         case UIGestureRecognizerStateBegan: {
-            
-            //self.longPressActive = YES;
-            
             if (indexPath) {
                     
-                    _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
-                    
-                    sourceIndexPath = indexPath;
-                
+                self.originalIndex = [self.tableView indexPathForRowAtPoint:location];
+                originalCell = [self.tableView cellForRowAtIndexPath:self.originalIndex];
+
+                sourceIndexPath = indexPath;
+                if (originalCell.tag != 111) {
                     // Take a snapshot of the selected row using helper method.
                     snapshot = [self customSnapshoFromView:cell];
                     
@@ -360,54 +350,50 @@
                         cell.hidden = YES;
                         
                     }];
+                }
             }
             break;
         }
             
         case UIGestureRecognizerStateChanged: {
-                CGPoint center = snapshot.center;
-                center.y = location.y;
-                snapshot.center = center;
-                
-                // Is destination valid and is it different from source?
-                if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
-                    
-                    //NSLog(@"moving cells ----------------");
-                    // ... move the rows.
-                    [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
-                    
-                    Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
-                    int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
-                    
-                    
-                    if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
-                        NSLog(@"passing the completed header");
-                        //self.showCompleted = YES;
-                        int currentRow = (int)indexPath.row+1;
+               if (cell.tag != 111 && originalCell.tag != 111) {
+            
+                    if (indexPath) {
+                        NSLog(@"indexpath row and source = %ld - %ld", (long)indexPath.row, (long)sourceIndexPath.row);
+
+                        CGPoint center = snapshot.center;
+                        center.y = location.y;
+                        snapshot.center = center;
+                    }
+
+                    // Is destination valid and is it different from source?
+                    if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
+                        NSLog(@"about to move");
                         
-                        NSMutableArray *indexPaths = [[NSMutableArray alloc]init];
-                        for(int r = currentRow; r<totalRows; r++){
-                            [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:0]];
+                        if (cell.tag != 111) {
+                            NSLog(@"moving cells ----------------");
+
+                            [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                             
-                            ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
-                            cell.hidden = NO;
+                            sourceIndexPath = indexPath;
                         }
                     }
-                    // ... and update source so it is in sync with UI changes.
-                    sourceIndexPath = indexPath;
-                }
+               }
                 break;
         }
             
         case UIGestureRecognizerStateEnded: {
-                Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+            if (originalCell.tag != 111) {
+                
+            
+                Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.originalIndex.row];
                 NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
                 
                 NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
                 Item *previousItem = nil;
                 Item *followingItem  = nil;
                 
-                if(_superOriginalIndex.row < sourceIndexPath.row){
+                if(self.originalIndex.row < sourceIndexPath.row){
                     if (sourceIndexPath.row == (numberOfObjects - 1)) {
                         Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
                         int newItemNewOrder = originalLastItem.order.intValue + 1048576;
@@ -460,9 +446,8 @@
                 
                 [DoozerSyncManager syncWithServer];
                 [self.tableView reloadData];
-                
             }
-            
+        }
         default: {
             // Clean up.
 
@@ -558,28 +543,12 @@
         Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
         ListViewController *listController = segue.destinationViewController;
         
-        //ListViewController *controller = (ListViewController *)[[segue destinationViewController] topViewController];
-        
-        //ListViewController *controller = (ListViewController *)[self.navigationController.viewControllers objectAtIndex:1];
-        
         listController.managedObjectContext = self.managedObjectContext;
         [listController setDisplayList:object];
         
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
         self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
         [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        
-        /*
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
-        
-        UIBarButtonItem *newBackButton =
-        [[UIBarButtonItem alloc] initWithTitle:@""
-                                         style:UIBarButtonItemStylePlain
-                                        target:nil
-                                        action:nil];
-        [[self navigationItem] setBackBarButtonItem:newBackButton];
-        */
     }
     if ([[segue identifier] isEqualToString:@"showSettings"]){
         DoozerSettingsManager *controller = segue.destinationViewController;
@@ -627,6 +596,7 @@
         cell.cellItemTitle.enabled = NO;
         cell.tag = 111;
         cell.backgroundColor = [UIColor lightGrayColor];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         return cell;
         
@@ -635,7 +605,8 @@
         Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
         cell.itemInCell = itemInCell;
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
-
+        cell.tag = 0;
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 
         NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
         int numKids = 0;
@@ -932,45 +903,6 @@
         }
     }
 }
-
-/*
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSLog(@"indexpath selected is = %@", indexPath);
-    
-    if (self.rowOfExpandedCell == -1) {
-        if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
-            [self addItemList];
-        }else{
-            [self performSegueWithIdentifier:@"showList" sender:self];
-        }
-    }else{
-        NSLog(@"row of expanded cell is %d", self.rowOfExpandedCell);
-        if (indexPath.row != self.rowOfExpandedCell) {
-            //Save item and reload table
-            NSIndexPath *rowToSave = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
-            Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:rowToSave];
-            ParentCustomCell *cellToSave = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:rowToSave];
-            itemToSave.title = cellToSave.cellItemTitle.text;
-            
-            [cellToSave.cellItemTitle resignFirstResponder];
-            [self.view.window endEditing: YES];
-            
-            if (self.addingAnItem) {
-                [AddItemsToServer addThisItem:itemToSave];
-                self.addingAnItem = NO;
-            }else{
-                [UpdateItemsOnServer updateThisItem:itemToSave];
-            }
-            
-            self.rowOfExpandedCell = -1;
-
-            [self.tableView reloadData];
-           
-        }
-    }
-}
-*/
 
 #pragma mark - Fetched results controller
 
