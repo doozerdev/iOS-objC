@@ -678,7 +678,7 @@
                 
                 if (indexPath) {
                     
-                    if ([clickedItem.type isEqualToString:@"completed_header"]) {
+                    if ([clickedItem.type isEqualToString:@"completed_header"] || (!self.showCompleted && clickedItem.done.intValue == 1)) {
                         self.allowDragging = NO;
                     }else{
                         self.allowDragging = YES;
