@@ -47,9 +47,11 @@
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
     [self.tableView addGestureRecognizer:longPress];
+    longPress.delegate = self;
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.tableView addGestureRecognizer:tapGesture];
+    tapGesture.delegate = self;
     
     
     /*
@@ -60,6 +62,7 @@
      
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
     [self.tableView addGestureRecognizer:panGesture];
+    panGesture.delegate =self;
     
     //self.navigationController.hidesBarsOnSwipe = YES;
 
@@ -103,7 +106,7 @@
 
 -(void)swiperight:(UIPanGestureRecognizer*)panGesture; {
 
-    panGesture.delegate = self;
+    //panGesture.delegate = self;
 
     static CGPoint startPoint = { 0.f, 0.f };
     static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
@@ -367,7 +370,12 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    //This allows the custom PanGesture to be simultaneiously monitoring with the built-in swipe left to reveal delete button
+    
+    
+    //if (![gestureRecognizer isKindOfClass:[uipan class]] && ![otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    //    return YES;
+    //}
+    
     return YES;
 }
 
@@ -654,6 +662,7 @@
 
 
 - (IBAction)longPressGestureRecognized:(id)sender {
+    self.tableView.scrollEnabled = NO;
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
     
