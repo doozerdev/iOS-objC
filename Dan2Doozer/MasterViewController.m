@@ -356,7 +356,8 @@
         }
             
         case UIGestureRecognizerStateChanged: {
-               if (cell.tag != 111 && originalCell.tag != 111) {
+            NSLog(@"original cell tag = %ld", (long)originalCell.tag);
+               if (cell.tag != 111 && originalCell.tag != 111 && self.originalIndex) {
             
                     if (indexPath) {
                         NSLog(@"indexpath row and source = %ld - %ld", (long)indexPath.row, (long)sourceIndexPath.row);
@@ -383,8 +384,7 @@
         }
             
         case UIGestureRecognizerStateEnded: {
-            if (originalCell.tag != 111) {
-                
+            if (cell.tag != 111 && originalCell.tag != 111 && self.originalIndex) {
             
                 Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.originalIndex.row];
                 NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -442,34 +442,34 @@
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
-
-                
+                self.originalIndex = nil;
                 [DoozerSyncManager syncWithServer];
                 [self.tableView reloadData];
+            
             }
         }
         default: {
             // Clean up.
-
-            ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
-            cell.hidden = NO;
-            cell.alpha = 0.0;
-            
-            [UIView animateWithDuration:0.25 animations:^{
+            if (originalCell.tag != 111) {
+                ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
+                cell.hidden = NO;
+                cell.alpha = 0.0;
                 
-                snapshot.center = cell.center;
-                snapshot.transform = CGAffineTransformIdentity;
-                snapshot.alpha = 0.0;
-                cell.alpha = 1.0;
-                
-            } completion:^(BOOL finished) {
-                
-                sourceIndexPath = nil;
-                [snapshot removeFromSuperview];
-                snapshot = nil;
-                
-            }];
-            
+                [UIView animateWithDuration:0.25 animations:^{
+                    
+                    snapshot.center = cell.center;
+                    snapshot.transform = CGAffineTransformIdentity;
+                    snapshot.alpha = 0.0;
+                    cell.alpha = 1.0;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    sourceIndexPath = nil;
+                    [snapshot removeFromSuperview];
+                    snapshot = nil;
+                    
+                }];
+            }
             break;
         }
     }

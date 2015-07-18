@@ -150,7 +150,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Doozer Lists" id="Zdf-7t-Un8">
+                    <navigationItem key="navigationItem" title="Doozer" id="Zdf-7t-Un8">
                         <barButtonItem key="leftBarButtonItem" image="Hamburger" id="v6N-sr-YCA">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>

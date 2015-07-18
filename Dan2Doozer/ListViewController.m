@@ -106,159 +106,161 @@
 
 -(void)swiperight:(UIPanGestureRecognizer*)panGesture; {
 
-    //panGesture.delegate = self;
-
     static CGPoint startPoint = { 0.f, 0.f };
     static UIView *snapshot = nil;        ///< A snapshot of the row user is swiping.
     CGPoint location = [panGesture locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
-    ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    ListCustomCell *originalCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
-    Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
     
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    BOOL swipeOnHiddenItem = NO;
-    int swipeThreshold = 100;
-
-    if (!self.showCompleted && (swipedItem.done.intValue == 1)) {
-        //NSLog(@"don't allow swiping!");
-        swipeOnHiddenItem = YES;
-    }
-    
-    if ((!self.longPressActive && !self.isScrolling && !swipeOnHiddenItem) || self.isRightSwiping) {
+    if (indexPath) {
         
-        switch (panGesture.state) {
-            case UIGestureRecognizerStateBegan:{
-                //NSLog(@"pan began ---------------");
-                startPoint = location;
-                snapshot = [self customSnapshoForSwiping:cell];
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        ListCustomCell *originalCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
+        Item *swipedItem = [self.fetchedResultsController objectAtIndexPath:originalIndexPath];
+        
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenRect.size.width;
+        BOOL swipeOnHiddenItem = NO;
+        int swipeThreshold = 100;
+
+        if (!self.showCompleted && (swipedItem.done.intValue == 1)) {
+            //NSLog(@"don't allow swiping!");
+            swipeOnHiddenItem = YES;
+        }
+        
+        if ((!self.longPressActive && !self.isScrolling && !swipeOnHiddenItem) || self.isRightSwiping) {
+            
+            switch (panGesture.state) {
+                case UIGestureRecognizerStateBegan:{
+                    //NSLog(@"pan began ---------------");
+                    startPoint = location;
+                    snapshot = [self customSnapshoForSwiping:cell];
 
 
-                break;
-            }
-            case UIGestureRecognizerStateChanged:{
-                CGPoint location = [panGesture locationInView:self.view];
-                
-                if(location.x-startPoint.x > 10 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                    break;
+                }
+                case UIGestureRecognizerStateChanged:{
+                    CGPoint location = [panGesture locationInView:self.view];
                     
-                    self.isRightSwiping = YES;
-                    
-                    // Add the snapshot as subview, centered at cell's center...
-                    
-                    CGPoint offset = { ((location.x-startPoint.x) + screenWidth/2), originalCell.center.y };
+                    if(location.x-startPoint.x > 10 && ![swipedItem.type isEqualToString:@"completed_header"]){
+                        
+                        self.isRightSwiping = YES;
+                        
+                        // Add the snapshot as subview, centered at cell's center...
+                        
+                        CGPoint offset = { ((location.x-startPoint.x) + screenWidth/2), originalCell.center.y };
 
-                    snapshot.center = offset;
-                    snapshot.alpha = 1.0;
-                    [self.tableView addSubview:snapshot];
-                    originalCell.hidden = NO;
-                    Item *parent = self.displayList;
-                    originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
-                    originalCell.cellItemTitle.text = @"\U00002714\U0000FE0E";
-                    
-                    if (swipedItem.done.intValue == 1) {
-                        if ((location.x-startPoint.x) > swipeThreshold) {
-                            originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                        snapshot.center = offset;
+                        snapshot.alpha = 1.0;
+                        [self.tableView addSubview:snapshot];
+                        originalCell.hidden = NO;
+                        Item *parent = self.displayList;
+                        originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
+                        originalCell.cellItemTitle.text = @"\U00002714\U0000FE0E";
+                        
+                        if (swipedItem.done.intValue == 1) {
+                            if ((location.x-startPoint.x) > swipeThreshold) {
+                                originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                            }else{
+                                originalCell.cellItemTitle.textColor = [UIColor whiteColor];
+                            }
                         }else{
-                            originalCell.cellItemTitle.textColor = [UIColor whiteColor];
-                        }
-                    }else{
-                        if ((location.x-startPoint.x) > swipeThreshold) {
-                            originalCell.cellItemTitle.textColor = [UIColor whiteColor];
+                            if ((location.x-startPoint.x) > swipeThreshold) {
+                                originalCell.cellItemTitle.textColor = [UIColor whiteColor];
 
-                        }else{
-                            originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                            }else{
+                                originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                            }
                         }
+                        originalCell.cellItemTitle.font = [UIFont boldSystemFontOfSize:26];
+                        
                     }
-                    originalCell.cellItemTitle.font = [UIFont boldSystemFontOfSize:26];
-                    
+                       
+                    break;
                 }
-                   
-                break;
-            }
-            case UIGestureRecognizerStateEnded:{
-                //NSLog(@"pan ended ---------------");
-                
-                if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
+                case UIGestureRecognizerStateEnded:{
+                    //NSLog(@"pan ended ---------------");
                     
-                    NSLog(@"locationX is %f, startpointX is %f, and swipeThreshold is %d", location.x, startPoint.x, swipeThreshold);
-                    
-                    
-                    float velocity = 1000; //pixels per second
-                    
-                    float animationDuration = (screenWidth - (location.x - startPoint.x))/velocity;
-                    NSLog(@"animation duration = %f", animationDuration);
-                    
-                    [UIView animateWithDuration:animationDuration
-                                          delay:0.0
-                                        options: UIViewAnimationOptionCurveEaseInOut
-                                     animations:^
-                     {
-                         CGRect frame = snapshot.frame;
-                         frame.origin.x = (screenWidth);
-                         snapshot.frame = frame;
-                     }
-                                     completion:^(BOOL finished)
-                     {
-                         NSLog(@"Completed");
-                         [self cleanUpSwipedItem:swipedItem];
-                         [snapshot removeFromSuperview];
-                         
-                         NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
-                         for (Item *eachItem in itemsOnList) {
-                             if ([eachItem.type isEqualToString:@"completed_header"]) {
-                
-                                 //set the notes field to a blank string, so that CoreData updates the header
-                                 //for completed items and prompts a reload of completed items count
-                                 eachItem.notes = @" ";
-                             }
+                    if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
+                        
+                        NSLog(@"locationX is %f, startpointX is %f, and swipeThreshold is %d", location.x, startPoint.x, swipeThreshold);
+                        
+                        
+                        float velocity = 1000; //pixels per second
+                        
+                        float animationDuration = (screenWidth - (location.x - startPoint.x))/velocity;
+                        NSLog(@"animation duration = %f", animationDuration);
+                        
+                        [UIView animateWithDuration:animationDuration
+                                              delay:0.0
+                                            options: UIViewAnimationOptionCurveEaseInOut
+                                         animations:^
+                         {
+                             CGRect frame = snapshot.frame;
+                             frame.origin.x = (screenWidth);
+                             snapshot.frame = frame;
                          }
-                         self.isRightSwiping = NO;
-
-                     }];
-
-                }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]){
+                                         completion:^(BOOL finished)
+                         {
+                             NSLog(@"Completed");
+                             [self cleanUpSwipedItem:swipedItem];
+                             [snapshot removeFromSuperview];
+                             
+                             NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
+                             for (Item *eachItem in itemsOnList) {
+                                 if ([eachItem.type isEqualToString:@"completed_header"]) {
                     
-                    [UIView animateWithDuration:0.2
-                                          delay:0.0
-                                        options: UIViewAnimationOptionCurveEaseOut
-                                     animations:^
-                     {
-                         CGRect frame = snapshot.frame;
-                         frame.origin.x = (0);
-                         snapshot.frame = frame;
-                     }
-                                     completion:^(BOOL finished)
-                     {
-                         NSLog(@"ReturniedCell");
-                         [snapshot removeFromSuperview];
-                         swipedItem.notes = @" ";
-                         self.isRightSwiping = NO;
+                                     //set the notes field to a blank string, so that CoreData updates the header
+                                     //for completed items and prompts a reload of completed items count
+                                     eachItem.notes = @" ";
+                                 }
+                             }
+                             self.isRightSwiping = NO;
 
-                    }];
-               
+                         }];
+
+                    }else if(location.x-startPoint.x >= 0 && location.x-startPoint.x < swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]){
+                        
+                        [UIView animateWithDuration:0.2
+                                              delay:0.0
+                                            options: UIViewAnimationOptionCurveEaseOut
+                                         animations:^
+                         {
+                             CGRect frame = snapshot.frame;
+                             frame.origin.x = (0);
+                             snapshot.frame = frame;
+                         }
+                                         completion:^(BOOL finished)
+                         {
+                             NSLog(@"ReturniedCell");
+                             [snapshot removeFromSuperview];
+                             swipedItem.notes = @" ";
+                             self.isRightSwiping = NO;
+
+                        }];
+                   
+                    }
+                    
+                    else{
+                        NSLog(@"Catch all case for ENDED");
+                        [snapshot removeFromSuperview];
+                        originalCell.hidden = NO;
+                        swipedItem.notes = @" ";
+                        self.isRightSwiping = NO;
+
+                    }
+                    
+                    break;
+                    
                 }
-                
-                else{
-                    NSLog(@"Catch all case for ENDED");
+                default:{
                     [snapshot removeFromSuperview];
-                    originalCell.hidden = NO;
-                    swipedItem.notes = @" ";
                     self.isRightSwiping = NO;
 
                 }
-                
-                break;
-                
+                    
+                    break;
             }
-            default:{
-                [snapshot removeFromSuperview];
-                self.isRightSwiping = NO;
-
-            }
-                
-                break;
         }
     }
 }
@@ -637,29 +639,6 @@
     return YES;
 }
 
-/*
-
-- (IBAction)longPressScroll:(id)sender {
-    
-    UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
-
-    //CGRect screenRect = [[UIScreen mainScreen] bounds];
-    
-    CGPoint locationOnScreen = [longPress locationInView:self.tableView.superview];
-    NSLog(@"NEW _____ location on Screen y axis = %f", locationOnScreen.y);
-    
-
-    if (locationOnScreen.y < 100) {
-        
-        CGRect newWindowPosition = CGRectMake(0, screenRect.size.height+1, 1.0, 1.0);
-        [self.tableView scrollRectToVisible:newWindowPosition animated:NO];
-    }
-
-
-}
-*/
-
-
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     self.tableView.scrollEnabled = NO;
@@ -684,6 +663,7 @@
             case UIGestureRecognizerStateBegan: {
                 
                 self.longPressActive = YES;
+                NSLog(@"indexpath = %@", indexPath);
                 
                 if (indexPath) {
                     
@@ -727,24 +707,11 @@
             }
                 
             case UIGestureRecognizerStateChanged: {
-                if (self.allowDragging) {
+                if (self.allowDragging && self.superOriginalIndex) {
                     
                     CGPoint center = snapshot.center;
                     center.y = location.y;
                     snapshot.center = center;
-                    
-                    /*
-                    CGRect screenRect = [[UIScreen mainScreen] bounds];
-                    
-                    CGPoint locationOnScreen = [longPress locationInView:self.tableView.superview];
-                    NSLog(@"location on Screen y axis = %f", locationOnScreen.y);
-                    
-                    if (locationOnScreen.y < 100) {
-                        
-                        CGRect newWindowPosition = CGRectMake(0, screenRect.size.height+1, 1.0, 1.0);
-                        [self.tableView scrollRectToVisible:newWindowPosition animated:NO];
-                    }
-                    */
                     
                     // Is destination valid and is it different from source?
                     if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
@@ -977,6 +944,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    Item *itemAtRow = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    if (!self.showCompleted && (itemAtRow.done.intValue == 1)) {
+        return 0;
+    }
+    
     return 50;
 }
 
@@ -1037,48 +1010,7 @@
     }
 }
 
-/*
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    if (self.rowOfNewItem != -1) {
-        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
-        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
-        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
-        
-        NSString *currentText = cell.cellItemTitle.text;
-        if (currentText.length == 0) {
-            NSLog(@"deleting just created row");
-            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
-
-        }else{
-            
-            itemToSave.title = currentText;
-            [self rebalanceListIfNeeded];
-
-            [AddItemsToServer addThisItem:itemToSave];
-        }
-        self.rowOfNewItem = -1;
-        [self.tableView reloadData];
-    }else{
-        if ([clickedItem.type isEqualToString:@"completed_header"]) {
-            
-            if (self.showCompleted) {
-                self.showCompleted = NO;
-            }else{
-                self.showCompleted = YES;
-            }
-            
-            [self.tableView reloadData];
-            
-        }else{
-            [self performSegueWithIdentifier:@"showItem" sender:self];
-        }
-    }
-}
-*/
 - (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     UIView *viewToRemove = nil;
@@ -1091,8 +1023,9 @@
 
     cell.cellItemTitle.enabled = NO;
     
-    NSNumber *done = object.done;
     if ([object.type isEqualToString:@"completed_header"]) {
+        cell.cellItemTitle.hidden = NO;
+
         
         NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
         
@@ -1120,16 +1053,20 @@
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         
     }else{
-        if ([done intValue] == 1) {
-            NSString *titleText = object.title;
+        if (object.done.intValue == 1) {
             
-            cell.cellItemTitle.text = titleText;
-            cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
-            cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
-            cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
-            cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
-
+            NSString *titleText = object.title;
+            cell.cellItemTitle.hidden = YES;
+            
             if (self.showCompleted) {
+                cell.cellItemTitle.hidden = NO;
+
+                cell.cellItemTitle.text = titleText;
+                cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
+                cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
+                cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
+                cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
+
                 CGRect screenRect = [[UIScreen mainScreen] bounds];
                 CGFloat screenWidth = screenRect.size.width;
                 UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 25, screenWidth-30, 1)];
@@ -1137,15 +1074,10 @@
                 lineView.tag = 5151;
                 [cell addSubview:lineView];
 
-                cell.hidden = NO;
-
-            }else{
-
-                cell.hidden = YES;
-
             }
         }else{
-            
+            cell.cellItemTitle.hidden = NO;
+
             cell.cellItemTitle.attributedText = nil;
             cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
