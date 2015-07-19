@@ -574,6 +574,23 @@
     
 }
 
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Remove seperator inset
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    // Prevent the cell from inheriting the Table View's margin settings
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+    }
+    
+    // Explictly set your cell's layout margins
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //NSLog(@"fetched items count = %lu, path = %@", (unsigned long)[self.fetchedResultsController.fetchedObjects count], indexPath);
@@ -582,9 +599,14 @@
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
     cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
     cell.cellItemTitle.textColor = [UIColor whiteColor];
+    
+    /*UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 3.0, cell.contentView.frame.size.width, 3)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 3)];
 
-
-
+    lineView.backgroundColor = [UIColor whiteColor];
+    [cell.contentView addSubview:lineView];
+*/
+    
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
         
         //NSLog(@"index path row = %ld", (long)indexPath.row);
@@ -713,7 +735,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]){
-        return 50;
+        return 55;
     }else{
         if (self.rowOfExpandedCell == indexPath.row) {
             return 125;
@@ -793,9 +815,6 @@
 
 -(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    
-
-    
     UITableViewRowAction *deleteButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Delete" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                     {
                                         Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -818,6 +837,7 @@
     
     UITableViewRowAction *editButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Edit" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                      {
+                                         
                                          int oldCell = self.rowOfExpandedCell;
                                          self.rowOfExpandedCell = (int)indexPath.row;
                                          
@@ -1063,7 +1083,8 @@
 - (UIView *)customSnapshoFromView:(UIView *)inputView {
     //Used in the re-ordering of items - captures a snapshot of the cell to move around
     // Make an image from the input view.
-    UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
+    CGSize size = {inputView.bounds.size.width, inputView.bounds.size.height-1};
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

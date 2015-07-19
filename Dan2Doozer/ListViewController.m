@@ -52,13 +52,6 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.tableView addGestureRecognizer:tapGesture];
     tapGesture.delegate = self;
-    
-    
-    /*
-    UILongPressGestureRecognizer *longPressScrollController = [[UILongPressGestureRecognizer alloc]
-                                               initWithTarget:self action:@selector(longPressScroll:)];
-    [self.tableView addGestureRecognizer:longPressScrollController];
-    */
      
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
     [self.tableView addGestureRecognizer:panGesture];
@@ -373,11 +366,13 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
+    //if (![gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && ![otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
     
-    //if (![gestureRecognizer isKindOfClass:[uipan class]] && ![otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-    //    return YES;
-    //}
-    
+
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        return NO;
+    }
+ 
     return YES;
 }
 
@@ -724,8 +719,8 @@
                         int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
                         
                         //if dragging into completed section, and they're currently hidden, show the completed cells
-                        if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"]) {
-                            //NSLog(@"passing the completed header");
+                        if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"] && !self.showCompleted) {
+                            NSLog(@"passing the completed header");
                             self.showCompleted = YES;
                             int currentRow = (int)indexPath.row+1;
                             
@@ -736,6 +731,8 @@
                                 ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
                                 cell.hidden = NO;
                             }
+                            
+                            [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
                         }
                         // ... and update source so it is in sync with UI changes.
                         sourceIndexPath = indexPath;
@@ -840,7 +837,6 @@
                 
             default: {
                 // Clean up.
-                self.longPressActive = NO;
                 //NSLog(@"In clean up of Long Press method");
                 ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
                 cell.hidden = NO;
@@ -858,6 +854,8 @@
                     sourceIndexPath = nil;
                     [snapshot removeFromSuperview];
                     snapshot = nil;
+                    self.longPressActive = NO;
+
                     
                 }];
                 
@@ -915,18 +913,7 @@
         [itemController setDetailItem:object];
         [itemController setDisplayListOfItem:self.displayList];
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
-        
-        /*
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
-        
-        UIBarButtonItem *newBackButton =
-        [[UIBarButtonItem alloc] initWithTitle:@""
-                                         style:UIBarButtonItemStylePlain
-                                        target:nil
-                                        action:nil];
-        [[self navigationItem] setBackBarButtonItem:newBackButton];
-         */
+
     }
 }
 
@@ -994,13 +981,28 @@
     }else{
         if ([clickedItem.type isEqualToString:@"completed_header"]) {
             
+            NSArray *items = self.fetchedResultsController.fetchedObjects;
+            NSMutableArray *indexPathArray = [[NSMutableArray alloc]init];
+            int rowCount = 0;
+            for (Item *eachItem in items) {
+                if (eachItem.done.intValue == 1) {
+                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:rowCount inSection:0];
+                    [indexPathArray addObject:newPath];
+                }
+                rowCount += 1;
+            }
+
             if (self.showCompleted) {
                 self.showCompleted = NO;
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+
             }else{
                 self.showCompleted = YES;
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+
             }
-            
-            [self.tableView reloadData];
             
         }else{
             if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0)) {
@@ -1012,6 +1014,7 @@
 
 
 - (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    cell.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
     
     UIView *viewToRemove = nil;
     while((viewToRemove = [cell viewWithTag:5151]) != nil) {
@@ -1022,6 +1025,12 @@
     //NSLog(@"Configuring -------- Cell for item == %@", object.title);
 
     cell.cellItemTitle.enabled = NO;
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 3.0, cell.contentView.frame.size.width, 3)];
+    
+    Item *listForTitle = self.displayList;
+    lineView.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
+    [cell.contentView addSubview:lineView];
     
     if ([object.type isEqualToString:@"completed_header"]) {
         cell.cellItemTitle.hidden = NO;
@@ -1106,52 +1115,63 @@
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+-(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
+    UITableViewRowAction *deleteButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"DELETE" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+                                        {
+                                            
+                                            Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                                            
+                                            NSLog(@"index path to delete = %@", indexPath);
+                                            NSLog(@"item title to delete = %@", itemToDelete.title);
+                                            
+                                            
+                                            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+                                            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+                                            
+                                            NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+                                            NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
+                                            int matchCount = 0;
+                                            for(id eachElement in itemsToAdd){
+                                                if ([itemToDelete.itemId isEqualToString:eachElement]){
+                                                    matchCount +=1;
+                                                }else{
+                                                    [newItemsToAdd addObject:eachElement];
+                                                }
+                                            }
+                                            [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
+                                            [[NSUserDefaults standardUserDefaults] synchronize];
+                                            
+                                            if (matchCount == 0){
+                                                NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+                                                [itemsToDelete addObject:itemToDelete.itemId];
+                                                [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+                                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                                
+                                            }
+                                            
+                                            // Save the context.
+                                            NSError *error = nil;
+                                            if (![context save:&error]) {
+                                                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                                                abort();
+                                            }
+                                            [DoozerSyncManager syncWithServer];
+
+                                            
+                                        }];
+    Item *displayList = self.displayList;
+    UIColor *color = [ColorHelper getUIColorFromString:displayList.color :1];
+    deleteButton.backgroundColor = color;
     
-        Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        
-        NSLog(@"index path to delete = %@", indexPath);
-        NSLog(@"item title to delete = %@", itemToDelete.title);
-
-
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-        NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
-        int matchCount = 0;
-        for(id eachElement in itemsToAdd){
-            if ([itemToDelete.itemId isEqualToString:eachElement]){
-                matchCount +=1;
-            }else{
-                [newItemsToAdd addObject:eachElement];
-            }
-        }
-        [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if (matchCount == 0){
-            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-            [itemsToDelete addObject:itemToDelete.itemId];
-            [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-
-        }
-        
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        [DoozerSyncManager syncWithServer];
-        
-    }
+    return @[deleteButton];
 }
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // needs to exist for the "edit" and "delete" buttons on left swipe
+    
+}
+
 
 #pragma mark - Fetched results controller
 - (NSFetchedResultsController *)fetchedResultsController {
@@ -1257,7 +1277,8 @@
 - (UIView *)customSnapshoFromView:(UIView *)inputView {
     //Used in the re-ordering of items - captures a snapshot of the cell to move around
     // Make an image from the input view.
-    UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
+    CGSize size = {inputView.bounds.size.width, inputView.bounds.size.height-3};
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     [inputView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
