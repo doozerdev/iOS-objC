@@ -41,30 +41,28 @@
                                                                        NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                                        }];
     
-    //self.navigationItem.title = [NSString stringWithFormat:@"%@ - %@", listForTitle.title, listForTitle.itemId];
     self.navigationItem.title = listForTitle.title;
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
-    [self.tableView addGestureRecognizer:longPress];
+    [self.view addGestureRecognizer:longPress];
     longPress.delegate = self;
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-    [self.tableView addGestureRecognizer:tapGesture];
+    [self.view addGestureRecognizer:tapGesture];
     tapGesture.delegate = self;
      
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(swiperight:)];
-    [self.tableView addGestureRecognizer:panGesture];
+    [self.view addGestureRecognizer:panGesture];
     panGesture.delegate =self;
     
-    //self.navigationController.hidesBarsOnSwipe = YES;
-
     self.isScrolling = NO;
     self.longPressActive = NO;
     self.isRightSwiping = NO;
     self.rowOfNewItem = -1;
     
 }
+
 
 -(void)viewWillDisappear:(BOOL)animated{
     
@@ -366,10 +364,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
-    //if (![gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && ![otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-    
-
-    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
         return NO;
     }
  
@@ -837,7 +832,7 @@
                 
             default: {
                 // Clean up.
-                //NSLog(@"In clean up of Long Press method");
+                NSLog(@"In clean up of Long Press method");
                 ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:sourceIndexPath];
                 cell.hidden = NO;
                 cell.alpha = 0.0;
@@ -855,8 +850,7 @@
                     [snapshot removeFromSuperview];
                     snapshot = nil;
                     self.longPressActive = NO;
-
-                    
+                    self.tableView.scrollEnabled = YES;
                 }];
                 
                 break;
