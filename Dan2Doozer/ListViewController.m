@@ -944,7 +944,7 @@
     return cell;
 }
 
--(void)handleTap:(UITapGestureRecognizer*)tapGesture; {
+-(void)handleTap:(UITapGestureRecognizer*)tapGesture {
     CGPoint location = [tapGesture locationInView:self.tableView];
     
     NSLog(@"location = %f,%f", location.x, location.y);

@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UITextField *TextFieldInCell;
 
+@property BOOL showDatePicker;
+@property UIDatePicker *datePicker;
 
 
 @end

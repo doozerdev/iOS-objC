@@ -14,7 +14,7 @@
 #import "ColorHelper.h"
 #import "UpdateItemsOnServer.h"
 
-@interface ItemViewController ()
+@interface ItemViewController () <UIGestureRecognizerDelegate>
 
 @end
 
@@ -32,18 +32,14 @@
     
     UITextField *fieldTitle = (UITextField *)[self.view viewWithTag:301];
     UITextField *fieldNotes = (UITextField *)[self.view viewWithTag:302];
-    UITextField *fieldDueDate = (UITextField *)[self.view viewWithTag:303];
-    
-    NSDateFormatter* df = [[NSDateFormatter alloc]init];
-    [df setDateFormat:@"yyyy-MM-dd"];
-    
-    NSString *tempDueDateString = fieldDueDate.text;
-    NSDate *tempDueDateNSDate = [df dateFromString:tempDueDateString];
-    
-    if (![checkItem.title isEqualToString:fieldTitle.text] || ![checkItem.notes isEqualToString:fieldNotes.text] || !(checkItem.duedate == tempDueDateNSDate)) {
+ 
+    if (![checkItem.title isEqualToString:fieldTitle.text] || ![checkItem.notes isEqualToString:fieldNotes.text] || self.showDatePicker) {
         
+        
+        self.showDatePicker = NO;
+        NSDate *newDate = self.datePicker.date;
+        checkItem.duedate = newDate;
         checkItem.notes = fieldNotes.text;
-        checkItem.duedate = tempDueDateNSDate;
         
         if (fieldTitle.text.length == 0) {
             //do nothing
@@ -69,6 +65,7 @@
     
     Item *displayItem = self.detailItem;
     Item *displayListParent = self.displayListOfItem;
+    self.showDatePicker = NO;
 
     self.navigationItem.title = displayItem.title;
     UIColor *tempColor = [ColorHelper getUIColorFromString:displayListParent.color :1];
@@ -81,6 +78,10 @@
                                                                        NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                                        }];
     
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [self.view addGestureRecognizer:tapGesture];
+    tapGesture.delegate = self;
+    
     
 
 }
@@ -88,6 +89,11 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
+    return YES;
 }
 
 #pragma mark - Table view data source
@@ -101,6 +107,42 @@
     // Return the number of rows in the section.
     
     return 7;
+}
+
+-(void)handleTap:(UITapGestureRecognizer*)tapGesture {
+    
+    CGPoint location = [tapGesture locationInView:self.tableView];
+    NSLog(@"location = %f,%f", location.x, location.y);
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+
+    if (indexPath.row == 2) {
+        if (self.showDatePicker) {
+            //do nothing
+        }else{
+            self.showDatePicker = YES;
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }else{
+        if (self.showDatePicker) {
+            self.showDatePicker = NO;
+            NSDate *newDate = self.datePicker.date;
+            Item *itemOfNewDate = self.detailItem;
+            itemOfNewDate.duedate = newDate;
+            [UpdateItemsOnServer updateThisItem:itemOfNewDate];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }
+    NSLog(@"row was clicked = %ld", indexPath.row);
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    if (self.showDatePicker && indexPath.row == 2) {
+        return 216;
+    }else{
+        return 50;
+    }
+    
 }
 
 
@@ -135,19 +177,42 @@
         cell.textLabel.text = @"Notes";
         textField.tag = 302;
     }else if ((int)indexPath.row == 2){
-        textField.font = [UIFont fontWithName:@"Avenir" size:16];
-        NSString *mySmallerString = nil;
-        if(displayItem.duedate){
-            NSString *fullDateString = [NSString stringWithFormat:@"%@", displayItem.duedate];
-            mySmallerString = [fullDateString substringToIndex:10];
-        }else{
-            NSDate *currDate = [NSDate date];
-            NSString *fullDateString = [NSString stringWithFormat:@"%@", currDate];
-            mySmallerString = [fullDateString substringToIndex:10];
+        if (self.showDatePicker) {
+            
+            cell.textLabel.text = @" ";
+            textField.text = @" ";
+            self.datePicker =[[UIDatePicker alloc]initWithFrame:cell.frame];
+            self.datePicker.datePickerMode=UIDatePickerModeDate;
+            if (displayItem.duedate) {
+                self.datePicker.date = displayItem.duedate;
+            }else{
+                self.datePicker.date = [NSDate date];
+            }
+            self.datePicker.tag = 777;
+            [self.view addSubview:self.datePicker];
+        } else {
+            UIView *viewToRemove = [self.view viewWithTag:777];
+            [viewToRemove removeFromSuperview];
+            UIView *textFieldToRemove = [self.view viewWithTag:303];
+            [textFieldToRemove removeFromSuperview];
+            
+            textField.font = [UIFont fontWithName:@"Avenir" size:16];
+            textField.userInteractionEnabled = NO;
+            NSString *mySmallerString = nil;
+            if(displayItem.duedate){
+                NSDateFormatter *df = [[NSDateFormatter alloc]init];
+                [df setDateFormat:@"EEE MMM dd, yyyy"];
+                mySmallerString = [df stringFromDate:displayItem.duedate];
+
+            }else{
+                mySmallerString = @" ";
+            }
+            textField.text = mySmallerString;
+            NSLog(@"just set the text to = %@", textField.text);
+            cell.textLabel.text = @"Due Date";
+            textField.tag = 303;
+            
         }
-        textField.text = mySmallerString;
-        cell.textLabel.text = @"Due Date";
-        textField.tag = 303;
     }else if ((int)indexPath.row == 3){
         textField.text = displayItem.order.stringValue;
         textField.userInteractionEnabled = NO;
