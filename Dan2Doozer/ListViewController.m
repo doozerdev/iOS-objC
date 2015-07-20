@@ -20,7 +20,10 @@
 @interface ListViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @end
 
+
 @implementation ListViewController
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -1054,12 +1057,15 @@
         cell.cellItemTitle.textColor = [UIColor whiteColor];
         cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
+        cell.cellDueFlag.text = @"";
         
     }else{
         if (object.done.intValue == 1) {
             
             NSString *titleText = object.title;
             cell.cellItemTitle.hidden = YES;
+            cell.cellDueFlag.text = @"";
+
             
             if (self.showCompleted) {
                 cell.cellItemTitle.hidden = NO;
@@ -1086,6 +1092,24 @@
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
+            NSDateFormatter *df = [[NSDateFormatter alloc]init];
+            [df setDateFormat:@"yyyyMMdd"];
+            NSString *currentDateString = [df stringFromDate:[NSDate date]];
+            NSString *dueDateString = [df stringFromDate:object.duedate];
+            
+            NSLog(@"due date = %@, current date = %@", dueDateString, currentDateString);
+            
+            if (object.duedate) {
+                if (dueDateString.intValue <= currentDateString.intValue) {
+                    cell.cellDueFlag.text = @"DUE";
+                }else{
+                    cell.cellDueFlag.text = @"";
+                }
+            }else{
+                cell.cellDueFlag.text = @"";
+            }
+         
+            
             
             if (self.rowOfNewItem == -1) {
                 cell.backgroundColor = [UIColor whiteColor];

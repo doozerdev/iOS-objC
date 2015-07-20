@@ -11,6 +11,6 @@
 @interface ListCustomCell : UITableViewCell
 
 @property (nonatomic, weak) IBOutlet UITextField *cellItemTitle;
-
+@property (weak, nonatomic) IBOutlet UILabel *cellDueFlag;
 
 @end

@@ -5,6 +5,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8124.4"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Avenir.ttc">
+            <string>Avenir-Book</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
         <!--Master-->
         <scene sceneID="pY4-Hu-kfo">
@@ -443,26 +448,43 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uvy-Ow-oPA">
-                                            <rect key="frame" x="15" y="22" width="570" height="17"/>
+                                            <rect key="frame" x="15" y="22" width="550" height="17"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes" returnKeyType="done"/>
                                         </textField>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DUE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q56-Q4-Fv2" userLabel="Due Flag">
+                                            <rect key="frame" x="565" y="18" width="25" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="8aX-57-9JF"/>
+                                                <constraint firstAttribute="width" constant="25" id="Evj-cx-Pgz"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="10"/>
+                                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="centerY" secondItem="LeO-XY-iPa" secondAttribute="centerY" id="1IU-8T-B1F"/>
                                         <constraint firstAttribute="centerY" secondItem="uvy-Ow-oPA" secondAttribute="centerY" id="37b-hr-z94"/>
-                                        <constraint firstAttribute="trailing" secondItem="uvy-Ow-oPA" secondAttribute="trailing" constant="15" id="Wt7-ac-aOQ"/>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="leading" secondItem="uvy-Ow-oPA" secondAttribute="trailing" id="WRR-h6-jJ0"/>
+                                        <constraint firstAttribute="trailing" secondItem="uvy-Ow-oPA" secondAttribute="trailing" constant="70" id="Wt7-ac-aOQ"/>
                                         <constraint firstAttribute="centerX" secondItem="uvy-Ow-oPA" secondAttribute="centerX" id="Zdx-5M-Ujj"/>
                                         <constraint firstItem="uvy-Ow-oPA" firstAttribute="leading" secondItem="LeO-XY-iPa" secondAttribute="leading" constant="15" id="kEp-DZ-3sO"/>
+                                        <constraint firstAttribute="trailing" secondItem="Q56-Q4-Fv2" secondAttribute="trailing" constant="10" id="ryn-no-cTX"/>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="bottom" secondItem="uvy-Ow-oPA" secondAttribute="bottom" id="vRC-Yt-qfL"/>
                                     </constraints>
                                     <variation key="default">
                                         <mask key="constraints">
+                                            <exclude reference="Wt7-ac-aOQ"/>
                                             <exclude reference="Zdx-5M-Ujj"/>
+                                            <exclude reference="1IU-8T-B1F"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
+                                    <outlet property="cellDueFlag" destination="Q56-Q4-Fv2" id="Lhh-92-bxr"/>
                                     <outlet property="cellItemTitle" destination="uvy-Ow-oPA" id="ryP-AB-Qmc"/>
                                 </connections>
                             </tableViewCell>
