@@ -18,12 +18,22 @@
 
 @implementation DoozerSettingsManager
 
+- (IBAction)pressedFeedbackButton:(id)sender {
+    
+    #define URLEMail @"mailto:help@doozer.tips?subject=Ahoy!&body=Here's what I think about..."
+    
+    NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     self.UserNameLabel.text = [FBSDKProfile currentProfile].name;
+    
+    
     
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
@@ -34,6 +44,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 /*
 #pragma mark - Navigation

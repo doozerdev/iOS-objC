@@ -15,7 +15,7 @@
 
 
 @interface LoginViewController ()
-
+@property (weak, nonatomic) IBOutlet UIButton *loginButtonFacebook;
 
 @end
 
@@ -24,15 +24,46 @@
 NSString *sessionID = nil;
 
 
+- (IBAction)loginWithFacebookButton:(id)sender {
+    NSLog(@"pressed login button");
+    
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdated:) name:FBSDKProfileDidChangeNotification object:nil];
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logInWithReadPermissions:@[@"public_profile" , @"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            // Process error
+        } else if (result.isCancelled) {
+            // Handle cancellations
+        } else {
+            self.loginButtonFacebook.hidden = YES;
+            self.LoadingSpinner.hidden = NO;
+
+            [self.LoadingSpinner startAnimating];
+            
+            [self logIntoDoozerWithFacebook];
+            
+            // If you ask for multiple permissions at once, you
+            // should check if specific permissions missing
+            if ([result.grantedPermissions containsObject:@"email"]) {
+                // Do work
+                
+            }
+        }
+    }];
+    
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    NSLog(@"the view loaded");
+    self.LoadingSpinner.hidden = YES;
+    
     if ([FBSDKAccessToken currentAccessToken]) {
         [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
-    }
-    else{
-        [self performSelector:@selector(loginToFacebook) withObject:nil afterDelay:1];
     }
     
     NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
@@ -101,31 +132,6 @@ NSString *sessionID = nil;
     NSLog(@"User ID: %@",[FBSDKProfile currentProfile].userID);
 }
 
-- (void)loginToFacebook {
-    
-    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdated:) name:FBSDKProfileDidChangeNotification object:nil];
-    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-    [login logInWithReadPermissions:@[@"public_profile" , @"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-        if (error) {
-            // Process error
-        } else if (result.isCancelled) {
-            // Handle cancellations
-        } else {
-            
-            [self.LoadingSpinner startAnimating];
-            
-            [self logIntoDoozerWithFacebook];
-            
-            // If you ask for multiple permissions at once, you
-            // should check if specific permissions missing
-            if ([result.grantedPermissions containsObject:@"email"]) {
-                // Do work
-                
-            }
-        }
-    }];
-}
 
 - (void)logIntoDoozerWithFacebook {
         
@@ -155,6 +161,7 @@ NSString *sessionID = nil;
             [[NSUserDefaults standardUserDefaults] synchronize];
             GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
             [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
+                self.LoginStatusLabel.text = @"Preparing lists for use...";
                 
                 NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
                 int secondsEpochInt = secondsSinceUnixEpoch;
