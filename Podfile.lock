@@ -20,11 +20,14 @@ PODS:
   - AFNetworking/UIKit (2.5.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - Intercom (2.3.1)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.5)
+  - Intercom
 
 SPEC CHECKSUMS:
   AFNetworking: e1d86c2a96bb5d2e7408da36149806706ee122fe
+  Intercom: 3ed182829545cc7d3231bddaeb86afdc77ddfeee
 
 COCOAPODS: 0.37.1

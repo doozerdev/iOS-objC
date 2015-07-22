@@ -1102,6 +1102,7 @@
             if (object.duedate) {
                 if (dueDateString.intValue <= currentDateString.intValue) {
                     cell.cellDueFlag.text = @"DUE";
+                    cell.cellDueFlag.textColor = [UIColor redColor];
                 }else{
                     cell.cellDueFlag.text = @"";
                 }
@@ -1109,8 +1110,6 @@
                 cell.cellDueFlag.text = @"";
             }
          
-            
-            
             if (self.rowOfNewItem == -1) {
                 cell.backgroundColor = [UIColor whiteColor];
                 //NSLog(@"setting background color to white for row %ld", (long)indexPath.row);
@@ -1121,6 +1120,9 @@
 
                 }else{
                     cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
+                    cell.cellItemTitle.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+                    cell.cellDueFlag.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+
                     //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
                 }
             }

@@ -10,6 +10,7 @@
 #import "MasterViewController.h"
 #import "LoginViewController.h"
 #import "DoozerSyncManager.h"
+#import "intercom.h"
 
 @interface WelcomeViewController ()
 
@@ -24,7 +25,14 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     if ([FBSDKAccessToken currentAccessToken]) {
+        NSString *fbUserId = [FBSDKProfile currentProfile].userID;
+        [Intercom registerUserWithUserId:fbUserId];
+        NSString *fbUserName = [FBSDKProfile currentProfile].name;        
+        [Intercom updateUserWithAttributes:@{
+                                             @"name" : fbUserName
+                                             }];
         [self performSegueWithIdentifier:@"showMasterView" sender:self];
+    
     }
     else{
         

@@ -14,6 +14,7 @@
 #import "WelcomeViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "intercom.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
@@ -44,6 +45,9 @@
     WelcomeViewController *controller = (WelcomeViewController *)self.window.rootViewController;
  
     controller.managedObjectContext = self.managedObjectContext;
+    
+    // Initialize Intercom
+    [Intercom setApiKey:@"ios_sdk-fddc1015a1280e942eb73023491d6e4807d4e4d6" forAppId:@"izfquuth"];
     
     [FBSDKLoginButton class];
     [FBSDKProfilePictureView class];
@@ -89,6 +93,9 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
+
+
+
 
 #pragma mark - Split view
 

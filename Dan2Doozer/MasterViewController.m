@@ -20,6 +20,8 @@
 #import "UpdateItemsOnServer.h"
 #import "DeleteItemFromServer.h"
 #import "AddItemsToServer.h"
+#import "intercom.h"
+#import "AddItemViewController.h"
 
 @interface MasterViewController () <UITextFieldDelegate>
 
@@ -75,6 +77,14 @@
                                                             NSForegroundColorAttributeName: [UIColor blackColor],
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
+    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
+    
+    // You can send attributes of any name/value
+    [Intercom updateUserWithAttributes:@{
+                                         @"custom_attributes": @{
+                                                 @"list_count" : listCount
+                                                 }
+                                         }];
     [self.tableView reloadData]; // to reload selected cell
     
 }
@@ -218,28 +228,38 @@
 
 
 - (IBAction)addItemButton:(id)sender {
+    NSLog(@"prssed button");
     
+    [self performSegueWithIdentifier:@"showAddItemView" sender:self];
+    /*
+    AddItemViewController *modalViewController = [[AddItemViewController alloc] init];
+    modalViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    [self presentViewController:modalViewController animated:YES completion:nil];
+    */
+    
+    
+    
+    /*
+    NSArray *listOfLists = self.fetchedResultsController.fetchedObjects;
+    Item *firstList = [listOfLists objectAtIndex:0];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new item"
                                                     message:nil
                                                    delegate:self
-                                          cancelButtonTitle:@"cancel"
-                                          otherButtonTitles:nil];
-    
-    NSArray *listOfLists = self.fetchedResultsController.fetchedObjects;
-    
-    for(Item *eachList in listOfLists) {
-        [alert addButtonWithTitle:eachList.title];
-    }
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:firstList.title, @"Done", nil];
     
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     [alert setTag:1];
     [alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeYes;
     [alert textFieldAtIndex:0].autocapitalizationType = UITextAutocapitalizationTypeSentences;
+    [[alert textFieldAtIndex:0] setReturnKeyType:UIReturnKeyDone];
     
     [alert show];
+     */
     
 }
-
+/*
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (alertView.tag == 1){
@@ -287,7 +307,7 @@
                 newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
                 
                 [AddItemsToServer addThisItem:newItem];
-                
+                                
                 [self.tableView reloadData];
             }
             
@@ -304,6 +324,8 @@
     }
 
 }
+ 
+ */
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
@@ -558,6 +580,18 @@
         [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         
     }
+    
+    
+    if ([[segue identifier] isEqualToString:@"showAddItemView"]){
+
+        AddItemViewController *modalViewController = segue.destinationViewController;
+        //modalViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        
+    }
+}
+
+-(IBAction)prepareForUnwind:(UIStoryboardSegue *)segue {
 }
 
 #pragma mark - Table View

@@ -12,6 +12,7 @@
 #import "Item.h"
 #import "GetItemsFromDoozer.h"
 #import "DoozerSyncManager.h"
+#import "intercom.h"
 
 
 @interface LoginViewController ()
@@ -46,7 +47,7 @@ NSString *sessionID = nil;
             // If you ask for multiple permissions at once, you
             // should check if specific permissions missing
             if ([result.grantedPermissions containsObject:@"email"]) {
-                // Do work
+                //do work
                 
             }
         }
@@ -130,7 +131,25 @@ NSString *sessionID = nil;
 -(void)profileUpdated:(NSNotification *) notification{
     NSLog(@"User name: %@",[FBSDKProfile currentProfile].name);
     NSLog(@"User ID: %@",[FBSDKProfile currentProfile].userID);
+    NSString *fbUserId = [FBSDKProfile currentProfile].userID;
+    NSString *fbUserName = [FBSDKProfile currentProfile].name;
+    
+    [Intercom registerUserWithUserId:fbUserId];
+    
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"email"}]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         
+         if (!error) {
+             NSString *fbEmail = result[@"email"];
+             [Intercom updateUserWithAttributes:@{
+                                                  @"name" : fbUserName,
+                                                  @"email" : fbEmail
+                                                  }];
+         }
+     }];
+
 }
+
 
 
 - (void)logIntoDoozerWithFacebook {

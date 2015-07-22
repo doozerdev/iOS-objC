@@ -10,6 +10,7 @@
 #import "DoozerSyncManager.h"
 #import "MasterViewController.h"
 #import "AFNetworking.h"
+#import "intercom.h"
 
 
 @interface DoozerSettingsManager ()
@@ -24,6 +25,21 @@
     
     NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
     [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
+    
+}
+
+
+- (IBAction)pressedLogOutButton:(id)sender {
+    
+    NSLog(@"user pressed the logout button");
+    
+    //log out of doozer
+    
+    //log out of facebook
+
+    // This reset's the Intercom SDK's cache of your user's identity and wipes the slate clean.
+    [Intercom reset];
+
     
 }
 

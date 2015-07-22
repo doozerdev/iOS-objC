@@ -48,3 +48,9 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 3
 
+// Intercom
+#define COCOAPODS_POD_AVAILABLE_Intercom
+#define COCOAPODS_VERSION_MAJOR_Intercom 2
+#define COCOAPODS_VERSION_MINOR_Intercom 3
+#define COCOAPODS_VERSION_PATCH_Intercom 1
+

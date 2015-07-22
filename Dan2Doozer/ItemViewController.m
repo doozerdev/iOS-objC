@@ -155,6 +155,8 @@
     [[cell viewWithTag:3] removeFromSuperview];
     
     UITextField *textField = [[UITextField alloc] init];
+    [textField setReturnKeyType:UIReturnKeyDone];
+
     textField.tag = 3;
     textField.translatesAutoresizingMaskIntoConstraints = NO;
     [cell.contentView addSubview:textField];
