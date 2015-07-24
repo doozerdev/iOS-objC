@@ -22,6 +22,7 @@
 		A24290441B45E3260070662C /* ColorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A24290431B45E3260070662C /* ColorHelper.m */; };
 		A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A253AD281B4AEF1200D896E1 /* ListCustomCell.m */; };
 		A25619441B55A2C1005D5D29 /* MasterViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */; };
+		A27001EA1B61C6C800D1B7B3 /* DueItemsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27001E91B61C6C800D1B7B3 /* DueItemsViewController.m */; };
 		A27282971B0D6728002D5BE5 /* libPods-AFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */; };
 		A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A27342491B0EDA4E00C1E219 /* ListViewController.m */; };
 		A27439031B55F428002E7CA5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */; };
@@ -86,6 +87,8 @@
 		A253AD271B4AEF1200D896E1 /* ListCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListCustomCell.h; sourceTree = "<group>"; };
 		A253AD281B4AEF1200D896E1 /* ListCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListCustomCell.m; sourceTree = "<group>"; };
 		A25619431B55A2C1005D5D29 /* MasterViewControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterViewControllerTests.m; sourceTree = "<group>"; };
+		A27001E81B61C6C800D1B7B3 /* DueItemsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DueItemsViewController.h; sourceTree = "<group>"; };
+		A27001E91B61C6C800D1B7B3 /* DueItemsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DueItemsViewController.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
 		A27342491B0EDA4E00C1E219 /* ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
 		A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
@@ -252,6 +255,7 @@
 				A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */,
 				A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */,
 				A2FB553E1B2FC44B00D19660 /* DeleteItemFromServer.h */,
+				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */,
 				A29CD7E81B1FFB27000FA1B0 /* GetItemsFromDoozer.h */,
 				A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */,
@@ -264,10 +268,8 @@
 			children = (
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
-				A22B7F1E1B5E16740096CEEC /* AddItemViewController.h */,
 				A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
-				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB55411B311B8200D19660 /* ItemViewController.h */,
 				A2FB55421B311B8200D19660 /* ItemViewController.m */,
 				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
@@ -276,6 +278,9 @@
 				A29CD7E31B1ACCAC000FA1B0 /* DoozerSettingsManager.m */,
 				A29CD7F41B211FAB000FA1B0 /* WelcomeViewController.h */,
 				A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */,
+				A22B7F1E1B5E16740096CEEC /* AddItemViewController.h */,
+				A27001E81B61C6C800D1B7B3 /* DueItemsViewController.h */,
+				A27001E91B61C6C800D1B7B3 /* DueItemsViewController.m */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -482,6 +487,7 @@
 				A2FB55431B311B8200D19660 /* ItemViewController.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A22B7F201B5E16740096CEEC /* AddItemViewController.m in Sources */,
+				A27001EA1B61C6C800D1B7B3 /* DueItemsViewController.m in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
 				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,

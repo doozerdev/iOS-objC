@@ -77,4 +77,86 @@ NSFetchedResultsController *_fetchedResultsController;
     
 }
 
++(NSInteger)findNumberOfDueItems{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", nil];
+    [fetchRequest setPredicate:predicate];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Master4"];
+    [NSFetchedResultsController deleteCacheWithName:@"Master4"];
+    
+    NSError *error = nil;
+    if (![aFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    NSArray *items = aFetchedResultsController.fetchedObjects;
+    
+    NSMutableArray *activeItems = [[NSMutableArray alloc]init];
+    
+    for (Item *eachParentList in items) {
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        
+        [fetchRequest setFetchBatchSize:20];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", eachParentList.itemId];
+        [fetchRequest setPredicate:predicate];
+        
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+        NSArray *sortDescriptors = @[sortDescriptor];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        
+        NSFetchedResultsController *bFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Master5"];
+        [NSFetchedResultsController deleteCacheWithName:@"Master5"];
+        
+        NSError *error = nil;
+        if (![bFetchedResultsController performFetch:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        [activeItems addObjectsFromArray:bFetchedResultsController.fetchedObjects];
+        
+    }
+
+    NSDateFormatter *df = [[NSDateFormatter alloc]init];
+    [df setDateFormat:@"yyyyMMdd"];
+    NSString *currentDateString = [df stringFromDate:[NSDate date]];
+    NSInteger count = 0;
+    
+    for (Item *eachItem in activeItems){
+        NSLog(@"item name is == %@, archive value is == %@", eachItem.title, eachItem.archive);
+        if (eachItem.done.intValue == 0) {
+            NSString *dueDateString = [df stringFromDate:eachItem.duedate];
+            if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {
+                count += 1;
+            }
+        }
+    }
+    
+    return count;
+
+}
+
 @end

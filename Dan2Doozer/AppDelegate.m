@@ -46,12 +46,15 @@
  
     controller.managedObjectContext = self.managedObjectContext;
     
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+
+    
     // Initialize Intercom
     [Intercom setApiKey:@"ios_sdk-fddc1015a1280e942eb73023491d6e4807d4e4d6" forAppId:@"izfquuth"];
     
     [FBSDKLoginButton class];
     [FBSDKProfilePictureView class];
-    
+        
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     
     //return YES;

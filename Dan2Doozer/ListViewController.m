@@ -150,7 +150,7 @@
                         originalCell.hidden = NO;
                         Item *parent = self.displayList;
                         originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
-                        originalCell.cellItemTitle.text = @"\U00002714\U0000FE0E";
+                        originalCell.cellItemTitle.text = @"\U00002713\U0000FE0E";
                         
                         if (swipedItem.done.intValue == 1) {
                             if ((location.x-startPoint.x) > swipeThreshold) {

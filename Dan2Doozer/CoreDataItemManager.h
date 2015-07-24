@@ -14,5 +14,8 @@
 
 +(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems;
 
++(NSInteger)findNumberOfDueItems;
+
+
     
 @end

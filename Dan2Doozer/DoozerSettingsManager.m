@@ -21,13 +21,20 @@
 
 - (IBAction)pressedFeedbackButton:(id)sender {
     
-    #define URLEMail @"mailto:help@doozer.tips?subject=Ahoy!&body=Here's what I think about..."
+    #define URLEMail @"mailto:info@doozer.tips?subject=Hey Doozer!&body=Here's what I think about..."
     
     NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
     [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
     
 }
 
+- (IBAction)pressedSupportButton:(id)sender {
+    
+    #define URLEMail2 @"mailto:info@doozer.tips?subject=Help me!&body=I need help with..."
+    
+    NSString *url = [URLEMail2 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
+}
 
 - (IBAction)pressedLogOutButton:(id)sender {
     

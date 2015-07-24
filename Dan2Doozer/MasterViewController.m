@@ -25,6 +25,7 @@
 
 @interface MasterViewController () <UITextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
 
 @end
 
@@ -56,6 +57,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     self.view.backgroundColor = [UIColor whiteColor];
+
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
@@ -77,6 +79,11 @@
                                                             NSForegroundColorAttributeName: [UIColor blackColor],
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
+    NSInteger count = [CoreDataItemManager findNumberOfDueItems];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = count;
+
+    self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count];
+    self.dueButton.tintColor = [UIColor redColor];
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
     // You can send attributes of any name/value
@@ -587,6 +594,14 @@
         AddItemViewController *modalViewController = segue.destinationViewController;
         //modalViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        
+    }
+    
+    if ([[segue identifier] isEqualToString:@"showDueItems"]){
+     
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
         
     }
 }
