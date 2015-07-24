@@ -17,6 +17,7 @@
 #import "AppDelegate.h"
 
 BOOL _syncOpActive;
+int _syncTryCount;
 
 
 @implementation DoozerSyncManager
@@ -27,6 +28,10 @@ BOOL _syncOpActive;
 //login to Doozer if needed
     if(_syncOpActive){
         NSLog(@"sync op active! no additional sync this time");
+        
+        if (_syncTryCount > 5) {
+            _syncOpActive = NO;
+        }
     }else{
         _syncOpActive = YES;
         double currentTime = [[NSDate date] timeIntervalSince1970];
@@ -82,13 +87,13 @@ BOOL _syncOpActive;
         [self copyFromServer :itemsBigArray];
         
         NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
-        //NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
+        NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
         NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
-        //NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
+        NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
         NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
-        //NSLog(@"items to update on the server = %@", itemsToUpdate);
+        NSLog(@"items to update on the server = %@", itemsToUpdate);
         NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
-        //NSLog(@"items to delete from server = %@", itemsToDelete);
+        NSLog(@"items to delete from server = %@", itemsToDelete);
         
         AddItemsToServer *moo = [[AddItemsToServer alloc] init];
         [moo addItemsToServer:newArrayOfListsToAdd :context :^(int handler) {

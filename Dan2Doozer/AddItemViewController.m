@@ -11,6 +11,7 @@
 #import "ParentCustomCell.h"
 #import "ColorHelper.h"
 #import "MasterViewController.h"
+#import "AddItemsToServer.h"
 
 @interface AddItemViewController ()
 
@@ -18,10 +19,21 @@
 
 @implementation AddItemViewController
 
-- (IBAction)pressedCancelButton:(id)sender {
+- (IBAction)itemTitleText:(id)sender {
     
+    NSLog(@"here's the test in item title");
+    
+}
+
+- (IBAction)pressedCancelButton:(id)sender {
+    [self.view.window endEditing: YES];
+
     [self dismissViewControllerAnimated:YES completion:nil];
 
+}
+- (IBAction)addButtonPressed:(id)sender {
+    
+    [self createItem];
 }
 
 
@@ -30,6 +42,8 @@
     self.showAllLists = NO;
     // Do any additional setup after loading the view.
     self.selectedList = [self.fetchedResultsController.fetchedObjects objectAtIndex:0];
+    UITextField *newItemTitle = (UITextField *)[self.view viewWithTag:888];
+    [newItemTitle becomeFirstResponder];
     
 }
 
@@ -45,61 +59,74 @@
     return YES;
 }
 
+
 // It is important for you to hide the keyboard
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-   /*
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+
+    [self createItem];
     
-    NSLog(@"text field ending editing");
-    NSString *currentText = textField.text;
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
+    return YES;
+}
+
+- (void)createItem {
     
-    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    UITextField *newItemTitle = (UITextField *)[self.view viewWithTag:888];
     [self.view.window endEditing: YES];
+    [newItemTitle resignFirstResponder];
     
-    NSLog(@"index path of added cell = %@", indexPath);
+    NSLog(@"title fo item to create is == %@", newItemTitle);
     
-    if (currentText.length == 0) {
-        if (self.addingAnItem) {
-            
-            NSLog(@"deleting just created row");
-            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-            self.addingAnItem = NO;
-            
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
+    if (newItemTitle.text.length > 0) {
+    
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSManagedObjectContext* context = appDelegate.managedObjectContext;
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
+        [fetchRequest setEntity:entity];
+        
+        [fetchRequest setFetchBatchSize:20];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", self.selectedList.itemId];
+        [fetchRequest setPredicate:predicate];
+        
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+        NSArray *sortDescriptors = @[sortDescriptor];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Master3"];
+        [NSFetchedResultsController deleteCacheWithName:@"Master3"];
+        
+        NSError *error = nil;
+        if (![aFetchedResultsController performFetch:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
         }
         
-    }else{
-        itemInCell.title = currentText;
+        Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
         
-        [textField resignFirstResponder];
+        NSArray *itemsOnSelectedList = aFetchedResultsController.fetchedObjects;
+        Item *firstItemOnList = [itemsOnSelectedList objectAtIndex:0];
+        int newItemOrder = firstItemOnList.order.intValue / 2;
+        newItem.order = [NSNumber numberWithInt:newItemOrder];
+        newItem.title = newItemTitle.text;
         
-        NSLog(@"aboout to save the new list");
+        newItem.done = 0;
+        newItem.notes = @" ";
         
-        if (self.addingAnItem) {
-            [AddItemsToServer addThisItem:itemInCell];
-            self.addingAnItem = NO;
-        }else{
-            [UpdateItemsOnServer updateThisItem:itemInCell];
-        }
+        newItem.parent = self.selectedList.itemId;
+        
+        double timestamp = [[NSDate date] timeIntervalSince1970];
+        newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
+        
+        [AddItemsToServer addThisItem:newItem];
     }
     
-    
-    
-    self.rowOfExpandedCell = -1;
-    [self.tableView reloadData];
-    //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-    
-    return YES;
-    
-    */
-    NSLog(@"finished editing");
-    return YES;
+    [self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -109,16 +136,15 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Number of rows is the number of time zones in the region for the specified section.
     NSInteger rowCount = [self.fetchedResultsController.fetchedObjects count];
-    return rowCount+1;
+    return rowCount;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSInteger rowCount = [self.fetchedResultsController.fetchedObjects count];
     
     if (self.showAllLists) {
         return 40;
     }else{
-        if (indexPath.row == 0 || indexPath.row == rowCount) {
+        if (indexPath.row == 0) {
             return 40;
         }else{
             return 0;
@@ -133,46 +159,51 @@
         cell = [[ParentCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
     }
     
-    NSInteger rowCount = [self.fetchedResultsController.fetchedObjects count];
     //Item *itemInCell = [[Item alloc]init];
 
-    if (indexPath.row == rowCount){
-        cell.cellItemTitle.userInteractionEnabled = YES;
-        cell.cellItemTitle.text = nil;
-        cell.cellItemTitle.textColor = [UIColor blackColor];
-        [cell.cellItemTitle becomeFirstResponder];
-        
-    }else {
-        Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
         if (indexPath.row == 0) {
-            cell.cellItemTitle.userInteractionEnabled = NO;
-            cell.cellItemTitle.text = self.selectedList.title;
-            //itemInCell = self.selectedList;
+            cell.textLabel.text = self.selectedList.title;
         }else{
-            cell.cellItemTitle.text = itemInCell.title;
-            cell.cellItemTitle.userInteractionEnabled = NO;
+            cell.textLabel.text = itemInCell.title;
         }
-        cell.cellItemTitle.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
+        cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
 
-    }
-    
-    cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
-    cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:20];
+    cell.textLabel.textAlignment = NSTextAlignmentLeft;
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:20];
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedList = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
+
     if (self.showAllLists) {
         self.showAllLists = NO;
+        //[tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+        //[typeField resignFirstResponder];
+
     }else {
         self.showAllLists = YES;
+
+    }
+
+    [tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+    
+    
+    
+    UITextField *typeField = (UITextField *)[self.view viewWithTag:888];
+    
+    if (self.showAllLists) {
+        [typeField resignFirstResponder];
+        [self.view endEditing:YES];
+    }else{
+        [typeField becomeFirstResponder];
     }
     
-    [tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-
+    
+    
 }
 
 

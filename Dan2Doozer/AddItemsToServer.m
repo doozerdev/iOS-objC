@@ -52,8 +52,15 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        params[@"title"] = itemToAdd.title;
         params[@"order"] = itemToAdd.order;
+
+        if (itemToAdd.title.length > 0) {
+            params[@"title"] = itemToAdd.title;
+            NSLog(@"adding a title with characters");
+        }else{
+            params[@"title"] = @" ";
+            NSLog(@"adding nill title.....");
+        }
         if (itemToAdd.parent == nil) {
             params[@"parent"] = @"";
         }else{

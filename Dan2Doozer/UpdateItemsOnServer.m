@@ -52,7 +52,11 @@
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         
         if (itemToUpdate.archive == NULL) {
-            params[@"title"] = itemToUpdate.title;
+            if (itemToUpdate.title.length > 0) {
+                params[@"title"] = itemToUpdate.title;
+            }else{
+                params[@"title"] = @" ";
+            }
             params[@"order"] = itemToUpdate.order;
             params[@"done"] = [NSNumber numberWithBool: itemToUpdate.done.boolValue];
             if (itemToUpdate.duedate) {
