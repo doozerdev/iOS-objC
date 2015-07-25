@@ -90,10 +90,18 @@
     //ensure that the end of scroll is fired.
     [self performSelector:@selector(scrollViewDidEndScrollingAnimation:) withObject:nil afterDelay:0.3];
     
+    [self.view endEditing:YES];
+    if(self.rowOfNewItem != -1){
+        [self saveOrRemoveEmptyRow];
+    }
+    
     self.isScrolling = YES;
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    
+    NSLog(@"ended scrolling");
+    
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.isScrolling = NO;
 }
@@ -601,6 +609,8 @@
     // It is important for you to hide the keyboard
 
     NSLog(@"text field should end editing");
+    
+    /*
      NSString *currentText = textField.text;
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -629,6 +639,10 @@
     }
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
+    */
+    
+    [self saveOrRemoveEmptyRow];
+    
     return YES;
 }
 
@@ -894,7 +908,31 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
- 
+
+- (void)saveOrRemoveEmptyRow{
+    
+    NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+    ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
+    Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
+    
+    NSString *currentText = cell.cellItemTitle.text;
+    if (currentText.length == 0) {
+        NSLog(@"deleting just created row");
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
+        
+    }else{
+        
+        itemToSave.title = currentText;
+        [self rebalanceListIfNeeded];
+        
+        [AddItemsToServer addThisItem:itemToSave];
+    }
+    self.rowOfNewItem = -1;
+    [self.tableView reloadData];
+    
+}
+
 #pragma mark - Segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showItem"]) {
@@ -956,25 +994,9 @@
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     if (self.rowOfNewItem != -1) {
-        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
-        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
-        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
         
-        NSString *currentText = cell.cellItemTitle.text;
-        if (currentText.length == 0) {
-            NSLog(@"deleting just created row");
-            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
-            
-        }else{
-            
-            itemToSave.title = currentText;
-            [self rebalanceListIfNeeded];
-            
-            [AddItemsToServer addThisItem:itemToSave];
-        }
-        self.rowOfNewItem = -1;
-        [self.tableView reloadData];
+        [self saveOrRemoveEmptyRow];
+        
     }else{
         if ([clickedItem.type isEqualToString:@"completed_header"]) {
             
@@ -1096,8 +1118,6 @@
             [df setDateFormat:@"yyyyMMdd"];
             NSString *currentDateString = [df stringFromDate:[NSDate date]];
             NSString *dueDateString = [df stringFromDate:object.duedate];
-            
-            NSLog(@"due date = %@, current date = %@", dueDateString, currentDateString);
             
             if (object.duedate) {
                 if (dueDateString.intValue <= currentDateString.intValue) {

@@ -163,29 +163,34 @@
 
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-        if (indexPath.row == 0) {
-            cell.textLabel.text = self.selectedList.title;
-        }else{
-            cell.textLabel.text = itemInCell.title;
-        }
-        cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
+    if (indexPath.row == 0) {
+        cell.textLabel.text = self.selectedList.title;
+    }else{
+        cell.textLabel.text = itemInCell.title;
+    }
+    cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
 
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
     cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:20];
+    
+    
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedList = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
+    UITextField *typeField = (UITextField *)[self.view viewWithTag:888];
+
 
     if (self.showAllLists) {
         self.showAllLists = NO;
-        //[tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-        //[typeField resignFirstResponder];
+        typeField.userInteractionEnabled = YES;
+        typeField.hidden = NO;
 
     }else {
         self.showAllLists = YES;
+        typeField.userInteractionEnabled = NO;
+        typeField.hidden = YES;
 
     }
 
@@ -193,7 +198,6 @@
     
     
     
-    UITextField *typeField = (UITextField *)[self.view viewWithTag:888];
     
     if (self.showAllLists) {
         [typeField resignFirstResponder];

@@ -361,7 +361,7 @@
                                                 <textField opaque="NO" clipsSubviews="YES" tag="888" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="What do you want to do?" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kc8-Ot-9sI">
                                                     <rect key="frame" x="18" y="0.0" width="582" height="40"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="20"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                                     <connections>
                                                         <action selector="itemTitleText:" destination="bSc-Uq-o0v" eventType="editingDidEnd" id="0Dv-XS-AGo"/>
                                                         <outlet property="delegate" destination="bSc-Uq-o0v" id="tcY-pR-TxB"/>
@@ -526,10 +526,13 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yth-vD-2nD">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yth-vD-2nD" customClass="FBSDKLoginButton">
                                 <rect key="frame" x="185" y="208" width="230" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="230" id="AO3-Tv-6Xs"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                                <state key="normal" title="Log in with Facebook">
+                                <state key="normal">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>

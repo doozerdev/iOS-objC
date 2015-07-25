@@ -115,6 +115,26 @@
 }
 
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    //ensure that the end of scroll is fired.
+    [self performSelector:@selector(scrollViewDidEndScrollingAnimation:) withObject:nil afterDelay:0.3];
+    
+    if (scrollView.dragging) {
+        [self.view endEditing:YES];
+        if (self.rowOfExpandedCell != -1) {
+            self.rowOfExpandedCell = -1;
+            [self.tableView reloadData];
+        }
+    }
+
+}
+
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
+
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     NSLog(@"text field is beginning editting");
@@ -126,20 +146,27 @@
 // It is important for you to hide the keyboard
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
     NSLog(@"text field ending editing");
-    NSString *currentText = textField.text;
+
+    [self saveOrRemoveRow];
+
+    return YES;
+}
+
+- (void)saveOrRemoveRow{
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
+    ParentCustomCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    
+    NSString *currentText = cell.cellItemTitle.text;
     
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self.view.window endEditing: YES];
-
-    NSLog(@"index path of added cell = %@", indexPath);
     
     if (currentText.length == 0) {
         if (self.addingAnItem) {
-
+            
             NSLog(@"deleting just created row");
             [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
             self.addingAnItem = NO;
@@ -153,11 +180,9 @@
         
     }else{
         itemInCell.title = currentText;
-
-        [textField resignFirstResponder];
-
-        NSLog(@"aboout to save the new list");
-
+        
+        [cell.cellItemTitle resignFirstResponder];
+        
         if (self.addingAnItem) {
             [AddItemsToServer addThisItem:itemInCell];
             self.addingAnItem = NO;
@@ -170,11 +195,9 @@
     self.rowOfExpandedCell = -1;
     [self.tableView reloadData];
     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-
-    return YES;
+    
+    
 }
-
-
 
 - (void)addItemList {
     
@@ -242,101 +265,8 @@
     NSLog(@"prssed button");
     
     [self performSegueWithIdentifier:@"showAddItemView" sender:self];
-    /*
-    AddItemViewController *modalViewController = [[AddItemViewController alloc] init];
-    modalViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-    modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    [self presentViewController:modalViewController animated:YES completion:nil];
-    */
-    
-    
-    
-    /*
-    NSArray *listOfLists = self.fetchedResultsController.fetchedObjects;
-    Item *firstList = [listOfLists objectAtIndex:0];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add a new item"
-                                                    message:nil
-                                                   delegate:self
-                                          cancelButtonTitle:@"Cancel"
-                                          otherButtonTitles:firstList.title, @"Done", nil];
-    
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [alert setTag:1];
-    [alert textFieldAtIndex:0].autocorrectionType = UITextAutocorrectionTypeYes;
-    [alert textFieldAtIndex:0].autocapitalizationType = UITextAutocapitalizationTypeSentences;
-    [[alert textFieldAtIndex:0] setReturnKeyType:UIReturnKeyDone];
-    
-    [alert show];
-     */
     
 }
-/*
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (alertView.tag == 1){
-        
-        int numberOfLists = (int)[self.fetchedResultsController.fetchedObjects count];
-
-        NSLog(@"button index is %ld, and numberof lists is %d", (long)buttonIndex, numberOfLists);
-        
-        if (buttonIndex > numberOfLists || buttonIndex == 0) {
-            NSLog(@"cancel was pressed");
-        }else{
-            
-            NSString *currentText = [alertView textFieldAtIndex:0].text;
-            if (currentText.length == 0) {
-                NSLog(@"no text was entered in the fielf");
-            }else{
-
-                Item *targetList = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:buttonIndex-1 inSection:0]];
-                NSLog(@"adding an item to list = %@", targetList.title);
-                
-                NSArray *itemsOnTargetList = [self fetchItemsOnList:targetList.itemId];
-                
-                NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-                
-                Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-                
-                newItem.title = currentText;
-                
-                long numberOfResults = [itemsOnTargetList count];
-                
-                if (numberOfResults == 0){
-                    newItem.order = [NSNumber numberWithLong:16777216];
-                }
-                else{
-                    Item *firstItemOnList = [itemsOnTargetList objectAtIndex:0];
-
-                    newItem.order = [NSNumber numberWithInt:firstItemOnList.order.intValue/2];
-                }
-                
-                newItem.done = 0;
-                newItem.notes = @" ";
-                newItem.parent = targetList.itemId;
-                
-                double timestamp = [[NSDate date] timeIntervalSince1970];
-                newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
-                
-                [AddItemsToServer addThisItem:newItem];
-                                
-                [self.tableView reloadData];
-            }
-            
-        }
-        
-        
-    }else if (alertView.tag == 2){
-        if (buttonIndex == 1){
-                        
-            [DeleteItemFromServer deleteThisList:self.itemToDelete];
-            self.itemToDelete = nil;
-            
-        }
-    }
-
-}
- 
- */
 
 - (IBAction)longPressGestureRecognized:(id)sender {
     
@@ -652,13 +582,7 @@
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
     cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
     cell.cellItemTitle.textColor = [UIColor whiteColor];
-    
-    /*UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 3.0, cell.contentView.frame.size.width, 3)];
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 3)];
 
-    lineView.backgroundColor = [UIColor whiteColor];
-    [cell.contentView addSubview:lineView];
-*/
     
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
         
@@ -933,6 +857,9 @@
     }else{
         NSLog(@"row of expanded cell is %d", self.rowOfExpandedCell);
         if (indexPath.row != self.rowOfExpandedCell) {
+            
+            [self saveOrRemoveRow];
+            /*
             NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
             NSIndexPath *rowToSave = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
             Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:rowToSave];
@@ -973,6 +900,7 @@
             }
             self.rowOfExpandedCell = -1;
             [self.tableView reloadData];
+        */
         }
     }
 }
