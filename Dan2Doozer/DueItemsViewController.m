@@ -10,6 +10,7 @@
 #import "Item.h"
 #import "AppDelegate.h"
 #import "ColorHelper.h"
+#import "ItemViewController.h"
 
 @interface DueItemsViewController ()
 
@@ -19,9 +20,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    }
+
+- (void)viewWillAppear:(BOOL)animated{
+    
     self.sectionsToShow = [[NSMutableArray alloc]init];
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+
     self.tableView.backgroundColor = [UIColor whiteColor];
     
     [self.navigationController.navigationBar setTitleTextAttributes: @{
@@ -30,7 +37,7 @@
                                                                        }];
     
     self.navigationItem.title = @"Due Tasks";
-
+    
     NSDateFormatter *df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"yyyyMMdd"];
     NSString *currentDateString = [df stringFromDate:[NSDate date]];
@@ -39,7 +46,7 @@
     NSInteger numberOfListsWithDueItems = 0;
     
     for (int i = 0; i <+ numberOfTotalLists; i++) {
-    
+        
         Item *parent = [self.fetchedResultsController.fetchedObjects objectAtIndex:i];
         NSArray *children = [self getItemsOnList:parent.itemId];
         int count = 0;
@@ -47,6 +54,7 @@
             if (eachItem.done.intValue == 0) {
                 NSString *dueDateString = [df stringFromDate:eachItem.duedate];
                 if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {
+                    NSLog(@"due item is = %@", eachItem.title);
                     count += 1;
                 }
             }
@@ -57,6 +65,9 @@
         }
     }
     self.numberOfLists = numberOfListsWithDueItems;
+
+    
+    
 }
 
 
@@ -216,15 +227,51 @@
 }
 */
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
+#pragma mark - Segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"showItemFromDue"]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        
+        ItemViewController *itemController = segue.destinationViewController;
+        
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSManagedObjectContext* context = appDelegate.managedObjectContext;
+        
+        itemController.managedObjectContext = context;
+        
+        NSLog(@"indexpath clicked section = %ld, row = %ld", (long)indexPath.section, (long)indexPath.row);
+        
+        Item *list = [self.sectionsToShow objectAtIndex:indexPath.section];
+        NSArray *itemsOnList = [self getItemsOnList:list.itemId];
+        
+        NSDateFormatter *df = [[NSDateFormatter alloc]init];
+        [df setDateFormat:@"yyyyMMdd"];
+        NSString *currentDateString = [df stringFromDate:[NSDate date]];
+        
+        NSMutableArray *dueItems = [[NSMutableArray alloc]init];
+        for (Item *eachItem in itemsOnList){
+            NSLog(@"items %@", eachItem.title);
+            if (eachItem.done.intValue == 0) {
+                NSString *dueDateString = [df stringFromDate:eachItem.duedate];
+                if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {
+                    [dueItems addObject:eachItem];
+                }
+            }
+        }
+        
+        
+        Item *itemInCell = [dueItems objectAtIndex:indexPath.row];
+        
+        [itemController setDetailItem:itemInCell];
+        [itemController setDisplayListOfItem:list];
+        
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+
+        
+    }
 }
-*/
 
 
 #pragma mark - Fetched results controller

@@ -146,7 +146,7 @@ NSFetchedResultsController *_fetchedResultsController;
     NSInteger count = 0;
     
     for (Item *eachItem in activeItems){
-        NSLog(@"item name is == %@, archive value is == %@", eachItem.title, eachItem.archive);
+        //NSLog(@"item name is == %@, archive value is == %@", eachItem.title, eachItem.archive);
         if (eachItem.done.intValue == 0) {
             NSString *dueDateString = [df stringFromDate:eachItem.duedate];
             if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {

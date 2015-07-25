@@ -145,6 +145,17 @@
     
 }
 
+- (void)pressedDeleteDateButton{
+    
+    NSLog(@"booy ah!!!!");
+    Item *itemOnPage = self.detailItem;
+    itemOnPage.duedate = nil;
+    
+    [UpdateItemsOnServer updateThisItem:itemOnPage];
+    [self.tableView reloadData];
+    
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -214,6 +225,24 @@
             cell.textLabel.text = @"Due Date";
             textField.tag = 303;
             
+            if (displayItem.duedate) {
+            
+                UIButton *deleteDate = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+                [deleteDate addTarget:self
+                           action:@selector(pressedDeleteDateButton)
+                 forControlEvents:UIControlEventTouchUpInside];
+                [deleteDate setTitle:@"\U000024E7\U0000FE0E" forState:UIControlStateNormal];
+                deleteDate.titleLabel.font = [UIFont fontWithName:@"Avenir" size:20];
+                [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+                [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+                deleteDate.frame = CGRectMake(cell.frame.size.width - 40, 12, 30, 30);
+                deleteDate.tag = 333;
+                [cell.contentView addSubview:deleteDate];
+            }else{
+                UIView *viewToRemove = [self.view viewWithTag:333];
+                [viewToRemove removeFromSuperview];
+            }
+        
         }
     }else if ((int)indexPath.row == 3){
         textField.text = displayItem.order.stringValue;

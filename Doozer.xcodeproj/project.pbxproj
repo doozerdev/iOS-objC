@@ -255,7 +255,6 @@
 				A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */,
 				A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */,
 				A2FB553E1B2FC44B00D19660 /* DeleteItemFromServer.h */,
-				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */,
 				A29CD7E81B1FFB27000FA1B0 /* GetItemsFromDoozer.h */,
 				A29CD7E91B1FFB27000FA1B0 /* GetItemsFromDoozer.m */,
@@ -268,8 +267,8 @@
 			children = (
 				A2301B351AF41A7C00E2267D /* MasterViewController.h */,
 				A2301B361AF41A7C00E2267D /* MasterViewController.m */,
-				A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */,
 				A2843E601AF71EF100FE47B6 /* ListViewController.h */,
+				A27342491B0EDA4E00C1E219 /* ListViewController.m */,
 				A2FB55411B311B8200D19660 /* ItemViewController.h */,
 				A2FB55421B311B8200D19660 /* ItemViewController.m */,
 				A2301B5D1AF6E04F00E2267D /* LoginViewController.h */,
@@ -279,6 +278,7 @@
 				A29CD7F41B211FAB000FA1B0 /* WelcomeViewController.h */,
 				A29CD7F51B211FAB000FA1B0 /* WelcomeViewController.m */,
 				A22B7F1E1B5E16740096CEEC /* AddItemViewController.h */,
+				A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */,
 				A27001E81B61C6C800D1B7B3 /* DueItemsViewController.h */,
 				A27001E91B61C6C800D1B7B3 /* DueItemsViewController.m */,
 			);

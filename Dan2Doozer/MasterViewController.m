@@ -83,7 +83,11 @@
     [UIApplication sharedApplication].applicationIconBadgeNumber = count;
 
     self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count];
-    self.dueButton.tintColor = [UIColor redColor];
+    if (count == 0) {
+        self.dueButton.tintColor = [UIColor blackColor];
+    }else{
+        self.dueButton.tintColor = [UIColor redColor];
+    }
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
     // You can send attributes of any name/value

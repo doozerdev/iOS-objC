@@ -42,7 +42,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="dueCells" textLabel="5yq-7z-sUK" style="IBUITableViewCellStyleDefault" id="oE5-cx-oKL">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="dueCells" textLabel="5yq-7z-sUK" style="IBUITableViewCellStyleDefault" id="oE5-cx-oKL">
                                 <rect key="frame" x="0.0" y="114" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oE5-cx-oKL" id="WWm-CR-ng6">
@@ -58,6 +58,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="SBx-Rf-rr7" kind="show" identifier="showItemFromDue" id="5Hq-Ou-QP6"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -69,7 +72,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q8f-yL-bdR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="763" y="-1369"/>
+            <point key="canvasLocation" x="1532" y="-207"/>
         </scene>
         <!--Master-->
         <scene sceneID="smW-Zh-WAh">
@@ -331,7 +334,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gat-wy-CTf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1658" y="-387"/>
+            <point key="canvasLocation" x="1532" y="-1575"/>
         </scene>
         <!--Add Item View Controller-->
         <scene sceneID="iST-u4-cuc">
@@ -430,29 +433,40 @@
                                     <action selector="pressedCancelButton:" destination="bSc-Uq-o0v" eventType="touchUpInside" id="vu8-cw-zLE"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Slide1" translatesAutoresizingMaskIntoConstraints="NO" id="Why-An-uUX">
+                                <rect key="frame" x="550" y="20" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="CZO-G7-RpZ"/>
+                                    <constraint firstAttribute="height" constant="40" id="ara-YP-e3C"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Why-An-uUX" firstAttribute="top" secondItem="w8O-2o-hS1" secondAttribute="topMargin" constant="20" id="0e2-bp-0Eq"/>
                             <constraint firstItem="2fW-qc-gWT" firstAttribute="top" secondItem="Fim-Rn-Zrf" secondAttribute="bottom" id="2kd-kK-xyF"/>
                             <constraint firstAttribute="trailing" secondItem="2fW-qc-gWT" secondAttribute="trailing" id="Gep-2v-Z33"/>
                             <constraint firstItem="2fW-qc-gWT" firstAttribute="top" secondItem="CBP-jL-vqw" secondAttribute="bottom" constant="150" id="Nzq-oH-iTw"/>
+                            <constraint firstAttribute="trailing" secondItem="Why-An-uUX" secondAttribute="trailing" constant="10" id="PRR-Xt-j8S"/>
                             <constraint firstAttribute="trailing" secondItem="Fim-Rn-Zrf" secondAttribute="trailing" id="UwN-HL-Urh"/>
                             <constraint firstItem="Fim-Rn-Zrf" firstAttribute="leading" secondItem="w8O-2o-hS1" secondAttribute="leadingMargin" id="aSr-vO-XDj"/>
                             <constraint firstItem="Fim-Rn-Zrf" firstAttribute="top" secondItem="CBP-jL-vqw" secondAttribute="bottom" id="dJe-Zu-kmb"/>
                             <constraint firstItem="2fW-qc-gWT" firstAttribute="leading" secondItem="w8O-2o-hS1" secondAttribute="leading" id="kEt-C4-ljq"/>
                             <constraint firstItem="Fim-Rn-Zrf" firstAttribute="leading" secondItem="w8O-2o-hS1" secondAttribute="leading" id="o5K-Nq-jha"/>
                             <constraint firstAttribute="bottomMargin" secondItem="2fW-qc-gWT" secondAttribute="bottom" constant="-15" id="qls-QY-uzW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Why-An-uUX" secondAttribute="trailing" constant="10" id="rf1-YF-JyR"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="aSr-vO-XDj"/>
+                                <exclude reference="rf1-YF-JyR"/>
                             </mask>
                         </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RsC-ac-of6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2249" y="-1352"/>
+            <point key="canvasLocation" x="1532" y="-880"/>
         </scene>
         <!--Welcome View Controller-->
         <scene sceneID="DF0-Sw-d06">
@@ -601,7 +615,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="amk-Je-9m6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1610" y="354"/>
+            <point key="canvasLocation" x="1522" y="522"/>
         </scene>
         <!--List-->
         <scene sceneID="rL9-4I-86L">
@@ -686,13 +700,15 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygx-FV-Pgj" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="709" y="135"/>
+            <point key="canvasLocation" x="709" y="225"/>
         </scene>
     </scenes>
     <resources>
         <image name="Hamburger" width="16" height="16"/>
+        <image name="Slide1" width="720" height="720"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="O3e-c8-Xp2"/>
+        <segue reference="5Hq-Ou-QP6"/>
     </inferredMetricsTieBreakers>
 </document>
