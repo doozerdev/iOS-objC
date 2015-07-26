@@ -32,13 +32,20 @@ NSString *sessionID = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdated:) name:FBSDKProfileDidChangeNotification object:nil];
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     [login logInWithReadPermissions:@[@"public_profile" , @"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        
         if (error) {
             // Process error
         } else if (result.isCancelled) {
             // Handle cancellations
         } else {
+            UIView *fbButton = [self.view viewWithTag:234];
+            fbButton.hidden = YES;
             self.loginButtonFacebook.hidden = YES;
             self.LoadingSpinner.hidden = NO;
+            self.welcome.hidden = YES;
+            self.toDoozer.text = @"Doozer";
+            self.LoginStatusLabel.hidden = YES;
+            self.statusLabel1.text = @"Getting your lists...";
 
             [self.LoadingSpinner startAnimating];
             
@@ -62,6 +69,8 @@ NSString *sessionID = nil;
     
     NSLog(@"the view loaded");
     self.LoadingSpinner.hidden = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+
     
     if ([FBSDKAccessToken currentAccessToken]) {
         [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
@@ -123,6 +132,11 @@ NSString *sessionID = nil;
     }
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -134,20 +148,27 @@ NSString *sessionID = nil;
     NSString *fbUserId = [FBSDKProfile currentProfile].userID;
     NSString *fbUserName = [FBSDKProfile currentProfile].name;
     
-    [Intercom registerUserWithUserId:fbUserId];
+    if (fbUserId) {
+        [Intercom registerUserWithUserId:fbUserId];
     
-    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"email"}]
-     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-         
-         if (!error) {
-             NSString *fbEmail = result[@"email"];
-             [Intercom updateUserWithAttributes:@{
-                                                  @"name" : fbUserName,
-                                                  @"email" : fbEmail
-                                                  }];
-         }
-     }];
-
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"email"}]
+         startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+             
+             if (!error) {
+                 NSString *fbEmail = result[@"email"];
+                 if (fbEmail) {
+                     [Intercom updateUserWithAttributes:@{
+                                                          @"name" : fbUserName,
+                                                          @"email" : fbEmail
+                                                          }];
+                 }else{
+                     [Intercom updateUserWithAttributes:@{
+                                                          @"name" : fbUserName
+                                                          }];
+                 }
+             }
+         }];
+    }
 }
 
 
@@ -158,10 +179,7 @@ NSString *sessionID = nil;
         
         //[self performSelector:@selector(showListList) withObject:nil afterDelay:2];
         //self.LoginStatusLabel.text = @"Checking server for items...";
-
-
         
-        self.LoginStatusLabel.text = @"Connecting to Doozer server...";
 
         NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
         NSLog(@"number of launches = %@", numberOfLaunches);
@@ -172,15 +190,12 @@ NSString *sessionID = nil;
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             
-            
-            self.LoginStatusLabel.text = @"Checking server for items...";
-        
+                    
             sessionID = [responseObject objectForKey:@"sessionId"];
             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
             [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
-                self.LoginStatusLabel.text = @"Preparing lists for use...";
                 
                 NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
                 int secondsEpochInt = secondsSinceUnixEpoch;
@@ -197,9 +212,6 @@ NSString *sessionID = nil;
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
         }];
-         
-    
-        
     }
 }
 

@@ -20,6 +20,8 @@
 - (void)deleteItemFromServer: (NSMutableArray *)itemsToDelete :(void(^)(int))handler;
 
 + (void)deleteThisList:(Item *)listToDelete;
++ (void)deleteThisItem:(Item *)itemToDelete;
+
 
 
 @end

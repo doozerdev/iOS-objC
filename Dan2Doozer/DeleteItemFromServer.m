@@ -114,5 +114,42 @@
     [DoozerSyncManager syncWithServer];
 }
 
++ (void)deleteThisItem:(Item *)itemToDelete{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    [context deleteObject:itemToDelete];
+    
+    NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
+    NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
+    int matchCount = 0;
+    for(id eachElement in itemsToAdd){
+        if ([itemToDelete.itemId isEqualToString:eachElement]){
+            matchCount +=1;
+        }else{
+            [newItemsToAdd addObject:eachElement];
+        }
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    if (matchCount == 0){
+        NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+        [itemsToDelete addObject:itemToDelete.itemId];
+        [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [DoozerSyncManager syncWithServer];
+
+}
+
 
 @end

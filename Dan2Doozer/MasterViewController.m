@@ -22,6 +22,7 @@
 #import "AddItemsToServer.h"
 #import "intercom.h"
 #import "AddItemViewController.h"
+#import "AppDelegate.h"
 
 @interface MasterViewController () <UITextFieldDelegate>
 
@@ -30,6 +31,8 @@
 @end
 
 @implementation MasterViewController
+
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
@@ -41,15 +44,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    self.managedObjectContext = context;
+    
     [self rebalanceListOrdersIfNeeded];
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches.intValue == 0) {
         NSLog(@"first launch -- not syncing when loading main screen");
+
     }else{
         [DoozerSyncManager syncWithServer];
         
     }
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
     
     self.addingAnItem = NO;
     self.rowOfExpandedCell = -1;
@@ -79,8 +90,14 @@
                                                             NSForegroundColorAttributeName: [UIColor blackColor],
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
+    self.tableView.separatorColor = [UIColor whiteColor];
+
+    
+    
     NSInteger count = [CoreDataItemManager findNumberOfDueItems];
     [UIApplication sharedApplication].applicationIconBadgeNumber = count;
+    
+
 
     self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count];
     if (count == 0) {
@@ -123,6 +140,7 @@
     if (scrollView.dragging) {
         [self.view endEditing:YES];
         if (self.rowOfExpandedCell != -1) {
+            [self saveOrRemoveRow];
             self.rowOfExpandedCell = -1;
             [self.tableView reloadData];
         }
@@ -198,6 +216,19 @@
     
     
 }
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 2){
+        if (buttonIndex == 1){
+            
+            [DeleteItemFromServer deleteThisList:self.itemToDelete];
+            self.itemToDelete = nil;
+        }
+    }
+}
+
+
 
 - (void)addItemList {
     
@@ -494,6 +525,17 @@
     }
     
 }
+
+
+/*
+#pragma mark - push notificaiton
+-(void)registerToReceivePushNotification {
+    // Register for push notifications
+    UIApplication* application =[UIApplication sharedApplication];
+    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+    
+}
+*/
 
 #pragma mark - Segues
 

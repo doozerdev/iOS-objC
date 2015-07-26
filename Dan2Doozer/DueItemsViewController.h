@@ -18,6 +18,9 @@
 @property NSInteger numberOfLists;
 @property NSMutableArray *sectionsToShow;
 
+@property BOOL isRightSwiping;
+@property BOOL isScrolling;
+
 
 
 @end

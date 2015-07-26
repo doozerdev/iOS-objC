@@ -16,6 +16,9 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *LoadingSpinner;
 @property (weak, nonatomic) IBOutlet UILabel *LoginStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *welcome;
+@property (weak, nonatomic) IBOutlet UILabel *toDoozer;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel1;
 
 
 @end

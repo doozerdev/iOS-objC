@@ -16,6 +16,7 @@
 #import "ListCustomCell.h"
 #import "AddItemsToServer.h"
 #import "CoreDataItemManager.h"
+#import "DeleteItemFromServer.h"
 
 @interface ListViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @end
@@ -45,6 +46,7 @@
                                                                        }];
     
     self.navigationItem.title = listForTitle.title;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
                                                initWithTarget:self action:@selector(longPressGestureRecognized:)];
@@ -214,7 +216,7 @@
                     
                                      //set the notes field to a blank string, so that CoreData updates the header
                                      //for completed items and prompts a reload of completed items count
-                                     eachItem.notes = @" ";
+                                     eachItem.forceUpdateString = @" ";
                                  }
                              }
                              self.isRightSwiping = NO;
@@ -236,7 +238,7 @@
                          {
                              NSLog(@"ReturniedCell");
                              [snapshot removeFromSuperview];
-                             swipedItem.notes = @" ";
+                             swipedItem.forceUpdateString = @" ";
                              self.isRightSwiping = NO;
 
                         }];
@@ -247,7 +249,7 @@
                         NSLog(@"Catch all case for ENDED");
                         [snapshot removeFromSuperview];
                         originalCell.hidden = NO;
-                        swipedItem.notes = @" ";
+                        swipedItem.forceUpdateString = @" ";
                         self.isRightSwiping = NO;
 
                     }
@@ -606,40 +608,6 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    // It is important for you to hide the keyboard
-
-    NSLog(@"text field should end editing");
-    
-    /*
-     NSString *currentText = textField.text;
-    
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
-     
-     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-     // Force any text fields that might be being edited to end
-     [self.view.window endEditing: YES];
-    
-    if (currentText.length == 0) {
-        NSLog(@"deleting just created row");
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-
-    }else{
-        [textField resignFirstResponder];
-    
-        itemInCell.title = currentText;
-        
-        [self rebalanceListIfNeeded];
-        
-        [AddItemsToServer addThisItem:itemInCell];
-        
-    }
-    self.rowOfNewItem = -1;
-    [self.tableView reloadData];
-    */
     
     [self saveOrRemoveEmptyRow];
     
@@ -1162,44 +1130,9 @@
                                             
                                             Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
                                             
-                                            NSLog(@"index path to delete = %@", indexPath);
-                                            NSLog(@"item title to delete = %@", itemToDelete.title);
-                                            
-                                            
-                                            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-                                            [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-                                            
-                                            NSMutableArray *itemsToAdd = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"]mutableCopy];
-                                            NSMutableArray *newItemsToAdd = [[NSMutableArray alloc]init];
-                                            int matchCount = 0;
-                                            for(id eachElement in itemsToAdd){
-                                                if ([itemToDelete.itemId isEqualToString:eachElement]){
-                                                    matchCount +=1;
-                                                }else{
-                                                    [newItemsToAdd addObject:eachElement];
-                                                }
-                                            }
-                                            [[NSUserDefaults standardUserDefaults] setObject:newItemsToAdd forKey:@"itemsToAdd"];
-                                            [[NSUserDefaults standardUserDefaults] synchronize];
-                                            
-                                            if (matchCount == 0){
-                                                NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-                                                [itemsToDelete addObject:itemToDelete.itemId];
-                                                [[NSUserDefaults standardUserDefaults] setObject:itemsToDelete forKey:@"itemsToDelete"];
-                                                [[NSUserDefaults standardUserDefaults] synchronize];
-                                                
-                                            }
-                                            
-                                            // Save the context.
-                                            NSError *error = nil;
-                                            if (![context save:&error]) {
-                                                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                                                abort();
-                                            }
-                                            [DoozerSyncManager syncWithServer];
-
-                                            
+                                            [DeleteItemFromServer deleteThisItem:itemToDelete];
                                         }];
+    
     Item *displayList = self.displayList;
     UIColor *color = [ColorHelper getUIColorFromString:displayList.color :1];
     deleteButton.backgroundColor = color;
@@ -1208,7 +1141,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    // needs to exist for the "edit" and "delete" buttons on left swipe
+    // needs to exist for the "delete" buttons on left swipe
     
 }
 

@@ -40,13 +40,10 @@
     
     NSLog(@"user pressed the logout button");
     
-    //log out of doozer
-    
-    //log out of facebook
-
     // This reset's the Intercom SDK's cache of your user's identity and wipes the slate clean.
     [Intercom reset];
-
+    
+    [[FBSDKLoginManager new] logOut];
     
 }
 
