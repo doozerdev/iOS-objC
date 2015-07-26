@@ -72,17 +72,9 @@
 -(void)viewWillDisappear:(BOOL)animated{
     
     if (self.rowOfNewItem != -1) {
-        NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
-        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
-        Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
         
-        itemToSave.title = cell.cellItemTitle.text;
-        NSLog(@"title to save = %@", itemToSave.title);
-        
-        [AddItemsToServer addThisItem:itemToSave];
-        
-        self.rowOfNewItem = -1;
-        [self.tableView reloadData];
+        [self saveOrRemoveEmptyRow];
+
     }
     
 }
