@@ -527,16 +527,6 @@
 }
 
 
-/*
-#pragma mark - push notificaiton
--(void)registerToReceivePushNotification {
-    // Register for push notifications
-    UIApplication* application =[UIApplication sharedApplication];
-    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-    
-}
-*/
-
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -568,8 +558,17 @@
     if ([[segue identifier] isEqualToString:@"showAddItemView"]){
 
         AddItemViewController *modalViewController = segue.destinationViewController;
-        //modalViewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        
+        if (self.rowOfExpandedCell != -1) {
+            if (self.addingAnItem) {
+                [self saveOrRemoveRow];
+                self.addingAnItem = NO;
+            }
+            [self.view endEditing:YES];
+            self.rowOfExpandedCell = -1;
+            [self.tableView reloadData];
+        }
         
     }
     
@@ -901,48 +900,7 @@
         if (indexPath.row != self.rowOfExpandedCell) {
             
             [self saveOrRemoveRow];
-            /*
-            NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-            NSIndexPath *rowToSave = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
-            Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:rowToSave];
-            ParentCustomCell *cellToSave = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:rowToSave];
-            NSString *currentText = cellToSave.cellItemTitle.text;
-            
-            if (self.addingAnItem) {
-                if (currentText.length == 0){
-                    NSLog(@"deleting just created row");
-                    [context deleteObject:[self.fetchedResultsController objectAtIndexPath:rowToSave]];
-                    
-                    NSError *error = nil;
-                    if (![context save:&error]) {
-                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                        abort();
-                    }
-                }else{
-                    itemToSave.title = currentText;
-                    
-                    [cellToSave.cellItemTitle resignFirstResponder];
-                    [self.view.window endEditing: YES];
-              
-                    [AddItemsToServer addThisItem:itemToSave];
-                }
-                self.addingAnItem = NO;
 
-            }else {
-                if (currentText.length == 0) {
-                    //discard teh zero lenght change
-                }else{
-                    itemToSave.title = currentText;
-                    [UpdateItemsOnServer updateThisItem:itemToSave];
-                    
-                }
-                [self.view.window endEditing: YES];
-                [cellToSave.cellItemTitle resignFirstResponder];
-
-            }
-            self.rowOfExpandedCell = -1;
-            [self.tableView reloadData];
-        */
         }
     }
 }
