@@ -45,6 +45,9 @@
     UITextField *newItemTitle = (UITextField *)[self.view viewWithTag:888];
     [newItemTitle becomeFirstResponder];
     
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -165,10 +168,12 @@
 
     if (indexPath.row == 0) {
         cell.textLabel.text = self.selectedList.title;
+        cell.textLabel.textColor = [ColorHelper getUIColorFromString:self.selectedList.color :1];
     }else{
         cell.textLabel.text = itemInCell.title;
+        cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
+
     }
-    cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
 
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
     cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:20];

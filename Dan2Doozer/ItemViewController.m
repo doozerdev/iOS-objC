@@ -235,7 +235,7 @@
                 deleteDate.titleLabel.font = [UIFont fontWithName:@"Avenir" size:20];
                 [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
                 [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-                deleteDate.frame = CGRectMake(cell.frame.size.width - 40, 12, 30, 30);
+                deleteDate.frame = CGRectMake(cell.frame.size.width - 50, 0, 50, 50);
                 deleteDate.tag = 333;
                 [cell.contentView addSubview:deleteDate];
             }else{

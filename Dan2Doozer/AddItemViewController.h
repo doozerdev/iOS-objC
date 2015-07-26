@@ -18,5 +18,6 @@
 
 @property BOOL showAllLists;
 @property Item *selectedList;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end

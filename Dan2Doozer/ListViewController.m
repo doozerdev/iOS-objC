@@ -116,7 +116,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
     
-    if (indexPath) {
+    if (indexPath && self.rowOfNewItem == -1) {
         
         ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         ListCustomCell *originalCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
@@ -595,7 +595,6 @@
             //NSLog(@"row to load = %d", i);
         }
     }
-    
     [cell.cellItemTitle becomeFirstResponder];
 
 }
@@ -642,7 +641,7 @@
                 
                 if (indexPath) {
                     
-                    if ([clickedItem.type isEqualToString:@"completed_header"] || (!self.showCompleted && clickedItem.done.intValue == 1)) {
+                    if ([clickedItem.type isEqualToString:@"completed_header"] || (!self.showCompleted && clickedItem.done.intValue == 1) || self.rowOfNewItem == indexPath.row) {
                         self.allowDragging = NO;
                     }else{
                         self.allowDragging = YES;

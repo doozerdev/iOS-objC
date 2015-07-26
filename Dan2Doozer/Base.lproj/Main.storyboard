@@ -486,6 +486,9 @@
                             </mask>
                         </variation>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="YAT-k3-vd4" id="GhX-5g-K12"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RsC-ac-of6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
