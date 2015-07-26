@@ -17,6 +17,7 @@
 #import "AddItemsToServer.h"
 #import "CoreDataItemManager.h"
 #import "DeleteItemFromServer.h"
+#import "Intercom.h"
 
 @interface ListViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @end
@@ -94,7 +95,7 @@
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    NSLog(@"ended scrolling");
+    //NSLog(@"ended scrolling");
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.isScrolling = NO;
@@ -179,13 +180,13 @@
                     
                     if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
                         
-                        NSLog(@"locationX is %f, startpointX is %f, and swipeThreshold is %d", location.x, startPoint.x, swipeThreshold);
+                        //NSLog(@"locationX is %f, startpointX is %f, and swipeThreshold is %d", location.x, startPoint.x, swipeThreshold);
                         
                         
                         float velocity = 1000; //pixels per second
                         
                         float animationDuration = (screenWidth - (location.x - startPoint.x))/velocity;
-                        NSLog(@"animation duration = %f", animationDuration);
+                        //NSLog(@"animation duration = %f", animationDuration);
                         
                         [UIView animateWithDuration:animationDuration
                                               delay:0.0
@@ -198,7 +199,7 @@
                          }
                                          completion:^(BOOL finished)
                          {
-                             NSLog(@"Completed");
+                             //NSLog(@"Completed");
                              [self cleanUpSwipedItem:swipedItem];
                              [snapshot removeFromSuperview];
                              
@@ -228,7 +229,7 @@
                          }
                                          completion:^(BOOL finished)
                          {
-                             NSLog(@"ReturniedCell");
+                             //NSLog(@"ReturniedCell");
                              [snapshot removeFromSuperview];
                              swipedItem.forceUpdateString = @" ";
                              self.isRightSwiping = NO;
@@ -238,7 +239,7 @@
                     }
                     
                     else{
-                        NSLog(@"Catch all case for ENDED");
+                        //NSLog(@"Catch all case for ENDED");
                         [snapshot removeFromSuperview];
                         originalCell.hidden = NO;
                         swipedItem.forceUpdateString = @" ";
@@ -264,7 +265,7 @@
 -(void)cleanUpSwipedItem:(Item *)swipedItem{
 
     if (![swipedItem.type isEqualToString:@"completed_header"]) {
-        NSLog(@"item title to toggle = %@", swipedItem.title);
+        //NSLog(@"item title to toggle = %@", swipedItem.title);
         
         NSArray *listArray = [self.fetchedResultsController fetchedObjects];
         NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
@@ -360,8 +361,11 @@
             abort();
         }
         
-        NSLog(@"checking for rebalancing!!!!!!");
+        //NSLog(@"checking for rebalancing!!!!!!");
         [self rebalanceListIfNeeded];
+        int timestamp = [[NSDate date] timeIntervalSince1970];
+        NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+        [Intercom logEventWithName:@"Completed_Item_From_List_Screen" metaData: @{@"date": date}];
         
         [DoozerSyncManager syncWithServer];
     }
@@ -616,7 +620,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    //NSLog(@"clicked item title is %@, and header type is %@", clickedItem.title, clickedItem.type);
+    NSLog(@"clicked item title is %@", clickedItem.title);
 
         UIGestureRecognizerState state = longPress.state;
     
@@ -629,7 +633,7 @@
             case UIGestureRecognizerStateBegan: {
                 
                 self.longPressActive = YES;
-                NSLog(@"indexpath = %@", indexPath);
+                //NSLog(@"indexpath = %@", indexPath);
                 
                 if (indexPath) {
                     
@@ -682,11 +686,13 @@
                     // Is destination valid and is it different from source?
                     if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
                     
-                        //NSLog(@"moving cells ----------------");
                         // ... move the rows.
                         [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                         
                         Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
+                        NSLog(@"moving past cell %@", itemBeingPassed.title);
+
+                        
                         int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
                         
                         //if dragging into completed section, and they're currently hidden, show the completed cells
@@ -794,10 +800,9 @@
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                         abort();
                     }
-                    
-                    
-                    //TODO figure out why the cell sometimes doesn't show!!!!!!!!!!
-                    //cell.hidden = NO;
+                    int timestamp = [[NSDate date] timeIntervalSince1970];
+                    NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+                    [Intercom logEventWithName:@"Rearranged_Item_On_List_Screen" metaData: @{@"date": date}];
                     
                     [self rebalanceListIfNeeded];
 
@@ -886,6 +891,11 @@
         [self rebalanceListIfNeeded];
         
         [AddItemsToServer addThisItem:itemToSave];
+        
+        int timestamp = [[NSDate date] timeIntervalSince1970];
+        NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+        [Intercom logEventWithName:@"Created_Item_From_List_Screen" metaData: @{@"date": date}];
+
     }
     self.rowOfNewItem = -1;
     [self.tableView reloadData];
@@ -947,7 +957,7 @@
 -(void)handleTap:(UITapGestureRecognizer*)tapGesture {
     CGPoint location = [tapGesture locationInView:self.tableView];
     
-    NSLog(@"location = %f,%f", location.x, location.y);
+    //NSLog(@"location = %f,%f", location.x, location.y);
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -1131,6 +1141,9 @@
                                             Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
                                             
                                             [DeleteItemFromServer deleteThisItem:itemToDelete];
+                                            int timestamp = [[NSDate date] timeIntervalSince1970];
+                                            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+                                            [Intercom logEventWithName:@"Deleted_Item_From_List_Screen" metaData: @{@"date": date}];
                                         }];
     
     Item *displayList = self.displayList;
@@ -1228,7 +1241,7 @@
             break;
         
         case NSFetchedResultsChangeUpdate:
-            //NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
+            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
             [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;

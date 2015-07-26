@@ -105,7 +105,7 @@
     }else{
         self.dueButton.tintColor = [UIColor redColor];
     }
-    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
+    NSString *listCount = [NSString stringWithFormat:@"%u", [self.fetchedResultsController.fetchedObjects count]];
     
     // You can send attributes of any name/value
     [Intercom updateUserWithAttributes:@{
@@ -203,9 +203,18 @@
         
         if (self.addingAnItem) {
             [AddItemsToServer addThisItem:itemInCell];
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Created_New_List" metaData: @{@"date": date}];
+            
             self.addingAnItem = NO;
         }else{
             [UpdateItemsOnServer updateThisItem:itemInCell];
+            
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Edited_List_Title" metaData: @{@"date": date}];
+
         }
     }
     
@@ -223,6 +232,11 @@
         if (buttonIndex == 1){
             
             [DeleteItemFromServer deleteThisList:self.itemToDelete];
+            
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Deleted_List" metaData: @{@"date": date}];
+
             self.itemToDelete = nil;
         }
     }
@@ -436,6 +450,10 @@
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
+                
+                int timestamp = [[NSDate date] timeIntervalSince1970];
+                NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+                [Intercom logEventWithName:@"Rearranged_List_On_Main_Screen" metaData: @{@"date": date}];
                 self.originalIndex = nil;
                 [DoozerSyncManager syncWithServer];
                 [self.tableView reloadData];
@@ -504,6 +522,10 @@
     itemToChangeColor.color = [ColorHelper returnUIColorString:colorIndex];
    
     [UpdateItemsOnServer updateThisItem:itemToChangeColor];
+    int timestamp = [[NSDate date] timeIntervalSince1970];
+    NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+    [Intercom logEventWithName:@"Edited_List_Color" metaData: @{@"date": date}];
+
 }
 
 -(void)rebalanceListOrdersIfNeeded{

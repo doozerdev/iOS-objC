@@ -12,6 +12,7 @@
 #import "ColorHelper.h"
 #import "MasterViewController.h"
 #import "AddItemsToServer.h"
+#import "Intercom.h"
 
 @interface AddItemViewController ()
 
@@ -126,6 +127,11 @@
         newItem.itemId = [NSString stringWithFormat:@"%f", timestamp];
         
         [AddItemsToServer addThisItem:newItem];
+        
+        int timestamp2 = [[NSDate date] timeIntervalSince1970];
+        NSString *date = [NSString stringWithFormat:@"%d", timestamp2];
+        [Intercom logEventWithName:@"Created_Item_From_Home_Screen" metaData: @{@"date": date}];
+        
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

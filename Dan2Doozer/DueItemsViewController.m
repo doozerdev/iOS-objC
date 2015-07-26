@@ -14,6 +14,7 @@
 #import "DeleteItemFromServer.h"
 #import "UpdateItemsOnServer.h"
 #import "CoreDataItemManager.h"
+#import "Intercom.h"
 
 @interface DueItemsViewController () <UIGestureRecognizerDelegate>
 
@@ -372,6 +373,10 @@
     
     [UpdateItemsOnServer updateThisItem:swipedItem];
     
+    int timestamp = [[NSDate date] timeIntervalSince1970];
+    NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+    [Intercom logEventWithName:@"Completed_Item_From_DueItems_Screen" metaData: @{@"date": date}];
+
     //[self.tableView reloadData];
     
 }
@@ -588,6 +593,9 @@
                                               Item *itemToDelete = [self findItemAtIndexPath:indexPath];
                                               
                                               [DeleteItemFromServer deleteThisItem:itemToDelete];
+                                              int timestamp = [[NSDate date] timeIntervalSince1970];
+                                              NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+                                              [Intercom logEventWithName:@"Deleted_Item_From_DueItems_Screen" metaData: @{@"date": date}];
                                               
                                               [self.tableView reloadData];
                                           }];

@@ -13,6 +13,7 @@
 #import "DoozerSyncManager.h"
 #import "ColorHelper.h"
 #import "UpdateItemsOnServer.h"
+#import "Intercom.h"
 
 @interface ItemViewController () <UIGestureRecognizerDelegate>
 
@@ -46,6 +47,9 @@
         }else{
             checkItem.title = fieldTitle.text;
             [UpdateItemsOnServer updateThisItem:checkItem];
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Edited_Item_Properties" metaData: @{@"date": date}];
         }
     }
 
@@ -129,10 +133,15 @@
             Item *itemOfNewDate = self.detailItem;
             itemOfNewDate.duedate = newDate;
             [UpdateItemsOnServer updateThisItem:itemOfNewDate];
+            
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Edited_Item_Properties" metaData: @{@"date": date}];
+            
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
     }
-    NSLog(@"row was clicked = %ld", indexPath.row);
+    NSLog(@"row was clicked = %ld", (long)indexPath.row);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
