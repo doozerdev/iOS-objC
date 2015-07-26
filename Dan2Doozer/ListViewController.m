@@ -982,6 +982,15 @@
 
             }
             
+            NSInteger extraRows = ([self.fetchedResultsController.fetchedObjects count] - 1) - indexPath.row;
+            if (extraRows > 4) {
+                extraRows = 4;
+            }
+            
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+extraRows inSection:0]
+                                  atScrollPosition:UITableViewScrollPositionBottom
+                                          animated:YES];
+            
         }else{
             if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0)) {
                 [self performSegueWithIdentifier:@"showItem" sender:indexPath];
