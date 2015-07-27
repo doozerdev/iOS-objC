@@ -1002,7 +1002,7 @@
                                           animated:YES];
             
         }else{
-            if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0)) {
+            if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
                 [self performSegueWithIdentifier:@"showItem" sender:indexPath];
             }
         }
