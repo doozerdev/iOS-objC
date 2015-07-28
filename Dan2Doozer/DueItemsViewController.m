@@ -72,6 +72,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     
+    NSLog(@"in view will appear!!!!!!!!!!!!!!!!!!");
     self.navigationController.navigationBar.barStyle  = UIBarStyleDefault;
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
@@ -93,9 +94,12 @@
         
         Item *finalItem = [self.sectionsToShow objectAtIndex:[self.sectionsToShow count] - 1];
         [backView setBackgroundColor:[ColorHelper getUIColorFromString:finalItem.color :1]];
+        //[backView setBackgroundColor:[UIColor whiteColor]];
+
     }
-        
+    
     [self.tableView setBackgroundView:backView];
+    [self.tableView reloadData];
     
 }
 
@@ -520,9 +524,13 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 40;
+    return 50;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    return 50;
+}
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -531,10 +539,10 @@
     UIView *tempView=[[UIView alloc]initWithFrame:CGRectMake(0,200,300,244)];
     tempView.backgroundColor=[ColorHelper getUIColorFromString:itemInHeader.color :1];
     
-    UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,0,300,44)];
+    UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,3,300,44)];
     tempLabel.backgroundColor=[UIColor clearColor];
     tempLabel.textColor = [UIColor whiteColor];
-    tempLabel.font = [UIFont fontWithName:@"Avenir" size:20];
+    tempLabel.font = [UIFont fontWithName:@"Avenir" size:16];
     tempLabel.text= itemInHeader.title;
     
     [tempView addSubview:tempLabel];

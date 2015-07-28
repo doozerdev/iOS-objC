@@ -30,8 +30,11 @@
 @property BOOL longPressActive;
 @property BOOL isScrolling;
 @property BOOL isRightSwiping;
+@property BOOL isAutoScrolling;
 
 @property (nonatomic) int rowOfNewItem;
+
+@property NSTimer *scrollTimer;
 
 
 @end

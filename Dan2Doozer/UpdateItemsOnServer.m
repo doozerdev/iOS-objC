@@ -61,6 +61,8 @@
             params[@"done"] = [NSNumber numberWithBool: itemToUpdate.done.boolValue];
             if (itemToUpdate.duedate) {
                 params[@"duedate"] = itemToUpdate.duedate;
+            }else{
+                params[@"duedate"] = @"";
             }
             if (itemToUpdate.parent) {
                 params[@"parent"] = itemToUpdate.parent;
@@ -77,7 +79,7 @@
         NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"Successful JSON update");
+            NSLog(@"Successful JSON update == %@", responseObject);
 
             NSError *error = nil;
             if (![passOnContext save:&error]) {

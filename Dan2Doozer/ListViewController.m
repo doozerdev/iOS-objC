@@ -66,6 +66,7 @@
     self.longPressActive = NO;
     self.isRightSwiping = NO;
     self.rowOfNewItem = -1;
+    self.isAutoScrolling = NO;
     
 }
 
@@ -609,8 +610,25 @@
     return YES;
 }
 
+- (void)autoScroll{
+    
+    
+    CGRect visibleRect = self.tableView.bounds;
+    NSLog(@"visible rect y = %f", visibleRect.origin.y);
+
+    CGRect scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
+    
+    [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+    //CGPoint newPosition = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + 1);
+        
+    //[self.tableView setContentOffset:newPosition animated:NO];
+
+    
+}
+
 
 - (IBAction)longPressGestureRecognized:(id)sender {
+    
     self.tableView.scrollEnabled = NO;
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
@@ -620,8 +638,9 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"clicked item title is %@", clickedItem.title);
-
+    //NSLog(@"clicked item title is %@", clickedItem.title);
+    
+    
         UIGestureRecognizerState state = longPress.state;
     
         static UIView       *snapshot = nil;        ///< A snapshot of the row user is moving.
@@ -683,6 +702,29 @@
                     center.y = location.y;
                     snapshot.center = center;
                     
+                    CGPoint locationInWindow = [self.view convertPoint:location toView:nil];
+                    CGRect screenRect = [[UIScreen mainScreen] bounds];
+
+                    if (locationInWindow.y > (screenRect.size.height - 70)) {
+
+                        if (self.isAutoScrolling) {
+                            //do nothing
+                        }else{
+                            self.scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.01
+                                                            target:self
+                                                           selector:@selector(autoScroll)
+                                                          userInfo:nil
+                                                           repeats:YES];
+                            self.isAutoScrolling = YES;
+                        }
+                    }else{
+                        if (self.isAutoScrolling) {
+                            [self.scrollTimer invalidate];
+                            self.isAutoScrolling = NO;
+                        }
+                    }
+                    
+                    
                     // Is destination valid and is it different from source?
                     if (indexPath && ![indexPath isEqual:sourceIndexPath]) {
                     
@@ -690,9 +732,35 @@
                         [self.tableView moveRowAtIndexPath:sourceIndexPath toIndexPath:indexPath];
                         
                         Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:indexPath];
-                        NSLog(@"moving past cell %@", itemBeingPassed.title);
-
+                        //NSLog(@"moving past cell %@", itemBeingPassed.title);
                         
+                        /*
+                        NSArray *visible = [self.tableView indexPathsForVisibleRows];
+                        
+                        NSIndexPath *topPath = [visible objectAtIndex:0];
+                        NSIndexPath *bottomPath = [visible objectAtIndex:[visible count]-1];
+                        
+                        NSLog(@"bottom row is %ld, cell to pass is row %ld", (long)bottomPath.row, (long)indexPath.row);
+                        
+                        if ((indexPath.row >= (bottomPath.row - 1)) && (indexPath.row > sourceIndexPath.row)) {
+                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]
+                                                  atScrollPosition:UITableViewScrollPositionBottom
+                                                          animated:YES];
+
+                        }
+                        
+                        if (indexPath.row > sourceIndexPath.row) {
+                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]
+                                                  atScrollPosition:UITableViewScrollPositionBottom
+                                                          animated:YES];
+
+                        }else if (sourceIndexPath.row > indexPath.row){
+                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row-1 inSection:0]
+                                                  atScrollPosition:UITableViewScrollPositionTop
+                                                          animated:YES];
+
+                        }
+                        */
                         int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
                         
                         //if dragging into completed section, and they're currently hidden, show the completed cells

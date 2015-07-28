@@ -105,7 +105,7 @@
     }else{
         self.dueButton.tintColor = [UIColor redColor];
     }
-    NSString *listCount = [NSString stringWithFormat:@"%u", [self.fetchedResultsController.fetchedObjects count]];
+    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
     // You can send attributes of any name/value
     [Intercom updateUserWithAttributes:@{
