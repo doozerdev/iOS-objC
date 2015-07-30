@@ -37,14 +37,7 @@
 
 @property NSTimer *scrollTimer;
 
-<<<<<<< Updated upstream
 @property Item *reorderedItem;
-=======
-@property NSIndexPath *lp_indexPath;
-@property NSIndexPath *lp_sourceindexPath;
-@property UIView *lp_snapshot;
-@property CGPoint lp_location;
->>>>>>> Stashed changes
 
 
 @end
