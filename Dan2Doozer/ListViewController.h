@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "Item.h"
 
 @class DetailViewController;
 @class MasterViewController;
@@ -35,6 +36,8 @@
 @property (nonatomic) int rowOfNewItem;
 
 @property NSTimer *scrollTimer;
+
+@property Item *reorderedItem;
 
 
 @end

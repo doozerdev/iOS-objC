@@ -8,7 +8,6 @@
 
 #import "ListViewController.h"
 #import "ItemViewController.h"
-#import "Item.h"
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
 #import "ColorHelper.h"
@@ -18,6 +17,7 @@
 #import "CoreDataItemManager.h"
 #import "DeleteItemFromServer.h"
 #import "Intercom.h"
+#import "UpdateItemsOnServer.h"
 
 @interface ListViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @end
@@ -662,6 +662,8 @@
                         self.allowDragging = YES;
                         
                         _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
+                        self.reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+
                         
                         sourceIndexPath = indexPath;
                         
@@ -784,7 +786,7 @@
                     }
                     
                 //NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
-
+                    
                 break;
                 }
             }
@@ -792,7 +794,7 @@
             case UIGestureRecognizerStateEnded: {
                 
                 if (self.allowDragging) {
-                    Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
+                    
                     NSArray *itemsInTable = self.fetchedResultsController.fetchedObjects;
                     int headerOrderValue = 0;
                     for (Item *currentItem in itemsInTable){
@@ -803,7 +805,6 @@
                     
                     //NSLog(@"completed order value is %d", headerOrderValue);
                     
-                    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
                     
                     NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
                     Item *previousItem = nil;
@@ -813,7 +814,7 @@
                         if (sourceIndexPath.row == (numberOfObjects - 1)) {
                             Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
                             int newItemNewOrder = originalLastItem.order.intValue + 1048576;
-                            reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                            self.reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
                             
                         }else{
                             previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
@@ -822,14 +823,14 @@
                             int previousItemOrder = [previousItem.order intValue];
                             int followingItemOrder = [followingItem.order intValue];
                             int newOrder = (previousItemOrder + followingItemOrder)/2;
-                            reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                            self.reorderedItem.order = [NSNumber numberWithInt:newOrder];
                         }
                         
                     }else{
                         if (sourceIndexPath.row == 0) {
                             Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
                             int newItemNewOrder = originalFirstItem.order.intValue / 2;
-                            reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
+                            self.reorderedItem.order =  [NSNumber numberWithInt:newItemNewOrder];
                         }else{
                             previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row-1];
                             followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
@@ -837,44 +838,32 @@
                             int previousItemOrder = [previousItem.order intValue];
                             int followingItemOrder = [followingItem.order intValue];
                             int newOrder = (previousItemOrder + followingItemOrder)/2;
-                            reorderedItem.order = [NSNumber numberWithInt:newOrder];
+                            self.reorderedItem.order = [NSNumber numberWithInt:newOrder];
                         }
                     }
                     
                     //NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
                     
                     //dropping an uncompleted item into the 'completed' zone. Set the item's 'done' value appropriately.
-                    if (reorderedItem.order.intValue > headerOrderValue) {
-                        reorderedItem.done = [NSNumber numberWithInt:1];
+                    if (self.reorderedItem.order.intValue > headerOrderValue) {
+                        self.reorderedItem.done = [NSNumber numberWithInt:1];
                     }else{
-                        reorderedItem.done = [NSNumber numberWithInt:0];
+                        self.reorderedItem.done = [NSNumber numberWithInt:0];
                     }
                     
-                    NSString *itemIdCharacter = [reorderedItem.itemId substringToIndex:1];
-                    //NSLog(@"first char = %@", itemIdCharacter);
-                    
-                    if ([itemIdCharacter isEqualToString:@"1"]) {
-                        //do nothing
-                    }else{
-                        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-                        [newArrayOfItemsToUpdate addObject:reorderedItem.itemId];
-                        [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                    }
-                    
-                    
-                    NSError *error = nil;
-                    if (![context save:&error]) {
-                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                        abort();
-                    }
                     int timestamp = [[NSDate date] timeIntervalSince1970];
                     NSString *date = [NSString stringWithFormat:@"%d", timestamp];
                     [Intercom logEventWithName:@"Rearranged_Item_On_List_Screen" metaData: @{@"date": date}];
                     
                     [self rebalanceListIfNeeded];
+                    
+                    NSLog(@"right before the fetching");
+                    NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
+                    NSLog(@"right after the fetching");
 
-                    [DoozerSyncManager syncWithServer];
+                    
+                    [UpdateItemsOnServer updateThisItem:self.reorderedItem];
+
                     [self.tableView reloadData];
 
                 }
@@ -900,6 +889,7 @@
                     snapshot = nil;
                     self.longPressActive = NO;
                     self.tableView.scrollEnabled = YES;
+                
                 }];
                 
                 break;
@@ -907,6 +897,7 @@
         }
         }
     }
+
 
 - (void)setDisplayList:(id)newDisplayList {
     if (_displayList != newDisplayList) {
@@ -1130,6 +1121,7 @@
     }else{
         if (object.done.intValue == 1) {
             
+            
             NSString *titleText = object.title;
             cell.cellItemTitle.hidden = YES;
             cell.cellDueFlag.text = @"";
@@ -1156,6 +1148,7 @@
             cell.cellItemTitle.hidden = NO;
 
             cell.cellItemTitle.attributedText = nil;
+            
             cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
