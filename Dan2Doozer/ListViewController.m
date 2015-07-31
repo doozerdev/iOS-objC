@@ -67,6 +67,7 @@
     self.isRightSwiping = NO;
     self.rowOfNewItem = -1;
     self.isAutoScrolling = NO;
+    self.pixelCorrection = 0;
     
 }
 
@@ -609,34 +610,38 @@
     
     return YES;
 }
-/*
+
 
 - (void)autoScroll{
-    if (self.allowDragging && self.superOriginalIndex) {
+    
+    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
+    
+    CGPoint locationInWindow = [self.view convertPoint:CGPointMake(self.lp_location.x, (self.lp_location.y + self.pixelCorrection)) toView:nil];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+
+    if (self.allowDragging) {
+
+        UIView *localSnapshot = [self.tableView viewWithTag:414];
+        CGPoint center = localSnapshot.center;
+        center.y = self.lp_location.y + self.pixelCorrection;
+        localSnapshot.center = center;
         
-        CGPoint center = self.lp_snapshot.center;
-        center.y = self.lp_location.y;
-        self.lp_snapshot.center = center;
+        self.lp_indexPath = [self.tableView indexPathForRowAtPoint:center];
         
-        CGPoint locationInWindow = [self.view convertPoint:self.lp_location toView:nil];
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        NSLog(@"indexpath row = %ld, lp_location = %f, pixelCorrection = %d", (long)self.lp_indexPath.row, self.lp_location.y, self.pixelCorrection);
+
         
-        if (locationInWindow.y > (screenRect.size.height - 70)) {
+        if (self.lp_indexPath && (self.lp_indexPath.row != self.lp_sourceindexPath.row) && (self.lp_indexPath.row != self.rowToPass)) {
+            self.rowToPass = (int)self.lp_indexPath.row;
             
-        // Is destination valid and is it different from source?
-        if (self.lp_indexPath && ![self.lp_indexPath isEqual:self.lp_sourceindexPath]) {
+            NSLog(@"moving rows!!");
             
-            // ... move the rows.
             [self.tableView moveRowAtIndexPath:self.lp_sourceindexPath toIndexPath:self.lp_indexPath];
             
             Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
-            //NSLog(@"moving past cell %@", itemBeingPassed.title);
             
             int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
             
-            Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
-
-            //if dragging into completed section, and they're currently hidden, show the completed cells
             if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"] && !self.showCompleted) {
                 NSLog(@"passing the completed header");
                 self.showCompleted = YES;
@@ -652,21 +657,27 @@
                 
                 [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
             }
-            // ... and update source so it is in sync with UI changes.
             self.lp_sourceindexPath = self.lp_indexPath;
         }
-    }
-    }
-    
-    CGRect visibleRect = self.tableView.bounds;
-    NSLog(@"visible rect y = %f", visibleRect.origin.y);
+        
 
-    CGRect scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
+    }
     
-    [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+    
+    if (locationInWindow.y > (screenRect.size.height - 70)) {
+        
+        CGRect visibleRect = self.tableView.bounds;
+        //NSLog(@"visible rect y = %f", visibleRect.origin.y);
+        
+        CGRect scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
+        self.pixelCorrection += 1;
+        
+        [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+    }
+    
 
 }
-*/
+
 
 
 - (IBAction)longPressGestureRecognized:(id)sender {
@@ -676,49 +687,24 @@
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
     
     self.lp_location = [longPress locationInView:self.tableView];
-    
-    self.lp_indexPath = [self.tableView indexPathForRowAtPoint:self.lp_location];
-    
-    Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
-    //NSLog(@"clicked item title is %@", clickedItem.title);
-    
+    NSIndexPath *originalIndex = nil;
+
     
         UIGestureRecognizerState state = longPress.state;
     
-        self.lp_snapshot = nil;        ///< A snapshot of the row user is moving.
-        self.lp_sourceindexPath = nil; ///< Initial index path, where gesture begins.
+        __block UIView *snapshot = nil;        ///< A snapshot of the row user is moving.
+        //self.lp_sourceindexPath = nil; ///< Initial index path, where gesture begins.
     
-        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_indexPath];
 
         switch (state) {
             case UIGestureRecognizerStateBegan: {
+                self.lp_indexPath = [self.tableView indexPathForRowAtPoint:self.lp_location];
+                Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
                 
-                CGPoint locationInWindow = [self.view convertPoint:self.lp_location toView:nil];
-                CGRect screenRect = [[UIScreen mainScreen] bounds];
-                
-                if (locationInWindow.y > (screenRect.size.height - 70)) {
-                    
-                    if (self.isAutoScrolling) {
-                        //do nothing
-                    }else{
-                        /*
-                        self.scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
-                                                                            target:self
-                                                                          selector:@selector(autoScroll)
-                                                                          userInfo:nil
-                                                                           repeats:YES];
-                         */
-                        self.isAutoScrolling = YES;
-                    }
-                }else{
-                    if (self.isAutoScrolling) {
-                        [self.scrollTimer invalidate];
-                        self.isAutoScrolling = NO;
-                    }
-                }
-                
-                self.longPressActive = YES;
-                //NSLog(@"indexpath = %@", indexPath);
+                ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_indexPath];
+
+                originalIndex = [self.tableView indexPathForRowAtPoint:self.lp_location];
+                NSLog(@"original index = %@", originalIndex);
                 
                 if (self.lp_indexPath) {
                     
@@ -727,118 +713,70 @@
                     }else{
                         self.allowDragging = YES;
                         
-<<<<<<< Updated upstream
-                        _superOriginalIndex = [self.tableView indexPathForRowAtPoint:location];
-                        self.reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:_superOriginalIndex.row];
-
-=======
-                        _superOriginalIndex = [self.tableView indexPathForRowAtPoint:self.lp_location];
->>>>>>> Stashed changes
+                        self.reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.lp_indexPath.row];
+                        
+                        NSLog(@"reordered item title starts as ==== %@", self.reorderedItem.title);
                         
                         self.lp_sourceindexPath = self.lp_indexPath;
                         
                         
                         // Take a snapshot of the selected row using helper method.
-                        self.lp_snapshot = [self customSnapshoFromView:cell];
+                        snapshot = [self customSnapshoFromView:cell];
                         
                         // Add the snapshot as subview, centered at cell's center...
                         __block CGPoint center = cell.center;
-                        self.lp_snapshot.center = center;
-                        self.lp_snapshot.alpha = 0.0;
-                        [self.tableView addSubview:self.lp_snapshot];
+                        snapshot.tag = 414;
+                        snapshot.center = center;
+                        snapshot.alpha = 0.0;
+                        [self.tableView addSubview:snapshot];
                         [UIView animateWithDuration:0.25 animations:^{
                             
                             // Offset for gesture location.
                             center.y = self.lp_location.y;
-                            self.lp_snapshot.center = center;
-                            self.lp_snapshot.transform = CGAffineTransformMakeScale(1.05, 1.05);
-                            self.lp_snapshot.alpha = 0.98;
+                            snapshot.center = center;
+                            snapshot.transform = CGAffineTransformMakeScale(1.05, 1.05);
+                            snapshot.alpha = 0.98;
                             cell.alpha = 0.0;
                             
                         } completion:^(BOOL finished) {
                             
                             cell.hidden = YES;
                             
+                            
+                            self.scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.01
+                                                                                target:self
+                                                                              selector:@selector(autoScroll)
+                                                                              userInfo:nil
+                                                                               repeats:YES];
+                            
                         }];
                     }
 
 
                 }
+                
+                self.longPressActive = YES;
+                
+                self.pixelCorrection = 0;
+                
                 break;
             }
+               
+                 
+              
                 
             case UIGestureRecognizerStateChanged: {
-                if (self.allowDragging && self.superOriginalIndex) {
-                    
-                    CGPoint center = self.lp_snapshot.center;
-                    center.y = self.lp_location.y;
-                    self.lp_snapshot.center = center;
-                    
-                    // Is destination valid and is it different from source?
-                    if (self.lp_indexPath && ![self.lp_indexPath isEqual:self.lp_sourceindexPath]) {
-                    
-                        // ... move the rows.
-                        [self.tableView moveRowAtIndexPath:self.lp_sourceindexPath toIndexPath:self.lp_indexPath];
-                        
-                        Item *itemBeingPassed = [self.fetchedResultsController objectAtIndexPath:self.lp_indexPath];
-                        //NSLog(@"moving past cell %@", itemBeingPassed.title);
-                        
-                        /*
-                        NSArray *visible = [self.tableView indexPathsForVisibleRows];
-                        
-                        NSIndexPath *topPath = [visible objectAtIndex:0];
-                        NSIndexPath *bottomPath = [visible objectAtIndex:[visible count]-1];
-                        
-                        NSLog(@"bottom row is %ld, cell to pass is row %ld", (long)bottomPath.row, (long)indexPath.row);
-                        
-                        if ((indexPath.row >= (bottomPath.row - 1)) && (indexPath.row > sourceIndexPath.row)) {
-                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]
-                                                  atScrollPosition:UITableViewScrollPositionBottom
-                                                          animated:YES];
-
-                        }
-                        
-                        if (indexPath.row > sourceIndexPath.row) {
-                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]
-                                                  atScrollPosition:UITableViewScrollPositionBottom
-                                                          animated:YES];
-
-                        }else if (sourceIndexPath.row > indexPath.row){
-                            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row-1 inSection:0]
-                                                  atScrollPosition:UITableViewScrollPositionTop
-                                                          animated:YES];
-
-                        }
-                        */
-                        int totalRows = (int)[self.fetchedResultsController.fetchedObjects count];
-                        
-                        //if dragging into completed section, and they're currently hidden, show the completed cells
-                        if ((clickedItem.done.intValue == 0) && [itemBeingPassed.type isEqualToString:@"completed_header"] && !self.showCompleted) {
-                            NSLog(@"passing the completed header");
-                            self.showCompleted = YES;
-                            int currentRow = (int)self.lp_indexPath.row+1;
-                            
-                            NSMutableArray *indexPaths = [[NSMutableArray alloc]init];
-                            for(int r = currentRow; r<totalRows; r++){
-                                [indexPaths addObject:[NSIndexPath indexPathForRow:r inSection:0]];
-                                
-                                ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:r inSection:0] ];
-                                cell.hidden = NO;
-                            }
-                            
-                            [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-                        }
-                        // ... and update source so it is in sync with UI changes.
-                        self.lp_sourceindexPath = self.lp_indexPath;
-                    }
-                    
-                //NSLog(@"sourceIndexPath row = %ld and indexPath row = %ld", (long)sourceIndexPath.row, (long)indexPath.row);
-                    
-                break;
-                }
+                
+                self.pixelCorrection = 0;
+             
+            break;
             }
                 
             case UIGestureRecognizerStateEnded: {
+                NSLog(@"state ENDED!!!!!!!");
+                
+                [self.scrollTimer invalidate];
+                self.isAutoScrolling = NO;
                 
                 if (self.allowDragging) {
                     
@@ -850,14 +788,11 @@
                         }
                     }
                     
-                    //NSLog(@"completed order value is %d", headerOrderValue);
-                    
-                    
                     NSUInteger numberOfObjects = [self.fetchedResultsController.fetchedObjects count];
                     Item *previousItem = nil;
                     Item *followingItem  = nil;
                     
-                    if(_superOriginalIndex.row < self.lp_sourceindexPath.row){
+                    if(originalIndex.row < self.lp_sourceindexPath.row){
                         if (self.lp_sourceindexPath.row == (numberOfObjects - 1)) {
                             Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.lp_sourceindexPath.row];
                             int newItemNewOrder = originalLastItem.order.intValue + 1048576;
@@ -889,9 +824,6 @@
                         }
                     }
                     
-                    //NSLog(@"reordered item order is %@ and header orer is %d", reorderedItem.order, headerOrderValue);
-                    
-                    //dropping an uncompleted item into the 'completed' zone. Set the item's 'done' value appropriately.
                     if (self.reorderedItem.order.intValue > headerOrderValue) {
                         self.reorderedItem.done = [NSNumber numberWithInt:1];
                     }else{
@@ -904,46 +836,56 @@
                     
                     [self rebalanceListIfNeeded];
                     
-                    NSLog(@"right before the fetching");
-                    NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
-                    NSLog(@"right after the fetching");
+                    //NSLog(@"right before the fetching");
+                    //NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
+                    //NSLog(@"right after the fetching");
 
+                    NSLog(@"reordered item is ======= %@", self.reorderedItem.title);
                     
                     [UpdateItemsOnServer updateThisItem:self.reorderedItem];
 
                     [self.tableView reloadData];
+                    
+                    ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_sourceindexPath];
+                    cell.hidden = NO;
+                    cell.alpha = 0.0;
+                    
+                    UIView *clearSnapshot = [self.tableView viewWithTag:414];
+                    
+                    [UIView animateWithDuration:0.25 animations:^{
+                        
+                        clearSnapshot.center = cell.center;
+                        clearSnapshot.transform = CGAffineTransformIdentity;
+                        clearSnapshot.alpha = 0.0;
+                        cell.alpha = 1.0;
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        self.lp_sourceindexPath = nil;
+                        [clearSnapshot removeFromSuperview];
+                        //clearSnapshot = nil;
+                        self.longPressActive = NO;
+                        self.tableView.scrollEnabled = YES;
+                        
+                    }];
 
                 }
                 
+                break;
+            }
+                
             default: {
                 // Clean up.
-                NSLog(@"In clean up of Long Press method");
-                ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_sourceindexPath];
-                cell.hidden = NO;
-                cell.alpha = 0.0;
-                
-                [UIView animateWithDuration:0.25 animations:^{
-                    
-                    self.lp_snapshot.center = cell.center;
-                    self.lp_snapshot.transform = CGAffineTransformIdentity;
-                    self.lp_snapshot.alpha = 0.0;
-                    cell.alpha = 1.0;
-                    
-                } completion:^(BOOL finished) {
-                    
-                    self.lp_sourceindexPath = nil;
-                    [self.lp_snapshot removeFromSuperview];
-                    self.lp_snapshot = nil;
-                    self.longPressActive = NO;
-                    self.tableView.scrollEnabled = YES;
-                
-                }];
+                NSLog(@"In clean up of Long Press method ----------------------");
                 
                 break;
             }
-        }
+            
         }
     }
+
+
+
 
 
 - (void)setDisplayList:(id)newDisplayList {
