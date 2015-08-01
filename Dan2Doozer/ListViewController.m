@@ -1191,7 +1191,13 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
-    return YES;
+    
+    Item *itemAtPath = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if ([itemAtPath.type isEqualToString:@"completed_header"]) {
+        return NO;
+    }else{
+        return YES;
+    }
 }
 
 -(NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
