@@ -802,9 +802,10 @@
                 
             case UIGestureRecognizerStateEnded: {
                 NSLog(@"state ENDED!!!!!!!");
-                
+
                 [self.scrollTimer invalidate];
                 self.isAutoScrolling = NO;
+                self.longPressActive = NO;
                 
                 if (self.allowDragging) {
                     
@@ -892,7 +893,6 @@
                         self.lp_sourceindexPath = nil;
                         [clearSnapshot removeFromSuperview];
                         //clearSnapshot = nil;
-                        self.longPressActive = NO;
                         self.tableView.scrollEnabled = YES;
                         
                     }];
@@ -1036,6 +1036,8 @@
     //NSLog(@"location = %f,%f", location.x, location.y);
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
+    NSLog(@"tapped on row %ld", (long)indexPath.row);
+    
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     if (self.isScrolling) {
@@ -1044,7 +1046,10 @@
     
         if (self.rowOfNewItem != -1) {
             
-            [self saveOrRemoveEmptyRow];
+            if (indexPath.row != self.rowOfNewItem) {
+                [self saveOrRemoveEmptyRow];
+            }
+            
             
         }else{
             if ([clickedItem.type isEqualToString:@"completed_header"]) {
@@ -1215,7 +1220,7 @@
     // Return NO if you do not want the specified item to be editable.
     
     Item *itemAtPath = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([itemAtPath.type isEqualToString:@"completed_header"]) {
+    if ([itemAtPath.type isEqualToString:@"completed_header"] || indexPath.row == self.rowOfNewItem) {
         return NO;
     }else{
         return YES;
