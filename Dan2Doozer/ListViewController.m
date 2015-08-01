@@ -516,7 +516,7 @@
     
 }
 
-- (IBAction)addItemButton:(id)sender {
+- (void)createNewItemRow{
     
     if (self.rowOfNewItem != -1) {
         NSIndexPath *pathOfNewItem = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
@@ -556,12 +556,12 @@
         Item *secondItem = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0]];
         int newOrderValue = (secondItem.order.intValue - topItem.order.intValue)/2 + topItem.order.intValue;
         newItem.order = [NSNumber numberWithInt:newOrderValue];
-       // newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath. inSection:<#(NSInteger)#>]
+        // newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath. inSection:<#(NSInteger)#>]
         
         NSLog(@"top item order = %@, second item order = %@, newItem order = %@", topItem.order, secondItem.order, newItem.order);
         
     }
-        
+    
     newItem.done = 0;
     newItem.notes = @" ";
     
@@ -580,12 +580,12 @@
     }
     
     NSIndexPath *newItemIndexPath = [[NSIndexPath alloc] init];
-
+    
     if (topRowPath.row == 0){
-    newItemIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        newItemIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     }
     else{
-    newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0];
+        newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0];
     }
     
     ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:newItemIndexPath];
@@ -594,7 +594,7 @@
     cell.cellItemTitle.delegate = self;
     
     for (int i = 0; i <= (int)numberOfResults; i++) {
-
+        
         if (i != self.rowOfNewItem) {
             NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
             Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
@@ -603,6 +603,12 @@
         }
     }
     [cell.cellItemTitle becomeFirstResponder];
+    
+}
+
+- (IBAction)addItemButton:(id)sender {
+    
+    [self createNewItemRow];
 
 }
 
@@ -616,6 +622,8 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [self saveOrRemoveEmptyRow];
+    
+    [self createNewItemRow];
     
     return YES;
 }
