@@ -62,12 +62,19 @@
     [self.view addGestureRecognizer:panGesture];
     panGesture.delegate =self;
     
+
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    
     self.isScrolling = NO;
     self.longPressActive = NO;
     self.isRightSwiping = NO;
     self.rowOfNewItem = -1;
     self.isAutoScrolling = NO;
     self.pixelCorrection = 0;
+    
     
 }
 
@@ -519,7 +526,9 @@
         itemToSave.title = cell.cellItemTitle.text;
         NSLog(@"title to save = %@", itemToSave.title);
         
-        [AddItemsToServer addThisItem:itemToSave];
+        [self saveOrRemoveEmptyRow];
+        
+        //[AddItemsToServer addThisItem:itemToSave];
         
         self.rowOfNewItem = -1;
         [self.tableView reloadData];
@@ -848,7 +857,7 @@
                     [self rebalanceListIfNeeded];
                     
                     //NSLog(@"right before the fetching");
-                    //NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
+                    NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
                     //NSLog(@"right after the fetching");
 
                     NSLog(@"reordered item is ======= %@", self.reorderedItem.title);
@@ -1021,48 +1030,53 @@
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    if (self.rowOfNewItem != -1) {
-        
-        [self saveOrRemoveEmptyRow];
-        
+    if (self.isScrolling) {
+        self.isScrolling = NO;
     }else{
-        if ([clickedItem.type isEqualToString:@"completed_header"]) {
+    
+        if (self.rowOfNewItem != -1) {
             
-            NSArray *items = self.fetchedResultsController.fetchedObjects;
-            NSMutableArray *indexPathArray = [[NSMutableArray alloc]init];
-            int rowCount = 0;
-            for (Item *eachItem in items) {
-                if (eachItem.done.intValue == 1) {
-                    NSIndexPath *newPath = [NSIndexPath indexPathForRow:rowCount inSection:0];
-                    [indexPathArray addObject:newPath];
-                }
-                rowCount += 1;
-            }
-
-            if (self.showCompleted) {
-                self.showCompleted = NO;
-                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
-
-            }else{
-                self.showCompleted = YES;
-                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
-
-            }
-            
-            NSInteger extraRows = ([self.fetchedResultsController.fetchedObjects count] - 1) - indexPath.row;
-            if (extraRows > 4) {
-                extraRows = 4;
-            }
-            
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+extraRows inSection:0]
-                                  atScrollPosition:UITableViewScrollPositionBottom
-                                          animated:YES];
+            [self saveOrRemoveEmptyRow];
             
         }else{
-            if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
-                [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+            if ([clickedItem.type isEqualToString:@"completed_header"]) {
+                
+                NSArray *items = self.fetchedResultsController.fetchedObjects;
+                NSMutableArray *indexPathArray = [[NSMutableArray alloc]init];
+                int rowCount = 0;
+                for (Item *eachItem in items) {
+                    if (eachItem.done.intValue == 1) {
+                        NSIndexPath *newPath = [NSIndexPath indexPathForRow:rowCount inSection:0];
+                        [indexPathArray addObject:newPath];
+                    }
+                    rowCount += 1;
+                }
+
+                if (self.showCompleted) {
+                    self.showCompleted = NO;
+                    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
+
+                }else{
+                    self.showCompleted = YES;
+                    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
+
+                }
+                
+                NSInteger extraRows = ([self.fetchedResultsController.fetchedObjects count] - 1) - indexPath.row;
+                if (extraRows > 4) {
+                    extraRows = 4;
+                }
+                
+                [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+extraRows inSection:0]
+                                      atScrollPosition:UITableViewScrollPositionBottom
+                                              animated:YES];
+                
+            }else{
+                if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
+                    [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+                }
             }
         }
     }

@@ -31,7 +31,7 @@
     
     int loopcount = 0;
     
-    for (id itemIdToDelete in itemsToDelete){
+    for (NSString* itemIdToDelete in itemsToDelete){
         
         loopcount += 1;
         //NSLog(@"loopcount = %d", loopcount);
@@ -45,20 +45,7 @@
         [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"successful JSON delete %@", responseObject);
             
-            NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
-            
-            NSMutableArray *itemsToDeleteCopy =[[NSMutableArray alloc]init];
-            
-            for (NSString * arrayElement in itemsToDelete) {
-                if ([arrayElement isEqualToString:itemIdToDelete]){
-                    
-                }else{
-                    [itemsToDeleteCopy addObject:arrayElement];
-                }
-            }
-            [[NSUserDefaults standardUserDefaults] setObject:itemsToDeleteCopy forKey:@"itemsToDelete"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
+            [self removeItemFromDeleteQueue:itemIdToDelete];
             
             if (loopcount == (int)numItems) {
                 //NSLog(@"right before setting the completion handler");
@@ -69,10 +56,33 @@
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
+            if ([error.description containsString:@"Request failed: not found (404)"]) {
+                NSLog(@"404 error when trying to delete. Removing item from local delete queue");
+                [self removeItemFromDeleteQueue:itemIdToDelete];
+            }
+
         }];
     }
-
     }
+}
+
+
+-(void)removeItemFromDeleteQueue:(NSString *)idToDelete{
+    
+    NSMutableArray *itemsToDelete = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"]mutableCopy];
+    
+    NSMutableArray *itemsToDeleteCopy =[[NSMutableArray alloc]init];
+    
+    for (NSString * arrayElement in itemsToDelete) {
+        if ([arrayElement isEqualToString:idToDelete]){
+            
+        }else{
+            [itemsToDeleteCopy addObject:arrayElement];
+        }
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:itemsToDeleteCopy forKey:@"itemsToDelete"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 
 + (void)deleteThisList:(Item *)listToDelete{

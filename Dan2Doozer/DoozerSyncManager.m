@@ -24,15 +24,20 @@ int _syncTryCount;
 
 
 +(void)syncWithServer{
+    
 
 //login to Doozer if needed
     if(_syncOpActive){
         NSLog(@"sync op active! no additional sync this time");
-        
+        _syncTryCount += 1;
+
         if (_syncTryCount > 5) {
             _syncOpActive = NO;
+            _syncTryCount = 0;
+            NSLog(@"reseting synctrycount and syncopactive");
         }
     }else{
+        _syncTryCount = 0;
         _syncOpActive = YES;
         double currentTime = [[NSDate date] timeIntervalSince1970];
         NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
