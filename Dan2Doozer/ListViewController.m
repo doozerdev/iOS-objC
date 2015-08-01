@@ -663,17 +663,28 @@
 
     }
     
+    CGRect visibleRect = self.tableView.bounds;
+    CGRect scrollToRect = CGRectMake(0, 0, 0, 0);
     
-    if (locationInWindow.y > (screenRect.size.height - 70)) {
+    if (locationInWindow.y > (screenRect.size.height - 100) && self.lp_indexPath.row != [self.fetchedResultsController.fetchedObjects count] - 1) {
         
-        CGRect visibleRect = self.tableView.bounds;
         //NSLog(@"visible rect y = %f", visibleRect.origin.y);
         
-        CGRect scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
+        scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
         self.pixelCorrection += 1;
-        
         [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+
+        
+    }else if(locationInWindow.y < 100 && self.lp_indexPath.row != 0){
+        
+        scrollToRect = CGRectMake(0, visibleRect.origin.y-1, visibleRect.size.width, visibleRect.size.height);
+        self.pixelCorrection -= 1;
+        [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+
+        
     }
+
+
     
 
 }
@@ -1031,12 +1042,12 @@
             if (self.showCompleted) {
                 self.showCompleted = NO;
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
 
             }else{
                 self.showCompleted = YES;
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationBottom];
 
             }
             
