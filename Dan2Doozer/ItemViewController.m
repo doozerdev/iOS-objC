@@ -36,10 +36,12 @@
  
     if (![checkItem.title isEqualToString:fieldTitle.text] || ![checkItem.notes isEqualToString:fieldNotes.text] || self.showDatePicker) {
         
-        
-        self.showDatePicker = NO;
-        NSDate *newDate = self.datePicker.date;
-        checkItem.duedate = newDate;
+        if (self.showDatePicker) {
+            self.showDatePicker = NO;
+            NSDate *newDate = self.datePicker.date;
+            checkItem.duedate = newDate;
+        }
+
         checkItem.notes = fieldNotes.text;
         
         if (fieldTitle.text.length == 0) {
