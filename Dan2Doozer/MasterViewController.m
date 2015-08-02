@@ -93,24 +93,29 @@
     self.tableView.separatorColor = [UIColor whiteColor];
 
     
+    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     
-    NSInteger count = [CoreDataItemManager findNumberOfDueItems];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = count;
-    
+    NSNumber *count = itemStats[0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
 
-
-    self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count];
-    if (count == 0) {
+    self.dueButton.title = [NSString stringWithFormat:@"%ld", count.integerValue];
+    if (count.integerValue == 0) {
         self.dueButton.tintColor = [UIColor blackColor];
     }else{
         self.dueButton.tintColor = [UIColor redColor];
     }
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
+    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
     // You can send attributes of any name/value
     [Intercom updateUserWithAttributes:@{
                                          @"custom_attributes": @{
-                                                 @"list_count" : listCount
+                                                 @"list_count" : listCount,
+                                                 @"due_items": count,
+                                                 @"uncompleted_items": itemStats[1],
+                                                 @"total_items": itemStats[2],
+                                                 @"build_number": build
                                                  }
                                          }];
     [self.tableView reloadData]; // to reload selected cell
@@ -156,7 +161,7 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     NSLog(@"text field is beginning editting");
-    [textField performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
+    //[textField performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
 
     return YES;
 }
@@ -643,7 +648,7 @@
     
     ParentCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
-    cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
+    cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir-Light" size:36];
     cell.cellItemTitle.textColor = [UIColor whiteColor];
 
     
@@ -659,6 +664,8 @@
         cell.tag = 111;
         cell.backgroundColor = [UIColor lightGrayColor];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
+
         
         return cell;
         
@@ -682,9 +689,9 @@
         //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", itemInCell.title, itemInCell.order];
         
         cell.cellItemSubTitle.hidden = NO;
-        cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d Items", numKids];
+        cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d ITEMS", numKids];
         cell.cellItemSubTitle.textColor = [UIColor whiteColor];
-        cell.cellItemSubTitle.font = [UIFont fontWithName:@"Avenir" size:15];
+        cell.cellItemSubTitle.font = [UIFont fontWithName:@"Avenir-Medium" size:14];
         cell.cellItemSubTitle.textAlignment = NSTextAlignmentLeft;
         
         if (self.rowOfExpandedCell == indexPath.row) {
@@ -696,7 +703,7 @@
             cell.cellItemTitle.enabled = YES;
             cell.cellItemTitle.delegate = self;
             [cell.cellItemTitle becomeFirstResponder];
-            [cell.cellItemTitle performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
+            //[cell.cellItemTitle performSelector:@selector(selectAll:) withObject:nil afterDelay:0.0];
 
 
         }else{
@@ -775,12 +782,12 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]){
-        return 55;
+        return 85;
     }else{
         if (self.rowOfExpandedCell == indexPath.row) {
-            return 125;
+            return 170;
         }else{
-            return 75;
+            return 120;
         }
     }
 }
@@ -873,9 +880,19 @@
                                         [deleteList show];
                                         
                                     }];
-    deleteButton.backgroundColor = [UIColor lightGrayColor];
     
-    UITableViewRowAction *editButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Edit" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
+    Item *listInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    UIColor *color = [ColorHelper getUIColorFromString:listInCell.color :1];
+    
+    
+    CGFloat hue, saturation, brightness, alpha ;
+    [color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
+
+    UIColor *newColor = [ UIColor colorWithHue:hue saturation:saturation brightness:0.35*brightness alpha:alpha ] ;
+    
+    deleteButton.backgroundColor = newColor;
+    
+    UITableViewRowAction *editButton = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"Edit     " handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                      {
                                          
                                          int oldCell = self.rowOfExpandedCell;
@@ -890,7 +907,10 @@
                                          [self.tableView reloadSections:[[NSIndexSet alloc]initWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
                                          
                                      }];
-    editButton.backgroundColor = [UIColor darkGrayColor];
+    
+    UIColor *newColor2 = [ UIColor colorWithHue:hue saturation:saturation brightness:0.7*brightness alpha:alpha ] ;
+
+    editButton.backgroundColor = newColor2;
     
     return @[deleteButton, editButton];
 }

@@ -151,7 +151,7 @@
     if (self.showDatePicker && indexPath.row == 2) {
         return 216;
     }else{
-        return 50;
+        return 60;
     }
     
 }
@@ -191,12 +191,12 @@
     textField.textColor = [UIColor blackColor];
     
     if ((int)indexPath.row == 0) {
-        textField.font = [UIFont fontWithName:@"Avenir" size:16];
+        textField.font = [UIFont fontWithName:@"Avenir" size:17];
         textField.text = displayItem.title;
         cell.textLabel.text = @"Title";
         textField.tag = 301;
     }else if ((int)indexPath.row == 1){
-        textField.font = [UIFont fontWithName:@"Avenir" size:16];
+        textField.font = [UIFont fontWithName:@"Avenir" size:17];
         textField.text = displayItem.notes;
         cell.textLabel.text = @"Notes";
         textField.tag = 302;
@@ -220,7 +220,7 @@
             UIView *textFieldToRemove = [self.view viewWithTag:303];
             [textFieldToRemove removeFromSuperview];
             
-            textField.font = [UIFont fontWithName:@"Avenir" size:16];
+            textField.font = [UIFont fontWithName:@"Avenir" size:17];
             textField.userInteractionEnabled = NO;
             NSString *mySmallerString = nil;
             if(displayItem.duedate){
@@ -243,10 +243,10 @@
                            action:@selector(pressedDeleteDateButton)
                  forControlEvents:UIControlEventTouchUpInside];
                 [deleteDate setTitle:@"\U000024E7\U0000FE0E" forState:UIControlStateNormal];
-                deleteDate.titleLabel.font = [UIFont fontWithName:@"Avenir" size:20];
+                deleteDate.titleLabel.font = [UIFont fontWithName:@"Avenir" size:25];
                 [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
                 [deleteDate setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-                deleteDate.frame = CGRectMake(cell.frame.size.width - 50, 0, 50, 50);
+                deleteDate.frame = CGRectMake(cell.frame.size.width - 60, 0, 60, 60);
                 deleteDate.tag = 333;
                 [cell.contentView addSubview:deleteDate];
             }else{

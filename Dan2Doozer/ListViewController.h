@@ -39,6 +39,7 @@
 @property Item *reorderedItem;
 @property NSIndexPath *lp_indexPath;
 @property NSIndexPath *lp_sourceindexPath;
+@property NSIndexPath *lp_originalIndex;
 @property CGPoint lp_location;
 @property int rowToPass;
 

@@ -524,12 +524,12 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 50;
+    return 60;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    return 50;
+    return 60;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -539,10 +539,10 @@
     UIView *tempView=[[UIView alloc]initWithFrame:CGRectMake(0,200,300,244)];
     tempView.backgroundColor=[ColorHelper getUIColorFromString:itemInHeader.color :1];
     
-    UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,3,300,44)];
+    UILabel *tempLabel=[[UILabel alloc]initWithFrame:CGRectMake(15,8,300,44)];
     tempLabel.backgroundColor=[UIColor clearColor];
     tempLabel.textColor = [UIColor whiteColor];
-    tempLabel.font = [UIFont fontWithName:@"Avenir" size:16];
+    tempLabel.font = [UIFont fontWithName:@"Avenir" size:17];
     tempLabel.text= itemInHeader.title;
     
     [tempView addSubview:tempLabel];
@@ -581,7 +581,7 @@
     
     cell.textLabel.text = itemInCell.title;
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:16];
+    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:17];
     cell.textLabel.textColor = [UIColor blackColor];
     
     return cell;

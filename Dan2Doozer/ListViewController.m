@@ -75,7 +75,6 @@
     self.isAutoScrolling = NO;
     self.pixelCorrection = 0;
     
-    
 }
 
 
@@ -382,7 +381,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
-    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]] || [gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
         return NO;
     }
  
@@ -623,7 +622,9 @@
     
     [self saveOrRemoveEmptyRow];
     
-    [self createNewItemRow];
+    if (textField.text.length > 0) {
+        [self createNewItemRow];
+    }
     
     return YES;
 }
@@ -715,8 +716,6 @@
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
     
     self.lp_location = [longPress locationInView:self.tableView];
-    NSIndexPath *originalIndex = nil;
-
     
         UIGestureRecognizerState state = longPress.state;
     
@@ -731,8 +730,7 @@
                 
                 ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_indexPath];
 
-                originalIndex = [self.tableView indexPathForRowAtPoint:self.lp_location];
-                NSLog(@"original index = %@", originalIndex);
+                self.lp_originalIndex = [self.tableView indexPathForRowAtPoint:self.lp_location];
                 
                 if (self.lp_indexPath) {
                     
@@ -821,7 +819,8 @@
                     Item *previousItem = nil;
                     Item *followingItem  = nil;
                     
-                    if(originalIndex.row < self.lp_sourceindexPath.row){
+                    if(self.lp_originalIndex.row < self.lp_sourceindexPath.row){
+                        
                         if (self.lp_sourceindexPath.row == (numberOfObjects - 1)) {
                             Item *originalLastItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.lp_sourceindexPath.row];
                             int newItemNewOrder = originalLastItem.order.intValue + 1048576;
@@ -838,6 +837,7 @@
                         }
                         
                     }else{
+                        
                         if (self.lp_sourceindexPath.row == 0) {
                             Item *originalFirstItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:self.lp_sourceindexPath.row];
                             int newItemNewOrder = originalFirstItem.order.intValue / 2;
@@ -1017,7 +1017,7 @@
         return 0;
     }
     
-    return 50;
+    return 60;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1029,6 +1029,7 @@
     
     return cell;
 }
+
 
 -(void)handleTap:(UITapGestureRecognizer*)tapGesture {
     CGPoint location = [tapGesture locationInView:self.tableView];
@@ -1109,7 +1110,7 @@
 
     cell.cellItemTitle.enabled = NO;
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 3.0, cell.contentView.frame.size.width, 3)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 3.0, cell.contentView.frame.size.width+200, 3)];
     
     Item *listForTitle = self.displayList;
     lineView.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
@@ -1141,7 +1142,7 @@
         cell.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.cellItemTitle.textColor = [UIColor whiteColor];
-        cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
+        cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         cell.cellDueFlag.text = @"";
         
@@ -1159,13 +1160,13 @@
 
                 cell.cellItemTitle.text = titleText;
                 cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
-                cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
+                cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
                 cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
                 cell.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.25];
 
                 CGRect screenRect = [[UIScreen mainScreen] bounds];
                 CGFloat screenWidth = screenRect.size.width;
-                UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 25, screenWidth-30, 1)];
+                UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 30, screenWidth-30, 1)];
                 lineView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
                 lineView.tag = 5151;
                 [cell addSubview:lineView];
@@ -1178,7 +1179,7 @@
             
             cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
-            cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:16];
+            cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
             NSDateFormatter *df = [[NSDateFormatter alloc]init];
             [df setDateFormat:@"yyyyMMdd"];
@@ -1242,7 +1243,13 @@
     
     Item *displayList = self.displayList;
     UIColor *color = [ColorHelper getUIColorFromString:displayList.color :1];
-    deleteButton.backgroundColor = color;
+    
+    CGFloat hue, saturation, brightness, alpha ;
+    [color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
+    
+    UIColor *newColor = [ UIColor colorWithHue:hue saturation:saturation brightness:0.35*brightness alpha:alpha ] ;
+    
+    deleteButton.backgroundColor = newColor;
     
     return @[deleteButton];
 }

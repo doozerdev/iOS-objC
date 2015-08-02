@@ -77,7 +77,7 @@ NSFetchedResultsController *_fetchedResultsController;
     
 }
 
-+(NSInteger)findNumberOfDueItems{
++(NSArray *)findNumberOfDueItems{
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
@@ -139,23 +139,30 @@ NSFetchedResultsController *_fetchedResultsController;
         [activeItems addObjectsFromArray:bFetchedResultsController.fetchedObjects];
         
     }
-
+    
+    NSInteger totalItems = [activeItems count];
+    NSInteger uncompletedItems = 0;
     NSDateFormatter *df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"yyyyMMdd"];
     NSString *currentDateString = [df stringFromDate:[NSDate date]];
-    NSInteger count = 0;
+    NSInteger dueCount = 0;
     
     for (Item *eachItem in activeItems){
         //NSLog(@"item name is == %@, archive value is == %@", eachItem.title, eachItem.archive);
         if (eachItem.done.intValue == 0) {
+            uncompletedItems += 1;
             NSString *dueDateString = [df stringFromDate:eachItem.duedate];
             if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {
-                count += 1;
+                dueCount += 1;
             }
         }
     }
     
-    return count;
+    NSInteger numberOfLists = [items count];
+    NSArray *returnArray = @[[NSNumber numberWithInteger:dueCount], [NSNumber numberWithInteger:uncompletedItems - numberOfLists], [NSNumber numberWithInteger:totalItems - numberOfLists]];
+    
+    
+    return returnArray;
 
 }
 
