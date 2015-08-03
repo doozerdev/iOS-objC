@@ -117,7 +117,7 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     NSIndexPath *originalIndexPath = [self.tableView indexPathForRowAtPoint:startPoint];
     
-    if (indexPath && self.rowOfNewItem == -1) {
+    if (indexPath && self.rowOfNewItem == -1 && !self.longPressActive) {
         
         ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         ListCustomCell *originalCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
@@ -184,7 +184,7 @@
                     break;
                 }
                 case UIGestureRecognizerStateEnded:{
-                    //NSLog(@"pan ended ---------------");
+                    NSLog(@"pan ended ---------------completed item");
                     
                     if (location.x-startPoint.x >= swipeThreshold && ![swipedItem.type isEqualToString:@"completed_header"]) {
                         
@@ -803,7 +803,6 @@
 
                 [self.scrollTimer invalidate];
                 self.isAutoScrolling = NO;
-                self.longPressActive = NO;
                 
                 if (self.allowDragging) {
                     
@@ -894,6 +893,8 @@
                         [clearSnapshot removeFromSuperview];
                         //clearSnapshot = nil;
                         self.tableView.scrollEnabled = YES;
+                        self.longPressActive = NO;
+
                         
                     }];
 
