@@ -650,6 +650,8 @@
     cell.cellItemSubTitle.adjustsFontSizeToFitWidth = NO;
     cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir-Light" size:36];
     cell.cellItemTitle.textColor = [UIColor whiteColor];
+    cell.cellItemTitle.tintColor = [UIColor whiteColor];
+
 
     
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {

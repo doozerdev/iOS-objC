@@ -19,6 +19,8 @@
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
+            <string>Avenir-Medium</string>
+            <string>Avenir-Medium</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -676,29 +678,64 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="testCell" textLabel="YBl-OF-7jf" detailTextLabel="kcM-R9-3ta" style="IBUITableViewCellStyleValue1" id="vYe-Sb-7lJ">
-                                <rect key="frame" x="0.0" y="22" width="600" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="titleCell" rowHeight="220" id="nlg-5r-0Da" customClass="ItemCustomCell">
+                                <rect key="frame" x="0.0" y="22" width="600" height="220"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vYe-Sb-7lJ" id="huC-V0-riB">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nlg-5r-0Da" id="Vwe-Hl-UqO">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="219"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YBl-OF-7jf">
-                                            <rect key="frame" x="15" y="16" width="25" height="15"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kcM-R9-3ta">
-                                            <rect key="frame" x="543" y="12" width="42" height="20"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" text="Sample Title Text will go here" translatesAutoresizingMaskIntoConstraints="NO" id="Fy1-Ud-qD9">
+                                            <rect key="frame" x="18" y="12" width="564" height="30"/>
+                                            <color key="backgroundColor" red="0.90271651740000003" green="0.79925201609999996" blue="0.25781271519999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        </textView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gIS-mw-kOc">
+                                            <rect key="frame" x="550" y="176" width="37" height="30"/>
+                                            <state key="normal" title="Done">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="pressedDoneButton:" destination="SBx-Rf-rr7" eventType="touchUpInside" id="OpT-r8-aXd"/>
+                                            </connections>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mm7-AU-ArR">
+                                            <rect key="frame" x="18" y="16" width="42" height="24"/>
+                                            <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Fy1-Ud-qD9" firstAttribute="leading" secondItem="Vwe-Hl-UqO" secondAttribute="leadingMargin" constant="10" id="2lC-TY-mYU"/>
+                                        <constraint firstItem="Mm7-AU-ArR" firstAttribute="leading" secondItem="Vwe-Hl-UqO" secondAttribute="leadingMargin" constant="10" id="9Sa-a8-dFM"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Fy1-Ud-qD9" secondAttribute="trailing" constant="10" id="DOt-1W-p7X"/>
+                                        <constraint firstItem="Fy1-Ud-qD9" firstAttribute="top" secondItem="Vwe-Hl-UqO" secondAttribute="topMargin" constant="4" id="M18-PS-gTu"/>
+                                        <constraint firstItem="Fy1-Ud-qD9" firstAttribute="top" secondItem="Vwe-Hl-UqO" secondAttribute="top" constant="6" id="Mlg-UW-2W4"/>
+                                        <constraint firstItem="Fy1-Ud-qD9" firstAttribute="top" secondItem="Vwe-Hl-UqO" secondAttribute="top" id="Wze-6W-auq"/>
+                                        <constraint firstItem="Mm7-AU-ArR" firstAttribute="top" secondItem="Fy1-Ud-qD9" secondAttribute="bottom" constant="4" id="X0l-lO-sGR"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Fy1-Ud-qD9" secondAttribute="bottom" id="eG2-nf-vPr"/>
+                                        <constraint firstItem="Fy1-Ud-qD9" firstAttribute="top" secondItem="Vwe-Hl-UqO" secondAttribute="topMargin" id="ey9-zm-CTN"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="gIS-mw-kOc" secondAttribute="bottom" constant="5" id="pVA-O4-A16"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="gIS-mw-kOc" secondAttribute="trailing" constant="5" id="qB1-pq-TQN"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="M18-PS-gTu"/>
+                                            <exclude reference="Wze-6W-auq"/>
+                                            <exclude reference="eG2-nf-vPr"/>
+                                            <exclude reference="ey9-zm-CTN"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.90271651740000003" green="0.79925201609999996" blue="0.25781271519999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="CellTextLabel" destination="Mm7-AU-ArR" id="6U5-fb-0cX"/>
+                                    <outlet property="CellTextView" destination="Fy1-Ud-qD9" id="Em6-BH-uiU"/>
+                                    <outlet property="DoneButton" destination="gIS-mw-kOc" id="JDK-Td-vuj"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -805,6 +842,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="O3e-c8-Xp2"/>
         <segue reference="ddX-ID-X4a"/>
-        <segue reference="5Hq-Ou-QP6"/>
+        <segue reference="MN6-bY-8lo"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -19,7 +19,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *TextFieldInCell;
 
 @property BOOL showDatePicker;
+@property BOOL showDateCells;
+@property BOOL editingNotes;
+
 @property UIDatePicker *datePicker;
+@property NSDate *dateToSet;
 
 
 @end
