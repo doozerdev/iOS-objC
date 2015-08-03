@@ -18,66 +18,74 @@
 
 BOOL _syncOpActive;
 int _syncTryCount;
+double _lastSyncRequest;
 
 
 @implementation DoozerSyncManager
 
 
 +(void)syncWithServer{
+    double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
     
+    NSLog(@"diff in time sync requests is %f", currentSyncRequest - _lastSyncRequest);
+    
+    if (currentSyncRequest - _lastSyncRequest > 3) {
+        
+        _lastSyncRequest = currentSyncRequest;
 
-//login to Doozer if needed
-    if(_syncOpActive){
-        NSLog(@"sync op active! no additional sync this time");
-        _syncTryCount += 1;
+        //login to Doozer if needed
+        if(_syncOpActive){
+            NSLog(@"sync op active! no additional sync this time");
+            _syncTryCount += 1;
 
-        if (_syncTryCount > 5) {
-            _syncOpActive = NO;
+            if (_syncTryCount > 5) {
+                _syncOpActive = NO;
+                _syncTryCount = 0;
+                NSLog(@"reseting synctrycount and syncopactive");
+            }
+        }else{
             _syncTryCount = 0;
-            NSLog(@"reseting synctrycount and syncopactive");
-        }
-    }else{
-        _syncTryCount = 0;
-        _syncOpActive = YES;
-        double currentTime = [[NSDate date] timeIntervalSince1970];
-        NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
-        
-        //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
-        
-        NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+            _syncOpActive = YES;
+            double currentTime = [[NSDate date] timeIntervalSince1970];
+            NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
+            
+            //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
+            
+            NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
 
-        
-        if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
-            NSLog(@"Sync starts with LOGIN");
             
-            NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-            NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
-            
-            AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-            [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
+                NSLog(@"Sync starts with LOGIN");
                 
-                NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-                [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                NSLog(@"returning message from login operation");
+                NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+                NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
                 
-                [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                
+                AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+                [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+                    [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    NSLog(@"returning message from login operation");
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    
+                    [self performSyncSteps];
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"Error: %@", error);
+                }];
+            }else{
+                NSLog(@"Sync WITHOUT login needed");
+
                 [self performSyncSteps];
                 
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                NSLog(@"Error: %@", error);
-            }];
-        }else{
-            NSLog(@"Sync WITHOUT login needed");
-
-            [self performSyncSteps];
-            
+            }
         }
+        
     }
-    
 }
 
 
