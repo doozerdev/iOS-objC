@@ -43,7 +43,7 @@
 @property CGPoint lp_location;
 @property int rowToPass;
 
-@property int pixelCorrection;
+@property float pixelCorrection;
 
 
 @end

@@ -646,7 +646,7 @@
         
         self.lp_indexPath = [self.tableView indexPathForRowAtPoint:center];
         
-        NSLog(@"indexpath row = %ld, lp_location = %f, pixelCorrection = %d", (long)self.lp_indexPath.row, self.lp_location.y, self.pixelCorrection);
+        NSLog(@"indexpath row = %ld, lp_location = %f, pixelCorrection = %f", (long)self.lp_indexPath.row, self.lp_location.y, self.pixelCorrection);
 
         
         if (self.lp_indexPath && (self.lp_indexPath.row != self.lp_sourceindexPath.row) && (self.lp_indexPath.row != self.rowToPass)) {
@@ -677,29 +677,32 @@
             }
             self.lp_sourceindexPath = self.lp_indexPath;
         }
-        
-
     }
     
-    CGRect visibleRect = self.tableView.bounds;
-    CGRect scrollToRect = CGRectMake(0, 0, 0, 0);
-    
-    if (locationInWindow.y > (screenRect.size.height - 100) && self.lp_indexPath.row != [self.fetchedResultsController.fetchedObjects count] - 1) {
+    if (self.lp_indexPath) {
         
-        //NSLog(@"visible rect y = %f", visibleRect.origin.y);
+        CGRect visibleRect = self.tableView.bounds;
+        CGRect scrollToRect = CGRectMake(0, 0, 0, 0);
         
-        scrollToRect = CGRectMake(0, visibleRect.origin.y+1, visibleRect.size.width, visibleRect.size.height);
-        self.pixelCorrection += 1;
-        [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+        float delta = 1.5;
+        
+        if (locationInWindow.y > (screenRect.size.height - 55) && self.lp_indexPath.row != [self.fetchedResultsController.fetchedObjects count] - 1) {
+            
+            //NSLog(@"visible rect y = %f", visibleRect.origin.y);
+            
+            scrollToRect = CGRectMake(0, visibleRect.origin.y + delta, visibleRect.size.width, visibleRect.size.height);
+            self.pixelCorrection += delta;
+            [self.tableView scrollRectToVisible:scrollToRect animated:NO];
 
-        
-    }else if(locationInWindow.y < 100 && self.lp_indexPath.row != 0){
-        
-        scrollToRect = CGRectMake(0, visibleRect.origin.y-1, visibleRect.size.width, visibleRect.size.height);
-        self.pixelCorrection -= 1;
-        [self.tableView scrollRectToVisible:scrollToRect animated:NO];
+            
+        }else if(locationInWindow.y < 100 && self.lp_indexPath.row != 0){
+            
+            scrollToRect = CGRectMake(0, visibleRect.origin.y - delta, visibleRect.size.width, visibleRect.size.height);
+            self.pixelCorrection -= delta;
+            [self.tableView scrollRectToVisible:scrollToRect animated:NO];
 
-        
+            
+        }
     }
 
 
