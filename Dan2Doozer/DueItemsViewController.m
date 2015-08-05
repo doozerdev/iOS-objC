@@ -10,7 +10,7 @@
 #import "Item.h"
 #import "AppDelegate.h"
 #import "ColorHelper.h"
-#import "ItemViewController.h"
+#import "ItemVC.h"
 #import "DeleteItemFromServer.h"
 #import "UpdateItemsOnServer.h"
 #import "CoreDataItemManager.h"
@@ -626,12 +626,7 @@
     if ([[segue identifier] isEqualToString:@"showItemFromDue"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         
-        ItemViewController *itemController = segue.destinationViewController;
-        
-        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
-        NSManagedObjectContext* context = appDelegate.managedObjectContext;
-        
-        itemController.managedObjectContext = context;
+        ItemVC *itemController = segue.destinationViewController;
         
         NSLog(@"indexpath clicked section = %ld, row = %ld", (long)indexPath.section, (long)indexPath.row);
         
@@ -656,8 +651,9 @@
         
         Item *itemInCell = [dueItems objectAtIndex:indexPath.row];
         
-        [itemController setDetailItem:itemInCell];
-        [itemController setDisplayListOfItem:list];
+        itemController.detailItem = itemInCell;
+        itemController.parentList = list;
+
         
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
         self.navigationController.navigationBar.tintColor = [UIColor whiteColor];

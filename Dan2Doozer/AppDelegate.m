@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "MasterViewController.h"
 #import "ListViewController.h"
-#import "ItemViewController.h"
 #import "LoginViewController.h"
 #import "WelcomeViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -96,7 +95,7 @@
 
 
 
-
+/*
 #pragma mark - Split view
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
@@ -107,7 +106,7 @@
         return NO;
     }
 }
-
+*/
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;

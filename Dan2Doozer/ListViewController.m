@@ -7,7 +7,7 @@
 //
 
 #import "ListViewController.h"
-#import "ItemViewController.h"
+#import "ItemVC.h"
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
 #import "ColorHelper.h"
@@ -988,14 +988,18 @@
         //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSIndexPath *indexPath = sender;
 
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        Item *itemToDisplay = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
         //ItemViewController *controller = (ItemViewController *)[[segue destinationViewController] topViewController];
-        ItemViewController *itemController = segue.destinationViewController;
+        ItemVC *itemController = segue.destinationViewController;
         
-        itemController.managedObjectContext = self.managedObjectContext;
-        [itemController setDetailItem:object];
-        [itemController setDisplayListOfItem:self.displayList];
+        //itemController.managedObjectContext = self.managedObjectContext;
+        //[itemController setDetailItem:object];
+        //[itemController setDisplayListOfItem:self.displayList];
+        
+        itemController.detailItem = itemToDisplay;
+        itemController.parentList = (Item *)self.displayList;
+        
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
 
     }
