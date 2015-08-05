@@ -46,12 +46,12 @@
     self.Notes.layer.borderWidth = 1.0f;
     self.Notes.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     
-    self.ItemTitle.layer.borderWidth = 1.0f;
-    self.ItemTitle.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    
     UIColor *themeColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
 
     self.view.backgroundColor = themeColor;
+    self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
+    self.navigationController.navigationBar.barTintColor = themeColor;
+    
     self.showingDatePanel = NO;
     
     self.dateButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
@@ -182,17 +182,14 @@
     CGRect currentFrame = self.upperViewPanel.frame;
 
     if (self.showingDatePanel) {
-        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 455 + self.titleFieldExtraHeight);
+        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
         self.upperViewPanel.frame = newFrame;
 
     }else{
-        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 200 + self.titleFieldExtraHeight);
+        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225 + self.titleFieldExtraHeight);
         self.upperViewPanel.frame = newFrame;
 
     }
-    
-
-    
 }
 
 
@@ -204,10 +201,10 @@
 - (void)openDatePanel {
     
     CGRect currentFrame = self.upperViewPanel.frame;
-    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 455 + self.titleFieldExtraHeight);
+    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
     NSLog(@"opening the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
     
-    [UIView animateWithDuration:1.0f animations:^{
+    [UIView animateWithDuration:0.5f animations:^{
         self.upperViewPanel.frame = newFrame;
     } completion:^(BOOL finished) {
         self.showingDatePanel = YES;
@@ -223,7 +220,6 @@
 
 - (void)closeDatePanel {
     
-    self.doneButton.hidden = YES;
     self.dateButton2.userInteractionEnabled = NO;
     self.dateButton3.userInteractionEnabled = NO;
     self.dateButton4.userInteractionEnabled = NO;
@@ -232,13 +228,19 @@
     self.showingDatePanel = NO;
     
     CGRect currentFrame = self.upperViewPanel.frame;
-    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 200+self.titleFieldExtraHeight);
+    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225+self.titleFieldExtraHeight);
     NSLog(@"closing the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
-
     
-    [UIView animateWithDuration:1.0f animations:^{
+    int timestamp = [[NSDate date] timeIntervalSince1970];
+    NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+    [Intercom logEventWithName:@"Edited_Item_Properties" metaData: @{@"date": date}];
+    
+    [UIView animateWithDuration:0.5f animations:^{
         self.upperViewPanel.frame = newFrame;
     } completion:^(BOOL finished) {
+        
+        self.doneButton.hidden = YES;
+        
     }];
 }
 
@@ -294,6 +296,7 @@
     
     [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
 
+    self.datePicker.date = today;
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
     
@@ -314,6 +317,8 @@
     [df setDateFormat:@"EEE MMM dd, yyyy"];
     NSString * dateString = [df stringFromDate:tomorrow];
     
+    self.datePicker.date = tomorrow;
+    
     [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
@@ -324,6 +329,8 @@
 - (IBAction)dateButton4Pressed:(id)sender {
     
     self.detailItem.duedate = nil;
+    
+    self.datePicker.date = [NSDate date];
     
     [self.dateButton setTitle: [NSString stringWithFormat:@"Due Someday"] forState: UIControlStateNormal];
     

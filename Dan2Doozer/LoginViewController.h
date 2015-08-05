@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *welcome;
 @property (weak, nonatomic) IBOutlet UILabel *toDoozer;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel1;
+@property (weak, nonatomic) IBOutlet FBSDKLoginButton *loginButtonBackground;
 
 
 @end

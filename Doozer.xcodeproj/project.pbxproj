@@ -651,7 +651,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -674,7 +674,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

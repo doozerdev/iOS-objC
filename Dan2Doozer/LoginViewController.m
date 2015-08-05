@@ -70,8 +70,10 @@ NSString *sessionID = nil;
     NSLog(@"the view loaded");
     self.LoadingSpinner.hidden = YES;
     [self setNeedsStatusBarAppearanceUpdate];
-
     
+    self.view.backgroundColor = [UIColor colorWithRed:0  green:0.796  blue:0.925 alpha:1];
+    self.loginButtonBackground.backgroundColor = [UIColor colorWithRed:0  green:0.796  blue:0.925 alpha:1];
+
     if ([FBSDKAccessToken currentAccessToken]) {
         [self performSelector:@selector(logIntoDoozerWithFacebook) withObject:nil afterDelay:1];
     }
