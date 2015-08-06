@@ -26,7 +26,7 @@
 
 @interface MasterViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
+//@property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
 
 @end
 
@@ -98,7 +98,7 @@
     NSNumber *count = itemStats[0];
     [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
 
-    self.dueButton.title = [NSString stringWithFormat:@"%ld", count.integerValue];
+    self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count.integerValue];
     if (count.integerValue == 0) {
         self.dueButton.tintColor = [UIColor blackColor];
     }else{

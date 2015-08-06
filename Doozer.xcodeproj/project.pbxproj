@@ -377,6 +377,11 @@
 					A2301B271AF41A7C00E2267D = {
 						CreatedOnToolsVersion = 6.3.1;
 						DevelopmentTeam = J7HXU6U6X7;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					A2301B461AF41A7C00E2267D = {
 						CreatedOnToolsVersion = 6.3.1;

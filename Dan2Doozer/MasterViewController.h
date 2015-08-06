@@ -32,6 +32,7 @@
 @property (nonatomic) int rowOfExpandedCell;
 @property (strong, nonatomic) Item *itemToDelete;
 @property BOOL addingAnItem;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
 
 
 @end

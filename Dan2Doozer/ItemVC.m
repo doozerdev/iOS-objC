@@ -136,6 +136,8 @@
         self.Notes.textColor = [UIColor blackColor];
     }
     
+    [self closeDatePanel];
+    
 }
 
 -(void)textViewDidEndEditing:(nonnull UITextView *)textView{
@@ -152,7 +154,7 @@
         CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
         CGRect newFrame = textView.frame;
         newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-        textView.frame = newFrame;
+        self.ItemTitle.frame = newFrame;
         
         self.titleFieldExtraHeight = newSize.height - 46.5;
         
@@ -213,6 +215,8 @@
         self.dateButton3.userInteractionEnabled = YES;
         self.dateButton4.userInteractionEnabled = YES;
         self.doneButton.userInteractionEnabled = YES;
+        
+        [self.view endEditing:YES];
 
     }];
     
