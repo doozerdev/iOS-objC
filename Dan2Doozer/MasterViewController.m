@@ -31,6 +31,66 @@
 
 @implementation MasterViewController
 
+-(void)makeSampleListsForNoobs{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
+    
+    Item *houseChoreList = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    houseChoreList.parent = nil;
+    houseChoreList.title = @"Home projects";
+    houseChoreList.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    houseChoreList.color = @"198,99,175,1";
+    houseChoreList.order = [NSNumber numberWithInt:1000];
+    
+    Item *chore1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    chore1.parent = houseChoreList.itemId;
+    chore1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    chore1.title = @"Paint the garage";
+    chore1.order = [NSNumber numberWithInt:1000];
+    chore1.done = 0;
+    chore1.notes = @" ";
+    
+    Item *chore2 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    chore2.parent = houseChoreList.itemId;
+    chore2.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    chore2.title = @"Mow the lawn";
+    chore2.order = [NSNumber numberWithInt:2000];
+    chore2.done = 0;
+    chore2.notes = @" ";
+    
+    Item *vacationPlanning = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    vacationPlanning.parent = nil;
+    vacationPlanning.title = @"Vacation!";
+    vacationPlanning.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    vacationPlanning.color = @"46,179,193,1";
+    vacationPlanning.order = [NSNumber numberWithInt:2000];
+    
+    Item *item1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    item1.parent = vacationPlanning.itemId;
+    item1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    item1.title = @"Book hotel";
+    item1.order = [NSNumber numberWithInt:1000];
+    item1.done = 0;
+    item1.notes = @" ";
+    
+    Item *item2 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    item2.parent = vacationPlanning.itemId;
+    item2.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    item2.title = @"Buy new flip flops";
+    item2.order = [NSNumber numberWithInt:2000];
+    item2.done = 0;
+    item2.notes = @" ";
+    
+    [AddItemsToServer addThisItem:houseChoreList];
+    [AddItemsToServer addThisItem:chore1];
+    [AddItemsToServer addThisItem:chore2];
+    [AddItemsToServer addThisItem:vacationPlanning];
+    [AddItemsToServer addThisItem:item1];
+    [AddItemsToServer addThisItem:item2];
+    
+}
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -53,10 +113,14 @@
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches.intValue == 0) {
         NSLog(@"first launch -- not syncing when loading main screen");
-
     }else{
         [DoozerSyncManager syncWithServer];
-        
+    }
+    
+    //make a sample set of data for brand new users
+    NSLog(@"num launeces = %@, array count = %lu", numberOfLaunches, (unsigned long)[self.fetchedResultsController.fetchedObjects count]);
+    if (numberOfLaunches.intValue == 1 && [self.fetchedResultsController.fetchedObjects count] == 0) {
+        [self makeSampleListsForNoobs];
     }
     
     [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];

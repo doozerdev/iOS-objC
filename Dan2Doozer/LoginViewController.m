@@ -13,6 +13,8 @@
 #import "GetItemsFromDoozer.h"
 #import "DoozerSyncManager.h"
 #import "intercom.h"
+#import "AppDelegate.h"
+#import "AddItemsToServer.h"
 
 
 @interface LoginViewController ()
@@ -182,9 +184,6 @@ NSString *sessionID = nil;
         //[self performSelector:@selector(showListList) withObject:nil afterDelay:2];
         //self.LoginStatusLabel.text = @"Checking server for items...";
         
-
-        NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-        NSLog(@"number of launches = %@", numberOfLaunches);
         
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
         NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
@@ -207,7 +206,7 @@ NSString *sessionID = nil;
                 
                 [DoozerSyncManager copyFromServer :itemsBigArray];
                 
-                [self performSelector:@selector(showListList) withObject:nil afterDelay:2];
+                [self performSelector:@selector(showListList) withObject:nil afterDelay:0];
                 
             }];
             
@@ -216,6 +215,8 @@ NSString *sessionID = nil;
         }];
     }
 }
+
+
 
 
 - (void)showListList {
@@ -234,7 +235,8 @@ NSString *sessionID = nil;
         controller.managedObjectContext = self.managedObjectContext;
     }
 }
- 
+
+
 
 
 
