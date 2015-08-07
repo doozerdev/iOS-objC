@@ -124,7 +124,10 @@
     [super viewWillDisappear: animated];
     // Force any text fields that might be being edited to end
     [self.view.window endEditing: YES];
-    [self saveOrRemoveRow];
+    if (self.addingAnItem) {
+        [self saveOrRemoveRow];
+        self.addingAnItem = NO;
+    }
 }
 
 
@@ -177,7 +180,7 @@
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfExpandedCell inSection:0];
-    ParentCustomCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
     
     NSString *currentText = cell.cellItemTitle.text;
     
@@ -327,7 +330,7 @@
     CGPoint location = [longPress locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    ParentCustomCell *originalCell = [self.tableView cellForRowAtIndexPath:self.originalIndex];
+    ParentCustomCell *originalCell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:self.originalIndex];
 
     UIGestureRecognizerState state = longPress.state;
     
@@ -339,7 +342,7 @@
             if (indexPath) {
                     
                 self.originalIndex = [self.tableView indexPathForRowAtPoint:location];
-                originalCell = [self.tableView cellForRowAtIndexPath:self.originalIndex];
+                originalCell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:self.originalIndex];
 
                 sourceIndexPath = indexPath;
                 if (originalCell.tag != 111) {

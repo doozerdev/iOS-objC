@@ -22,6 +22,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"item view loaded");
+    
     self.ItemTitle.text = self.detailItem.title;
     
 

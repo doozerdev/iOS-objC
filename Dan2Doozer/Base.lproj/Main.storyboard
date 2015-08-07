@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8164.2" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="FTq-Ug-CqQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="FTq-Ug-CqQ">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8135.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="Avenir.ttc">
+            <string>Avenir-Book</string>
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
@@ -48,7 +47,7 @@
                         <color key="sectionIndexBackgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="dueCells" textLabel="5yq-7z-sUK" style="IBUITableViewCellStyleDefault" id="oE5-cx-oKL">
-                                <rect key="frame" x="0.0" y="114" width="600" height="44"/>
+                                <rect key="frame" x="0.0" y="50" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oE5-cx-oKL" id="WWm-CR-ng6">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -91,7 +90,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RU8-eL-alB">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RU8-eL-alB">
                                 <rect key="frame" x="0.0" y="64" width="600" height="530"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Item Title" translatesAutoresizingMaskIntoConstraints="NO" id="NCv-0O-ejP">
@@ -131,7 +130,7 @@
                                             <action selector="dateButtonPressed:" destination="tAf-os-SWk" eventType="touchUpInside" id="43m-GW-ILE"/>
                                         </connections>
                                     </button>
-                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="prS-sP-AW0">
+                                    <datePicker contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="prS-sP-AW0">
                                         <rect key="frame" x="0.0" y="255" width="600" height="216"/>
                                         <date key="date" timeIntervalSinceReferenceDate="460358881.80394202">
                                             <!--2015-08-04 05:28:01 +0000-->
@@ -252,7 +251,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="169"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item SubTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-b5-X4r">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Item SubTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-b5-X4r">
                                             <rect key="frame" x="20" y="67" width="100" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -374,24 +373,15 @@
                                 <segue destination="YFT-UZ-tcf" kind="show" identifier="showSettings" id="yU8-dJ-AzT"/>
                             </connections>
                         </barButtonItem>
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="add" id="AJD-4Q-zKb">
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="addItemButton:" destination="7bK-jq-Zjz" id="Xq8-GR-GVE"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Due" id="qan-mu-Did">
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <segue destination="aJg-PE-leZ" kind="show" identifier="showDueItems" id="zPJ-oR-uyc"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="AJD-4Q-zKb">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="addItemButton:" destination="7bK-jq-Zjz" id="Xq8-GR-GVE"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="dueButton" destination="qan-mu-Did" id="czv-md-gCC"/>
                         <segue destination="Lzo-3s-ZiQ" kind="show" identifier="showList" id="bKz-BE-hvA"/>
                         <segue destination="bSc-Uq-o0v" kind="presentation" identifier="showAddItemView" modalPresentationStyle="overFullScreen" id="Jmj-u2-g1N"/>
                     </connections>
@@ -413,7 +403,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8EV-Gm-cZL" customClass="FBSDKProfilePictureView">
-                                <rect key="frame" x="225" y="84" width="150" height="150"/>
+                                <rect key="frame" x="225" y="40" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="75L-pP-UL6"/>
@@ -423,7 +413,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIF-1a-1Km">
-                                <rect key="frame" x="30" y="244" width="540" height="40"/>
+                                <rect key="frame" x="26" y="200" width="548" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Dzq-Fq-1kJ"/>
                                     <constraint firstAttribute="height" constant="40" id="MBx-By-Xaw"/>
@@ -438,7 +428,7 @@
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="88J-g0-xaj">
-                                <rect key="frame" x="228" y="346" width="145" height="37"/>
+                                <rect key="frame" x="228" y="302" width="145" height="37"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
                                 <state key="normal" title="Provide Feedback">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -448,7 +438,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ycY-4g-2tU">
-                                <rect key="frame" x="234" y="294" width="133" height="37"/>
+                                <rect key="frame" x="234" y="250" width="133" height="37"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
                                 <state key="normal" title="Contact Support">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -484,6 +474,17 @@
                                     <constraint firstAttribute="bottom" secondItem="rPP-3b-pfW" secondAttribute="bottom" id="w5S-8K-DoP"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fj1-bB-23G">
+                                <rect key="frame" x="220" y="418" width="160" height="43"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="22"/>
+                                <state key="normal" title="Show Due Items">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="aJg-PE-leZ" kind="show" identifier="showDueItems" id="v6F-3w-aNL"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -495,8 +496,10 @@
                             <constraint firstItem="zIF-1a-1Km" firstAttribute="top" secondItem="8EV-Gm-cZL" secondAttribute="bottom" constant="10" id="Cs8-jt-jSY"/>
                             <constraint firstItem="ycY-4g-2tU" firstAttribute="centerX" secondItem="PD9-rp-ugQ" secondAttribute="centerX" id="EjH-PE-Eg8"/>
                             <constraint firstAttribute="centerX" secondItem="zIF-1a-1Km" secondAttribute="centerX" id="JQv-yA-wcD"/>
+                            <constraint firstItem="Fj1-bB-23G" firstAttribute="top" secondItem="88J-g0-xaj" secondAttribute="bottom" constant="79" id="OIb-96-333"/>
                             <constraint firstItem="88J-g0-xaj" firstAttribute="top" secondItem="ycY-4g-2tU" secondAttribute="bottom" constant="15" id="SR4-dd-vbe"/>
                             <constraint firstAttribute="centerX" secondItem="zIF-1a-1Km" secondAttribute="centerX" id="U9s-tl-5ji"/>
+                            <constraint firstAttribute="centerX" secondItem="Fj1-bB-23G" secondAttribute="centerX" id="VoV-8m-LgI"/>
                             <constraint firstItem="XGe-Fd-G6C" firstAttribute="top" secondItem="wga-7f-cxi" secondAttribute="bottom" constant="34" id="X1y-5G-6DL"/>
                             <constraint firstItem="8EV-Gm-cZL" firstAttribute="top" secondItem="KsC-AP-k7o" secondAttribute="bottom" constant="20" id="i2b-Lc-azl"/>
                             <constraint firstItem="zIF-1a-1Km" firstAttribute="leading" secondItem="PD9-rp-ugQ" secondAttribute="leadingMargin" constant="10" id="rU4-C4-cBT"/>
@@ -693,19 +696,23 @@
                         <color key="backgroundColor" red="0.0" green="0.79607843140000001" blue="0.92549019610000005" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="YPd-D0-bak" firstAttribute="top" secondItem="LAM-b4-efJ" secondAttribute="bottom" constant="100" id="19i-7o-bnM"/>
+                            <constraint firstItem="YPd-D0-bak" firstAttribute="top" secondItem="LAM-b4-efJ" secondAttribute="bottom" constant="100" id="a8b-1b-UoY"/>
                             <constraint firstItem="YPd-D0-bak" firstAttribute="centerX" secondItem="Mfj-cy-Pzb" secondAttribute="centerX" id="eK3-nc-Uvc"/>
                             <constraint firstItem="YPd-D0-bak" firstAttribute="top" secondItem="LAM-b4-efJ" secondAttribute="bottom" constant="70" id="i6q-Mr-4hx"/>
                             <constraint firstItem="YPd-D0-bak" firstAttribute="top" secondItem="LAM-b4-efJ" secondAttribute="bottom" constant="100" id="sHP-ht-GLU"/>
+                            <constraint firstItem="YPd-D0-bak" firstAttribute="top" secondItem="LAM-b4-efJ" secondAttribute="bottom" constant="100" id="xhT-yQ-Poi"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="19i-7o-bnM"/>
+                                <exclude reference="a8b-1b-UoY"/>
                                 <exclude reference="i6q-Mr-4hx"/>
+                                <exclude reference="sHP-ht-GLU"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
-                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" animates="NO" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="Xen-ta-xmP"/>
+                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" animates="NO" id="Xen-ta-xmP"/>
                         <segue destination="RMx-3f-FxP" kind="showDetail" identifier="showMasterView" id="mIu-Sg-Gjf"/>
                     </connections>
                 </viewController>
@@ -725,7 +732,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="you get stuff done" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogG-Hk-QQz">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="you get stuff done" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogG-Hk-QQz">
                                 <rect key="frame" x="40" y="283" width="520" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="T8B-Ih-kgs"/>
@@ -780,7 +787,7 @@
                                     <constraint firstAttribute="height" constant="100" id="jqg-Fj-ToV"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The to-do list that helps" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bbG-bs-Lh4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="The to-do list that helps" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bbG-bs-Lh4">
                                 <rect key="frame" x="40" y="245" width="520" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="lKD-0z-Rp1"/>
@@ -839,7 +846,7 @@
             <objects>
                 <tableViewController title="List" clearsSelectionOnViewWillAppear="NO" id="Lzo-3s-ZiQ" customClass="ListViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2Ae-g9-6L4">
-                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -926,8 +933,8 @@
         <image name="WelcomePageLogo" width="280" height="75"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="k9y-P3-oVd"/>
         <segue reference="O3e-c8-Xp2"/>
-        <segue reference="Xen-ta-xmP"/>
+        <segue reference="ddX-ID-X4a"/>
+        <segue reference="UMx-Ri-m6V"/>
     </inferredMetricsTieBreakers>
 </document>

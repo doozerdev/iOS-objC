@@ -22,7 +22,8 @@
             return @"134,194,63,1"; //green
             break;
         case 3:
-            return @"46,179,193,1"; //blue
+            //return @"0,203,236,1"; //new blue
+            return @"46,179,193,1"; //old blue
             break;
         case 4:
             return @"198,99,175,1"; //purple
@@ -34,6 +35,12 @@
 }
 
 + (UIColor *)getUIColorFromString:(NSString *)colorString :(float)alpha{
+    /*
+    if ([colorString isEqualToString:@"46,179,193,1"]) {
+        //replace old blue string with new blue color
+        colorString = @"0,203,236,1";
+    }
+     */
     
     NSArray *rgbValues = [colorString componentsSeparatedByString:@","];
     
