@@ -27,9 +27,8 @@
 }
 
 - (IBAction)pressedCancelButton:(id)sender {
-    [self.view.window endEditing: YES];
-
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self closeDownView];
 
 }
 - (IBAction)addButtonPressed:(id)sender {
@@ -37,6 +36,30 @@
     [self createItem];
 }
 
+-(void)closeDownView{
+    
+
+    
+    CGRect newFrame = CGRectMake(self.lowerContentPanel.frame.origin.x, self.lowerContentPanel.frame.origin.y + 400, self.lowerContentPanel.frame.size.width, self.lowerContentPanel.frame.size.height);
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.lowerContentPanel.frame = newFrame;
+
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    [UIView animateWithDuration:0.4f animations:^{
+        self.view.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+
+    }];
+    
+
+    
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -48,8 +71,39 @@
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    
 }
+
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+ self.view.alpha = 0;
+ 
+ [UIView animateWithDuration:0.3f animations:^{
+ self.view.alpha = 1;
+ } completion:^(BOOL finished) {
+ 
+ }];
+ 
+ CGRect screenRect = [[UIScreen mainScreen] bounds];
+ 
+ CGRect currentFrame = self.lowerContentPanel.frame;
+ 
+ CGRect newFrame = CGRectMake(currentFrame.origin.x, screenRect.size.height - 300, currentFrame.size.width, currentFrame.size.height);
+ self.lowerContentPanel.frame = newFrame;
+ 
+ [UIView animateWithDuration:0.6f animations:^{
+     self.lowerContentPanel.frame = currentFrame;
+     
+     NSLog(@"current frame = %f,%f,%f,%f", currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
+
+     
+ } completion:^(BOOL finished) {
+ 
+ }];
+ 
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -76,9 +130,10 @@
 - (void)createItem {
     
     UITextField *newItemTitle = (UITextField *)[self.view viewWithTag:888];
-    [self.view.window endEditing: YES];
+    /*
+     [self.view.window endEditing: YES];
     [newItemTitle resignFirstResponder];
-    
+    */
     NSLog(@"title fo item to create is == %@", newItemTitle);
     
     if (newItemTitle.text.length > 0) {
@@ -134,8 +189,7 @@
         
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
-
+    [self closeDownView];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -221,6 +275,7 @@
     
 }
 
+/*
 
  #pragma mark - Segues
  
@@ -230,7 +285,7 @@
          NSLog(@"prepare for segue unwind to master");
      }
  }
-
+*/
 
 
 - (NSFetchedResultsController *)fetchedResultsController

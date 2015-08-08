@@ -19,5 +19,8 @@
 @property BOOL showAllLists;
 @property Item *selectedList;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIView *lowerContentPanel;
+
+
 
 @end

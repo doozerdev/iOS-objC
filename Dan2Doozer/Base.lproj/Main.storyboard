@@ -383,7 +383,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="Lzo-3s-ZiQ" kind="show" identifier="showList" id="bKz-BE-hvA"/>
-                        <segue destination="bSc-Uq-o0v" kind="presentation" identifier="showAddItemView" modalPresentationStyle="overFullScreen" id="Jmj-u2-g1N"/>
+                        <segue destination="bSc-Uq-o0v" kind="presentation" identifier="showAddItemView" modalPresentationStyle="overFullScreen" animates="NO" id="Jmj-u2-g1N"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
@@ -521,7 +521,7 @@
         <!--Add Item View Controller-->
         <scene sceneID="iST-u4-cuc">
             <objects>
-                <viewController id="bSc-Uq-o0v" customClass="AddItemViewController" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="bSc-Uq-o0v" customClass="AddItemViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CBP-jL-vqw"/>
                         <viewControllerLayoutGuide type="bottom" id="y4V-tS-MKZ"/>
@@ -581,9 +581,7 @@
                                             <constraint firstAttribute="width" constant="50" id="oGU-Cv-pLq"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
-                                        <state key="normal" title="ADD">
-                                            <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
+                                        <state key="normal" title="ADD"/>
                                         <variation key="default">
                                             <mask key="constraints">
                                                 <exclude reference="GiO-gS-Dj0"/>
@@ -666,6 +664,7 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="lowerContentPanel" destination="2fW-qc-gWT" id="t01-YD-ezE"/>
                         <outlet property="tableView" destination="YAT-k3-vd4" id="GhX-5g-K12"/>
                     </connections>
                 </viewController>
