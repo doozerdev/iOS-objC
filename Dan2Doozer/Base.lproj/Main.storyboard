@@ -124,7 +124,7 @@
                                             <outlet property="delegate" destination="tAf-os-SWk" id="Xmx-vx-7m1"/>
                                         </connections>
                                     </textView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ARp-C1-spx">
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ARp-C1-spx">
                                         <rect key="frame" x="20" y="185" width="510" height="30"/>
                                         <state key="normal" title="Date Button"/>
                                         <connections>
@@ -174,16 +174,6 @@
                                             <constraint firstItem="k2m-y2-Nr0" firstAttribute="centerY" secondItem="Otx-7y-POO" secondAttribute="centerY" id="xYa-d3-srn"/>
                                         </constraints>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJx-SA-LnH">
-                                        <rect key="frame" x="530" y="185" width="50" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="Ynu-yX-MBD"/>
-                                        </constraints>
-                                        <state key="normal" title="Done"/>
-                                        <connections>
-                                            <action selector="doneButtonPressed:" destination="tAf-os-SWk" eventType="touchUpInside" id="dyj-N8-brS"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -191,7 +181,6 @@
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="leading" id="1UE-z0-2M4"/>
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="3Vv-SJ-5CD"/>
                                     <constraint firstAttribute="trailing" secondItem="prS-sP-AW0" secondAttribute="trailing" id="4aj-pV-TUb"/>
-                                    <constraint firstItem="uJx-SA-LnH" firstAttribute="top" secondItem="prS-sP-AW0" secondAttribute="bottom" id="4ix-eX-5xj"/>
                                     <constraint firstItem="3nn-yf-KOr" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="bottom" constant="10" id="Cbl-0z-uiv"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="leading" secondItem="3nn-yf-KOr" secondAttribute="trailing" id="Deh-EW-lAR"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" id="Jfb-mf-MAy"/>
@@ -202,11 +191,8 @@
                                     <constraint firstAttribute="bottom" secondItem="prS-sP-AW0" secondAttribute="bottom" id="RPL-JD-tZS"/>
                                     <constraint firstItem="g3J-It-PDJ" firstAttribute="top" secondItem="NCv-0O-ejP" secondAttribute="bottom" constant="20" id="Rd8-rM-UW1"/>
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="top" secondItem="g3J-It-PDJ" secondAttribute="bottom" constant="10" id="VHp-yU-Xkl"/>
-                                    <constraint firstItem="uJx-SA-LnH" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="top" id="ZNc-eB-8Mh"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="Zf9-TH-IWy"/>
-                                    <constraint firstItem="uJx-SA-LnH" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="trailing" id="bPc-KN-mgw"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="bottom" secondItem="3nn-yf-KOr" secondAttribute="bottom" id="ber-6I-NF0"/>
-                                    <constraint firstItem="prS-sP-AW0" firstAttribute="top" secondItem="uJx-SA-LnH" secondAttribute="bottom" constant="10" id="ewN-g0-UeX"/>
                                     <constraint firstAttribute="trailing" secondItem="NCv-0O-ejP" secondAttribute="trailing" constant="20" id="fHP-DB-LWv"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="top" secondItem="St5-CG-wWv" secondAttribute="bottom" id="hyf-sA-Yjc"/>
                                     <constraint firstAttribute="height" constant="530" id="iZA-9e-qt4"/>
@@ -215,16 +201,13 @@
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="leading" secondItem="g3J-It-PDJ" secondAttribute="leading" id="uhY-yj-huy"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="bottom" constant="2" id="vXl-1D-vA2"/>
                                     <constraint firstAttribute="trailing" secondItem="g3J-It-PDJ" secondAttribute="trailing" constant="20" id="wRB-qO-I4E"/>
-                                    <constraint firstAttribute="trailing" secondItem="uJx-SA-LnH" secondAttribute="trailing" constant="20" id="xZT-5Y-tDL"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="vXl-1D-vA2"/>
                                         <exclude reference="RPL-JD-tZS"/>
-                                        <exclude reference="ewN-g0-UeX"/>
                                         <exclude reference="1UE-z0-2M4"/>
                                         <exclude reference="MrF-TL-ICL"/>
-                                        <exclude reference="4ix-eX-5xj"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -244,7 +227,6 @@
                         <outlet property="dateButton3" destination="k2m-y2-Nr0" id="cMb-3t-ZeJ"/>
                         <outlet property="dateButton4" destination="St5-CG-wWv" id="RHd-pm-qaY"/>
                         <outlet property="datePicker" destination="prS-sP-AW0" id="fyp-eC-DkK"/>
-                        <outlet property="doneButton" destination="uJx-SA-LnH" id="JQC-k8-cNp"/>
                         <outlet property="upperViewPanel" destination="RU8-eL-alB" id="HEV-PN-mAs"/>
                     </connections>
                 </viewController>

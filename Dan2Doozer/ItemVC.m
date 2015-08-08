@@ -54,17 +54,11 @@
     self.dateButton2.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
     self.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
     self.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
-    self.doneButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
-
 
     self.dateButton.tintColor = themeColor;
     self.dateButton2.tintColor = themeColor;
     self.dateButton3.tintColor = themeColor;
     self.dateButton4.tintColor = themeColor;
-    self.doneButton.tintColor = themeColor;
-    
-    self.doneButton.hidden = YES;
-
     
     if (self.detailItem.duedate) {
         
@@ -172,16 +166,16 @@
 
 -(void)handleTap:(UITapGestureRecognizer*)tapGesture {
     
-    NSLog(@"tap handler");
-    
     CGPoint location = [tapGesture locationInView:self.view];
     
     NSLog(@"location = %f,%f", location.x, location.y);
     
     [self.view endEditing:YES];
     
+    if (location.y < 290) {
+        [self closeDatePanel];
+    }
     
-
 }
 
 
@@ -224,11 +218,9 @@
         self.upperViewPanel.frame = newFrame;
     } completion:^(BOOL finished) {
         self.showingDatePanel = YES;
-        self.doneButton.hidden = NO;
         self.dateButton2.userInteractionEnabled = YES;
         self.dateButton3.userInteractionEnabled = YES;
         self.dateButton4.userInteractionEnabled = YES;
-        self.doneButton.userInteractionEnabled = YES;
         
         [self.view endEditing:YES];
 
@@ -241,7 +233,6 @@
     self.dateButton2.userInteractionEnabled = NO;
     self.dateButton3.userInteractionEnabled = NO;
     self.dateButton4.userInteractionEnabled = NO;
-    self.doneButton.userInteractionEnabled = NO;
     
     self.showingDatePanel = NO;
     
@@ -257,7 +248,6 @@
         self.upperViewPanel.frame = newFrame;
     } completion:^(BOOL finished) {
         
-        self.doneButton.hidden = YES;
         
     }];
 }

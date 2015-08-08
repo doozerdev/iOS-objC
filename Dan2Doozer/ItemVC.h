@@ -19,7 +19,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *dateButton2;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton3;
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
-@property (weak, nonatomic) IBOutlet UIButton *doneButton;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton4;
 
 
