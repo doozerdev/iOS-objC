@@ -26,7 +26,6 @@
 
 @interface MasterViewController () <UITextFieldDelegate>
 
-//@property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
 
 @end
 
@@ -64,8 +63,6 @@
     
     self.addingAnItem = NO;
     self.rowOfExpandedCell = -1;
-
-    // Do any additional setup after loading the view, typically from a nib.
     
     self.view.backgroundColor = [UIColor whiteColor];
 
@@ -108,7 +105,6 @@
     
     NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     
-    // You can send attributes of any name/value
     [Intercom updateUserWithAttributes:@{
                                          @"custom_attributes": @{
                                                  @"list_count" : listCount,

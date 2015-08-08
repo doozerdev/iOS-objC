@@ -102,7 +102,7 @@
                                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="200" id="znH-da-sSZ"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="22"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
                                         <variation key="default">
                                             <mask key="constraints">
                                                 <exclude reference="znH-da-sSZ"/>

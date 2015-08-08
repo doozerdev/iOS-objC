@@ -162,6 +162,16 @@
     NSLog(@"completed text feild editing");
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
+    if([text isEqualToString:@"\n"] && textView == self.ItemTitle) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+    
+    return YES;
+}
+
 -(void)handleTap:(UITapGestureRecognizer*)tapGesture {
     
     NSLog(@"tap handler");
