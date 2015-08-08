@@ -1045,7 +1045,7 @@
     //NSLog(@"location = %f,%f", location.x, location.y);
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
     
-    NSLog(@"tapped on row %ld", (long)indexPath.row);
+    NSLog(@"tapped on row %@", indexPath);
     
     Item *clickedItem = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
@@ -1055,7 +1055,9 @@
     
         if (self.rowOfNewItem != -1) {
             
-            if (indexPath.row != self.rowOfNewItem) {
+            if (indexPath.row != self.rowOfNewItem || indexPath == nil) {
+                
+                NSLog(@"dave or remove empty row....");
                 [self saveOrRemoveEmptyRow];
             }
             
