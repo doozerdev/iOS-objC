@@ -124,6 +124,7 @@
     [super viewWillDisappear: animated];
     // Force any text fields that might be being edited to end
     [self.view.window endEditing: YES];
+    [self saveOrRemoveRow];
 }
 
 
@@ -303,6 +304,11 @@
         }
     }
     [cell.cellItemTitle becomeFirstResponder];
+    
+    NSLog(@"sroclling newly created list to the top");
+    [self.tableView scrollToRowAtIndexPath:newItemIndexPath
+                          atScrollPosition:UITableViewScrollPositionTop
+                                  animated:YES];
 }
 
 
