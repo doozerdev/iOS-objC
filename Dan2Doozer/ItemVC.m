@@ -24,13 +24,7 @@
     
     self.ItemTitle.text = self.detailItem.title;
     
-    CGFloat fixedWidth = self.ItemTitle.frame.size.width;
-    CGSize newSize = [self.ItemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
-    CGRect newFrame = self.ItemTitle.frame;
-    newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-    self.ItemTitle.frame = newFrame;
-    
-    self.titleFieldExtraHeight = newSize.height - 46.5;
+
     
     if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
         self.Notes.text = self.detailItem.notes;
@@ -99,6 +93,10 @@
     
     self.ItemTitle.scrollEnabled = NO;
     self.Notes.scrollEnabled = YES;
+    
+    self.ItemTitle.font = [UIFont fontWithName:@"Avenir" size:22];
+    
+    NSLog(@"original titlefieldextraheight == === = = %f", self.titleFieldExtraHeight);
     
 }
 
@@ -188,11 +186,17 @@
 
 
 -(void)viewDidLayoutSubviews {
+        
+    CGFloat fixedWidth = self.ItemTitle.frame.size.width;
+    CGSize newSize = [self.ItemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+    CGRect newFrame = self.ItemTitle.frame;
+    newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
+    self.ItemTitle.frame = newFrame;
     
-    NSLog(@"layout sections");
+    self.titleFieldExtraHeight = newSize.height - 46.5;
     
     CGRect currentFrame = self.upperViewPanel.frame;
-
+    
     if (self.showingDatePanel) {
         CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
         self.upperViewPanel.frame = newFrame;
