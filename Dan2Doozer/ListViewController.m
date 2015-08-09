@@ -25,8 +25,6 @@
 
 @implementation ListViewController
 
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -62,6 +60,7 @@
     [self.view addGestureRecognizer:panGesture];
     panGesture.delegate =self;
     
+    NSLog(@"all items = %@", self.fetchedResultsController.fetchedObjects);
 
     
 }
@@ -74,6 +73,8 @@
     self.rowOfNewItem = -1;
     self.isAutoScrolling = NO;
     self.pixelCorrection = 0;
+    
+    [self.tableView reloadData];
     
 }
 
@@ -162,23 +163,27 @@
                         Item *parent = self.displayList;
                         originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
                         originalCell.cellItemTitle.text = @"\U00002713\U0000FE0E";
-                        
+
+                        originalCell.cellItemTitle.textColor = [UIColor whiteColor];
+
                         if (swipedItem.done.intValue == 1) {
                             if ((location.x-startPoint.x) > swipeThreshold) {
-                                originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                                originalCell.cellItemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:20];
+
                             }else{
-                                originalCell.cellItemTitle.textColor = [UIColor whiteColor];
+                                originalCell.cellItemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:30];
+
                             }
                         }else{
                             if ((location.x-startPoint.x) > swipeThreshold) {
-                                originalCell.cellItemTitle.textColor = [UIColor whiteColor];
+                                originalCell.cellItemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:30];
+
 
                             }else{
-                                originalCell.cellItemTitle.textColor = [UIColor lightGrayColor];
+                                originalCell.cellItemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:20];
+
                             }
                         }
-                        originalCell.cellItemTitle.font = [UIFont boldSystemFontOfSize:26];
-                        
                     }
                        
                     break;
@@ -276,106 +281,52 @@
         //NSLog(@"item title to toggle = %@", swipedItem.title);
         
         NSArray *listArray = [self.fetchedResultsController fetchedObjects];
-        NSMutableArray *completedItemOrderValues = [[NSMutableArray alloc] init];
-        NSMutableArray *allItemOrderValues = [[NSMutableArray alloc] init];
-        
-        int unCompletedCount = 0;
-        
-        for (id eachElement in listArray){
-            Item *theItem = eachElement;
-            [allItemOrderValues addObject:theItem.order];
-            if ([theItem.done intValue] == 1) {
-                [completedItemOrderValues addObject:theItem.order];
-            }else{
-                unCompletedCount += 1;
+        int indexOfCompletedHeader = 0;
+        int loopcount = 0;
+        for (Item *eachItem in listArray) {
+            if ([eachItem.type isEqualToString:@"completed_header"]) {
+                indexOfCompletedHeader = loopcount;
             }
+            loopcount += 1;
         }
+        Item *completedHeader = [listArray objectAtIndex:indexOfCompletedHeader];
         
-        int completedMinOrder = [[completedItemOrderValues valueForKeyPath:@"@min.intValue"] intValue];
-        int maxItemOrder = [[allItemOrderValues valueForKeyPath:@"@max.intValue"] intValue];
-        
-        
-        
-        NSNumber *num = [NSNumber numberWithInt:completedMinOrder];
-        
-        int indexOfFirstCompleted = 0;
-        
-        if ([num intValue] == 0) {
-            int newOrderForCompletedItem = maxItemOrder + 10000000;
-            NSNumber *orderForCompleted = [NSNumber numberWithInt:newOrderForCompletedItem];
-            swipedItem.order = orderForCompleted;
+        int newOrder = 0;
+        if (swipedItem.done.intValue == 0) {
+            swipedItem.done = [NSNumber numberWithInt:1];
             
-            if([swipedItem.done intValue] == 0){
-                swipedItem.done = [NSNumber numberWithBool:true];
+            if ([listArray count] - 1 > indexOfCompletedHeader) {
+                Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader+1];
+                newOrder = ((adjacentItem.order.intValue - completedHeader.order.intValue) / 2) + completedHeader.order.intValue;
             }else{
-                swipedItem.done = [NSNumber numberWithBool:false];
+                newOrder = completedHeader.order.intValue + 100000000;
             }
             
-        }
-        else{
-            int loopcount = 0;
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Completed_Item_From_List_Screen" metaData: @{@"date": date}];
             
-            for(id eachElement in allItemOrderValues){
-                NSNumber *placeholder = eachElement;
-                int value = [placeholder intValue];
-                if (value == completedMinOrder)
-                {
-                    indexOfFirstCompleted = loopcount;
-                }
-                loopcount ++;
-            }
-            
-            int indexOfCompletedHeader = indexOfFirstCompleted - 1;
-            int indexOfLastUncompleted = indexOfFirstCompleted - 2;
-            int newOrderForCompletedItem = 0;
-            
-            NSNumber *monkey = [allItemOrderValues objectAtIndex:indexOfCompletedHeader];
-            int orderValOfCompletedHeader = [monkey intValue];
-            
-            if([swipedItem.done intValue] == 0){
-                swipedItem.done = [NSNumber numberWithBool:true];
-                newOrderForCompletedItem = ((completedMinOrder - orderValOfCompletedHeader)/2)+orderValOfCompletedHeader;
-            }else{
-                swipedItem.done = [NSNumber numberWithBool:false];
-                
-                
-                int lastUncompletedOrder = 0;
-                if (unCompletedCount > 1){
-                    lastUncompletedOrder = [[allItemOrderValues objectAtIndex:indexOfLastUncompleted] intValue];
-                }
-                newOrderForCompletedItem = ((orderValOfCompletedHeader-lastUncompletedOrder)/2)+lastUncompletedOrder;
-            }
-            
-            swipedItem.order = [NSNumber numberWithInt:newOrderForCompletedItem];
-        }
-        
-        NSString *itemIdCharacter = [swipedItem.itemId substringToIndex:1];
-        
-        if ([itemIdCharacter isEqualToString:@"1"]) {
-            //do nothing
         }else{
-            NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
-            [newArrayOfItemsToUpdate addObject:swipedItem.itemId];
-            [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            swipedItem.done = [NSNumber numberWithInt:0];
+            
+            if (indexOfCompletedHeader == 0) {
+                
+                newOrder = completedHeader.order.intValue / 2;
+                
+            }else{
+                
+                Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader-1];
+                newOrder = ((completedHeader.order.intValue - adjacentItem.order.intValue) / 2) + adjacentItem.order.intValue;
+            }
+            int timestamp = [[NSDate date] timeIntervalSince1970];
+            NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+            [Intercom logEventWithName:@"Uncompleted_Item_From_List_Screen" metaData: @{@"date": date}];
         }
-        // Save the context.
+        swipedItem.order = [NSNumber numberWithInt:newOrder];
         
-        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
-        NSManagedObjectContext* context = appDelegate.managedObjectContext;
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        //NSLog(@"checking for rebalancing!!!!!!");
         [self rebalanceListIfNeeded];
-        int timestamp = [[NSDate date] timeIntervalSince1970];
-        NSString *date = [NSString stringWithFormat:@"%d", timestamp];
-        [Intercom logEventWithName:@"Completed_Item_From_List_Screen" metaData: @{@"date": date}];
-        
-        [DoozerSyncManager syncWithServer];
+        [UpdateItemsOnServer updateThisItem:swipedItem];
+
     }
 }
 
@@ -561,7 +512,7 @@
         
     }
     
-    newItem.done = 0;
+    newItem.done = [NSNumber numberWithInt:0];
     newItem.notes = @" ";
     
     Item *parentList = self.displayList;

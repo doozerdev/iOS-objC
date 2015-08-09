@@ -15,6 +15,7 @@
 #import "DeleteItemFromServer.h"
 #import "ColorHelper.h"
 #import "AppDelegate.h"
+#import "LoginViewController.h"
 
 BOOL _syncOpActive;
 int _syncTryCount;
@@ -25,6 +26,9 @@ double _lastSyncRequest;
 
 
 +(void)syncWithServer{
+    if ([FBSDKAccessToken currentAccessToken]) {
+        NSLog(@"valid token fB");
+    
     double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
     
     NSLog(@"diff in time sync requests is %f", currentSyncRequest - _lastSyncRequest);
@@ -86,6 +90,19 @@ double _lastSyncRequest;
         }
         
     }
+        
+    }else{
+        NSLog(@"no FB token - should direct back to login screen");
+        /*
+        LoginViewController *loginController = [[LoginViewController alloc]
+                                                  init];
+        loginController.delegate = self;
+        
+        //UINavigationController *navigationController = [[UINavigationController alloc]
+                                                        //initWithRootViewController:loginController];
+        [self presentViewController:loginController animated:YES completion: nil];
+    */
+    }
 }
 
 
@@ -97,6 +114,9 @@ double _lastSyncRequest;
     GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
     //NSLog(@"launching the GET ITEMS FROM DOOZER operatrion");
     [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
+        
+        NSLog(@"items from server ============= %@", itemsBigArray);
+        
         [self copyFromServer :itemsBigArray];
         
         NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];

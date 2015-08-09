@@ -10,6 +10,8 @@
 #import "ColorHelper.h"
 #import "UpdateItemsOnServer.h"
 #import "Intercom.h"
+#import "CoreDataItemManager.h"
+#import "AppDelegate.h"
 
 @interface ItemVC () <UIGestureRecognizerDelegate, UITextViewDelegate>
 
@@ -30,12 +32,12 @@
     
     if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
         self.Notes.text = self.detailItem.notes;
-        self.Notes.font = [UIFont fontWithName:@"Avenir-Medium" size:14];
+        self.Notes.font = [UIFont fontWithName:@"Avenir" size:17];
         self.Notes.textColor = [UIColor blackColor];
 
     }else{
         self.Notes.text = @"Add notes here...";
-        self.Notes.font = [UIFont fontWithName:@"Avenir-MediumOblique" size:14];
+        self.Notes.font = [UIFont fontWithName:@"Avenir-Oblique" size:17];
         self.Notes.textColor = [UIColor lightGrayColor];
     }
     
@@ -52,10 +54,10 @@
     
     self.dateButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
 
-    self.dateButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
-    self.dateButton2.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
-    self.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
-    self.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:16];
+    self.dateButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    self.dateButton2.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    self.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+    self.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
 
     self.dateButton.tintColor = themeColor;
     self.dateButton2.tintColor = themeColor;
@@ -90,9 +92,140 @@
     self.ItemTitle.scrollEnabled = NO;
     self.Notes.scrollEnabled = YES;
     
-    self.ItemTitle.font = [UIFont fontWithName:@"Avenir" size:22];
+    self.ItemTitle.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
     
     NSLog(@"original titlefieldextraheight == === = = %f", self.titleFieldExtraHeight);
+    
+    
+    UIImage *image = [[UIImage alloc]init];
+    
+    if (self.detailItem.done.intValue == 0) {
+        image = [UIImage imageNamed:@"circleundone"];
+    }else{
+        image = [UIImage imageNamed:@"circledone"];
+    }
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(toggleComplete) forControlEvents:UIControlEventTouchUpInside];
+    button.adjustsImageWhenHighlighted = NO;
+    UIBarButtonItem *rightButton =[[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = rightButton;
+    
+}
+
+- (void)toggleComplete{
+    
+    NSArray *listArray = [self fetchEntireList];
+    int indexOfCompletedHeader = 0;
+    int loopcount = 0;
+    for (Item *eachItem in listArray) {
+        if ([eachItem.type isEqualToString:@"completed_header"]) {
+            indexOfCompletedHeader = loopcount;
+        }
+        loopcount += 1;
+    }
+    Item *completedHeader = [listArray objectAtIndex:indexOfCompletedHeader];
+    UIImage *image = [[UIImage alloc]init];
+    
+    int newOrder = 0;
+    if (self.detailItem.done.intValue == 0) {
+        self.detailItem.done = [NSNumber numberWithInt:1];
+        image = [UIImage imageNamed:@"circledone"];
+        
+        if ([listArray count] - 1 > indexOfCompletedHeader) {
+            Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader+1];
+            newOrder = ((adjacentItem.order.intValue - completedHeader.order.intValue) / 2) + completedHeader.order.intValue;
+        }else{
+            newOrder = completedHeader.order.intValue + 100000000;
+        }
+        int timestamp = [[NSDate date] timeIntervalSince1970];
+        NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+        [Intercom logEventWithName:@"Completed_Item_From_Item_Screen" metaData: @{@"date": date}];
+
+    }else{
+        self.detailItem.done = [NSNumber numberWithInt:0];
+        image = [UIImage imageNamed:@"circleundone"];
+        
+        if (indexOfCompletedHeader == 0) {
+            
+            newOrder = completedHeader.order.intValue / 2;
+            
+        }else{
+            
+            Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader-1];
+            newOrder = ((completedHeader.order.intValue - adjacentItem.order.intValue) / 2) + adjacentItem.order.intValue;
+        }
+        int timestamp = [[NSDate date] timeIntervalSince1970];
+        NSString *date = [NSString stringWithFormat:@"%d", timestamp];
+        [Intercom logEventWithName:@"Uncompleted_Item_From_Item_Screen" metaData: @{@"date": date}];
+    }
+    self.detailItem.order = [NSNumber numberWithInt:newOrder];
+
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(toggleComplete) forControlEvents:UIControlEventTouchUpInside];
+    button.adjustsImageWhenHighlighted = NO;
+    UIBarButtonItem *rightButton =[[UIBarButtonItem alloc] initWithCustomView:button];
+    self.navigationItem.rightBarButtonItem = rightButton;
+
+        
+    [self rebalanceListIfNeeded];
+    [UpdateItemsOnServer updateThisItem:self.detailItem];
+    
+}
+
+
+-(void)rebalanceListIfNeeded{
+    //NSLog(@"inside rebalance list if needed method");
+    
+    NSArray *itemsOnList = [self fetchEntireList];
+    
+    BOOL rebalanceNeeded = NO;
+    int previousItemOrder = 0;
+    for (Item *eachItem in itemsOnList){
+        int diff = eachItem.order.intValue - previousItemOrder;
+        previousItemOrder = eachItem.order.intValue;
+        if (diff < 2){
+            rebalanceNeeded = YES;
+        }
+    }
+    if (rebalanceNeeded) {
+        [CoreDataItemManager rebalanceItemOrderValues:itemsOnList];
+    }
+    
+}
+
+-(NSArray *)fetchEntireList{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"parent == %@", self.detailItem.parent];
+    [fetchRequest setPredicate:predicate];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSFetchedResultsController *newFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"ItemPage"];
+    [NSFetchedResultsController deleteCacheWithName:@"ItemPage"];
+    
+    NSError *error = nil;
+    if (![newFetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return newFetchedResultsController.fetchedObjects;
     
 }
 
@@ -126,7 +259,7 @@
     if ([self.Notes.text isEqualToString:@"Add notes here..."]) {
         
         self.Notes.text = @"";
-        self.Notes.font = [UIFont fontWithName:@"Avenir-Medium" size:14];
+        self.Notes.font = [UIFont fontWithName:@"Avenir" size:17];
         self.Notes.textColor = [UIColor blackColor];
     }
     

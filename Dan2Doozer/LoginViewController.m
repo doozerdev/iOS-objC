@@ -153,6 +153,7 @@ NSString *sessionID = nil;
     NSString *fbUserName = [FBSDKProfile currentProfile].name;
     
     if (fbUserId) {
+        
         [Intercom registerUserWithUserId:fbUserId];
     
         [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{@"fields": @"email"}]

@@ -144,6 +144,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
+    
+    NSNumber *count = itemStats[0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
+    NSString *countString =  [NSString stringWithFormat:@"%ld", (long)count.integerValue];
+    
     self.rowOfExpandedCell = -1;
     self.navigationController.navigationBar.barStyle  = UIBarStyleDefault;
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
@@ -152,19 +158,20 @@
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
     self.tableView.separatorColor = [UIColor whiteColor];
-
     
-    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
+    UIBarButtonItem *addItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showAddItemCard)];
+    UIBarButtonItem *dueItems = [[UIBarButtonItem alloc] initWithTitle:countString style:UIBarButtonItemStylePlain target:self action:@selector(showDueItemView)];
     
-    NSNumber *count = itemStats[0];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
-
-    self.dueButton.title = [NSString stringWithFormat:@"%ld", (long)count.integerValue];
+    addItem.tintColor = [UIColor blackColor];
+    
     if (count.integerValue == 0) {
-        self.dueButton.tintColor = [UIColor blackColor];
+        dueItems.tintColor = [UIColor blackColor];
     }else{
-        self.dueButton.tintColor = [UIColor redColor];
+        dueItems.tintColor = [UIColor redColor];
     }
+    NSArray *actionButtonItems = @[addItem, dueItems];
+    self.navigationItem.rightBarButtonItems = actionButtonItems;
+    
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
     NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
@@ -182,7 +189,18 @@
     
 }
 
+-(void)showAddItemCard{
+    
+    [self performSegueWithIdentifier:@"showAddItemView" sender:self];
+    
+}
 
+
+-(void)showDueItemView{
+    
+    [self performSegueWithIdentifier:@"showDueItemView" sender:self];
+    
+}
 
 - (void) viewWillDisappear: (BOOL) animated {
     [super viewWillDisappear: animated];
