@@ -123,6 +123,8 @@ double _lastSyncRequest;
         if ([firstItem isKindOfClass:[NSString class]]) {
             NSLog(@"it's a string and the value is %@", firstItem);
             _syncOpActive = NO;
+            
+            [self performSelector:@selector(syncWithServer) withObject:nil afterDelay:3.5f];
 
         }else{
         
