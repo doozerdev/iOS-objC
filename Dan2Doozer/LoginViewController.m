@@ -17,7 +17,7 @@
 #import "AddItemsToServer.h"
 
 
-@interface LoginViewController ()
+@interface LoginViewController ()  <UIAlertViewDelegate> 
 @property (weak, nonatomic) IBOutlet UIButton *loginButtonFacebook;
 
 @end
@@ -199,24 +199,56 @@ NSString *sessionID = nil;
             GetItemsFromDoozer *foo = [[GetItemsFromDoozer alloc] init];
             [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
                 
-                NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
-                int secondsEpochInt = secondsSinceUnixEpoch;
-                NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
-                [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+                id firstItem = nil;
+                if ([itemsBigArray count] > 0) {
+                    firstItem = [itemsBigArray objectAtIndex:0];
+                }
+                if ([firstItem isKindOfClass:[NSString class]]) {
+                    NSLog(@"it's a string (inside LoginVC) - %@", firstItem);
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops!"
+                                                                    message:@"We're having trouble connecting to the server. You play around with the sample lists, while we keep trying the server in the background."
+                                                                   delegate:self
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                    
+                }else{
                 
-                [DoozerSyncManager copyFromServer :itemsBigArray];
-                
-                [self performSelector:@selector(showListList) withObject:nil afterDelay:0];
-                
+                    NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
+                    int secondsEpochInt = secondsSinceUnixEpoch;
+                    NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
+                    [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    [DoozerSyncManager copyFromServer :itemsBigArray];
+                    
+                    [self performSelector:@selector(showListList) withObject:nil afterDelay:0];
+                }
             }];
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
+            NSLog(@"login failed!!");
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Ooops!"
+                                                            message:@"We're having trouble connecting to the server. You play around with the sample lists, while we keep trying the server in the background."
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+            
         }];
     }
 }
 
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    // the user clicked OK
+    if (buttonIndex == 0) {
+        [self performSelector:@selector(showListList) withObject:nil afterDelay:0];
+    }
+}
 
 
 

@@ -63,7 +63,7 @@
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    NSLog(@"ended scrolling");
+    //NSLog(@"ended scrolling");
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.isScrolling = NO;
@@ -124,7 +124,7 @@
             if (eachItem.done.intValue == 0) {
                 NSString *dueDateString = [df stringFromDate:eachItem.duedate];
                 if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {
-                    NSLog(@"due item is = %@", eachItem.title);
+                    //NSLog(@"due item is = %@", eachItem.title);
                     count += 1;
                 }
             }

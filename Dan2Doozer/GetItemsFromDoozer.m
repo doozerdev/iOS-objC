@@ -66,6 +66,12 @@
               
           }
           
+          NSString *warning = @"Operation Failed";
+          [itemsArray addObject:warning];
+          
+          _completionHandler(itemsArray);
+          _completionHandler = nil;
+
       }];
 }
 

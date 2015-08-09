@@ -111,11 +111,13 @@
     [self rebalanceListOrdersIfNeeded];
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
+   /*
     if (numberOfLaunches.intValue == 0) {
         NSLog(@"first launch -- not syncing when loading main screen");
     }else{
         [DoozerSyncManager syncWithServer];
     }
+    */
     
     //make a sample set of data for brand new users
     NSLog(@"num launeces = %@, array count = %lu", numberOfLaunches, (unsigned long)[self.fetchedResultsController.fetchedObjects count]);
@@ -143,6 +145,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [DoozerSyncManager syncWithServer];
     
     NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     
@@ -686,7 +690,7 @@
         
     }
     
-    if ([[segue identifier] isEqualToString:@"showDueItems"]){
+    if ([[segue identifier] isEqualToString:@"showDueItemView"]){
      
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
         self.navigationController.navigationBar.tintColor = [UIColor blackColor];

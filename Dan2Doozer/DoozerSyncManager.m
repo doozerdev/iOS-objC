@@ -17,7 +17,7 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 
-BOOL _syncOpActive;
+BOOL _syncOpActive; //heroku is slow - don't request another sync op if one is active
 int _syncTryCount;
 double _lastSyncRequest;
 
@@ -28,69 +28,68 @@ double _lastSyncRequest;
 +(void)syncWithServer{
     if ([FBSDKAccessToken currentAccessToken]) {
         NSLog(@"valid token fB");
-    
-    double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
-    
-    NSLog(@"diff in time sync requests is %f", currentSyncRequest - _lastSyncRequest);
-    
-    if (currentSyncRequest - _lastSyncRequest > 3) {
         
-        _lastSyncRequest = currentSyncRequest;
-
-        //login to Doozer if needed
-        if(_syncOpActive){
-            NSLog(@"sync op active! no additional sync this time");
-            _syncTryCount += 1;
-
-            if (_syncTryCount > 5) {
-                _syncOpActive = NO;
-                _syncTryCount = 0;
-                NSLog(@"reseting synctrycount and syncopactive");
-            }
-        }else{
-            _syncTryCount = 0;
-            _syncOpActive = YES;
-            double currentTime = [[NSDate date] timeIntervalSince1970];
-            NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
+        double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
+        
+        NSLog(@"diff in time sync requests is %f", currentSyncRequest - _lastSyncRequest);
+        
+        if (currentSyncRequest - _lastSyncRequest > 3) {
             
-            //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
-            
-            NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+            _lastSyncRequest = currentSyncRequest;
 
-            
-            if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
-                NSLog(@"Sync starts with LOGIN");
-                
-                NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-                NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
-                
-                AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-                [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                    
-                    NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-                    [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    NSLog(@"returning message from login operation");
-                    
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    
-                    
-                    [self performSyncSteps];
-                    
-                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                    NSLog(@"Error: %@", error);
-                }];
+            //login to Doozer if needed
+            if(_syncOpActive){
+                NSLog(@"sync op active! no additional sync this time");
+                _syncTryCount += 1;
+
+                if (_syncTryCount > 3) {
+                    _syncOpActive = NO;
+                    _syncTryCount = 0;
+                    NSLog(@"reseting synctrycount and syncopactive");
+                }
             }else{
-                NSLog(@"Sync WITHOUT login needed");
-
-                [self performSyncSteps];
+                _syncTryCount = 0;
+                _syncOpActive = YES;
+                double currentTime = [[NSDate date] timeIntervalSince1970];
+                NSNumber *lastDoozerAuth = [[NSUserDefaults standardUserDefaults] valueForKey:@"lastDoozerAuth"];
                 
+                //NSLog(@"lastAuth %@ and cuurent time is %f, diff of %f", lastDoozerAuth, currentTime, currentTime-lastDoozerAuth.floatValue);
+                
+                NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+
+                
+                if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
+                    NSLog(@"Sync starts with LOGIN");
+                    
+                    NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+                    NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
+                    
+                    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+                    [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        
+                        NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+                        [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        NSLog(@"returning message from login operation");
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        
+                        
+                        [self performSyncSteps];
+                        
+                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        NSLog(@"Error: %@", error);
+                        
+                        
+                    }];
+                }else{
+                    NSLog(@"Sync WITHOUT login needed");
+
+                    [self performSyncSteps];
+                }
             }
         }
-        
-    }
-        
     }else{
         NSLog(@"no FB token - should direct back to login screen");
         /*
@@ -117,51 +116,73 @@ double _lastSyncRequest;
         
         NSLog(@"items from server ============= %@", itemsBigArray);
         
-        [self copyFromServer :itemsBigArray];
+        id firstItem = nil;
+        if ([itemsBigArray count] > 0) {
+            firstItem = [itemsBigArray objectAtIndex:0];
+        }
+        if ([firstItem isKindOfClass:[NSString class]]) {
+            NSLog(@"it's a string and the value is %@", firstItem);
+            _syncOpActive = NO;
+
+        }else{
         
-        NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
-        NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
-        NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
-        NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
-        NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
-        NSLog(@"items to update on the server = %@", itemsToUpdate);
-        NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
-        NSLog(@"items to delete from server = %@", itemsToDelete);
-        
-        AddItemsToServer *moo = [[AddItemsToServer alloc] init];
-        [moo addItemsToServer:newArrayOfListsToAdd :context :^(int handler) {
+            [self copyFromServer :itemsBigArray];
             
-            //NSLog(@"here's the completion handler variable = %d", handler);
-            //NSLog(@"add lists successfully returned");
+            NSMutableArray *newArrayOfListsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"listsToAdd"];
+            NSLog(@"lists to add to server = %@", newArrayOfListsToAdd);
+            NSMutableArray *newArrayOfItemsToAdd = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToAdd"];
+            NSLog(@"items to add to server = %@", newArrayOfItemsToAdd);
+            NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
+            NSLog(@"items to update on the server = %@", itemsToUpdate);
+            NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
+            NSLog(@"items to delete from server = %@", itemsToDelete);
             
-            AddItemsToServer *cluck = [[AddItemsToServer alloc] init];
-            [cluck addItemsToServer:newArrayOfItemsToAdd :context :^(int handler){
+            AddItemsToServer *moo = [[AddItemsToServer alloc] init];
+            [moo addItemsToServer:newArrayOfListsToAdd :context :^(int handler) {
                 
-                //NSLog(@"add items successfully returned");
-                UpdateItemsOnServer *baah = [[UpdateItemsOnServer alloc] init];
-                [baah updateItemsOnServer:itemsToUpdate :context :^(int handler){
-                    
-                    //NSLog(@"update items successfully returned");
-                    DeleteItemFromServer *meow = [[DeleteItemFromServer alloc] init];
-                    [meow deleteItemFromServer:itemsToDelete :^(int handler){
+                if (handler == -1) {
+                    _syncOpActive = NO;
+                }else{
+                
+                    AddItemsToServer *cluck = [[AddItemsToServer alloc] init];
+                    [cluck addItemsToServer:newArrayOfItemsToAdd :context :^(int handler){
                         
-                        //NSLog(@"delete items successfully returned");
-                        NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
-                        int secondsEpochInt = secondsSinceUnixEpoch;
-                        NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
-                        [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        _syncOpActive = NO;
+                        if (handler == -1) {
+                            _syncOpActive = NO;
+
+                        }else{
                         
-                        
+                            //NSLog(@"add items successfully returned");
+                            UpdateItemsOnServer *baah = [[UpdateItemsOnServer alloc] init];
+                            [baah updateItemsOnServer:itemsToUpdate :context :^(int handler){
+                                
+                                if (handler == -1) {
+                                    _syncOpActive = NO;
+
+                                }else{
+                                
+                                    //NSLog(@"update items successfully returned");
+                                    DeleteItemFromServer *meow = [[DeleteItemFromServer alloc] init];
+                                    [meow deleteItemFromServer:itemsToDelete :^(int handler){
+                                        
+                                        if (handler != -1) {
+                                            //NSLog(@"delete items successfully returned");
+                                            NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
+                                            int secondsEpochInt = secondsSinceUnixEpoch;
+                                            NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
+                                            [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+                                            [[NSUserDefaults standardUserDefaults] synchronize];
+                                        }
+                                        _syncOpActive = NO;
+
+                                    }];
+                                }
+                            }];
+                        }
                     }];
-                    
-                }];
-                
+                }
             }];
-            
-        }];
-        
+        }
     }];
 
     

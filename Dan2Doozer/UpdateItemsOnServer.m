@@ -112,8 +112,8 @@
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
-            //_completionHandler(-1);
-            //_completionHandler = nil;
+            _completionHandler(-1);
+            _completionHandler = nil;
         }];
     }
 

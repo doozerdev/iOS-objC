@@ -60,6 +60,9 @@
                 NSLog(@"404 error when trying to delete. Removing item from local delete queue");
                 [self removeItemFromDeleteQueue:itemIdToDelete];
             }
+            
+            _completionHandler(-1);
+            _completionHandler = nil;
 
         }];
     }

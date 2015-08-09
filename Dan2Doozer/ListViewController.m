@@ -60,7 +60,7 @@
     [self.view addGestureRecognizer:panGesture];
     panGesture.delegate =self;
     
-    NSLog(@"all items = %@", self.fetchedResultsController.fetchedObjects);
+    //NSLog(@"all items = %@", self.fetchedResultsController.fetchedObjects);
 
     
 }
@@ -1293,24 +1293,24 @@
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            NSLog(@"ChangeInsert index path to delete = %@", indexPath);
+            //NSLog(@"ChangeInsert index path to delete = %@", indexPath);
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            NSLog(@"ChangeDelete index path to delete = %@", indexPath);
+            //NSLog(@"ChangeDelete index path to delete = %@", indexPath);
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
         
         case NSFetchedResultsChangeUpdate:
-            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
+            //NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
             [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
          
             
         case NSFetchedResultsChangeMove:
-            NSLog(@"moving rows in CHANGEMOVE");
+            //NSLog(@"moving rows in CHANGEMOVE");
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
