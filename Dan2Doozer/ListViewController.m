@@ -916,6 +916,10 @@
 
     }
     self.rowOfNewItem = -1;
+    //self.fetchedResultsController = nil;
+    
+    //NSLog(@"fetch = %@", self.fetchedResultsController.fetchedObjects);
+    
     [self.tableView reloadData];
     
 }
@@ -1125,7 +1129,7 @@
 
             cell.cellItemTitle.attributedText = nil;
             
-            cell.cellItemTitle.text = object.title;
+            cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
@@ -1213,6 +1217,9 @@
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
+    
+    NSLog(@"start of FRC");
+
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"ItemRecord" inManagedObjectContext:self.managedObjectContext];
@@ -1249,6 +1256,9 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+    
+    NSLog(@"END of FRC");
+
     
     return _fetchedResultsController;
 }

@@ -35,7 +35,12 @@
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
 		A2C2F1EC1B57144800360A25 /* ColorHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2F1EB1B57144800360A25 /* ColorHelperTests.m */; };
 		A2C2F1F61B588AEB00360A25 /* DoozerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2F1F51B588AEB00360A25 /* DoozerUITests.m */; };
-		A2C9F9D71B782FDD00EB2DFF /* lelib in Resources */ = {isa = PBXBuildFile; fileRef = A2C9F9D61B782FDD00EB2DFF /* lelib */; };
+		A2C9F9E91B78333300EB2DFF /* LEBackgroundThread.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9DC1B78333300EB2DFF /* LEBackgroundThread.m */; };
+		A2C9F9EA1B78333300EB2DFF /* lecore.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9DE1B78333300EB2DFF /* lecore.m */; };
+		A2C9F9EB1B78333300EB2DFF /* LELog.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9E21B78333300EB2DFF /* LELog.m */; };
+		A2C9F9EC1B78333300EB2DFF /* LeNetworkStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9E41B78333300EB2DFF /* LeNetworkStatus.m */; };
+		A2C9F9ED1B78333300EB2DFF /* LogFile.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9E61B78333300EB2DFF /* LogFile.m */; };
+		A2C9F9EE1B78333300EB2DFF /* LogFiles.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C9F9E81B78333300EB2DFF /* LogFiles.m */; };
 		A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55391B2F851700D19660 /* AddItemsToServer.m */; };
 		A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */; };
 		A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */; };
@@ -111,8 +116,21 @@
 		A2C2F1F31B588AEB00360A25 /* DoozerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C2F1F51B588AEB00360A25 /* DoozerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoozerUITests.m; sourceTree = "<group>"; };
 		A2C2F1F71B588AEB00360A25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A2C9F9D61B782FDD00EB2DFF /* lelib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lelib; sourceTree = "<group>"; };
 		A2C9F9D81B78308300EB2DFF /* lelib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lelib; path = "../../../Downloads/le_ios-master/lelib"; sourceTree = "<group>"; };
+		A2C9F9DB1B78333300EB2DFF /* LEBackgroundThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEBackgroundThread.h; sourceTree = "<group>"; };
+		A2C9F9DC1B78333300EB2DFF /* LEBackgroundThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEBackgroundThread.m; sourceTree = "<group>"; };
+		A2C9F9DD1B78333300EB2DFF /* lecore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lecore.h; sourceTree = "<group>"; };
+		A2C9F9DE1B78333300EB2DFF /* lecore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = lecore.m; sourceTree = "<group>"; };
+		A2C9F9DF1B78333300EB2DFF /* lelib-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "lelib-Prefix.pch"; sourceTree = "<group>"; };
+		A2C9F9E01B78333300EB2DFF /* lelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lelib.h; sourceTree = "<group>"; };
+		A2C9F9E11B78333300EB2DFF /* LELog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LELog.h; sourceTree = "<group>"; };
+		A2C9F9E21B78333300EB2DFF /* LELog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LELog.m; sourceTree = "<group>"; };
+		A2C9F9E31B78333300EB2DFF /* LeNetworkStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeNetworkStatus.h; sourceTree = "<group>"; };
+		A2C9F9E41B78333300EB2DFF /* LeNetworkStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeNetworkStatus.m; sourceTree = "<group>"; };
+		A2C9F9E51B78333300EB2DFF /* LogFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogFile.h; sourceTree = "<group>"; };
+		A2C9F9E61B78333300EB2DFF /* LogFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogFile.m; sourceTree = "<group>"; };
+		A2C9F9E71B78333300EB2DFF /* LogFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogFiles.h; sourceTree = "<group>"; };
+		A2C9F9E81B78333300EB2DFF /* LogFiles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogFiles.m; sourceTree = "<group>"; };
 		A2FB55381B2F851700D19660 /* AddItemsToServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemsToServer.h; sourceTree = "<group>"; };
 		A2FB55391B2F851700D19660 /* AddItemsToServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemsToServer.m; sourceTree = "<group>"; };
 		A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateItemsOnServer.h; sourceTree = "<group>"; };
@@ -174,13 +192,13 @@
 		A2301B1F1AF41A7C00E2267D = {
 			isa = PBXGroup;
 			children = (
+				A2C9F9DA1B78333300EB2DFF /* lelib */,
 				A2301B2A1AF41A7C00E2267D /* Dan2Doozer */,
 				A2301B4A1AF41A7C00E2267D /* Dan2DoozerTests */,
 				A2C2F1F41B588AEB00360A25 /* DoozerUITests */,
 				A2301B291AF41A7C00E2267D /* Products */,
 				43A827BFC5215AAE9D57429C /* Pods */,
 				43E9D580928C3349D37B4FA4 /* Frameworks */,
-				A2C9F9D61B782FDD00EB2DFF /* lelib */,
 			);
 			sourceTree = "<group>";
 		};
@@ -312,6 +330,27 @@
 			path = DoozerUITests;
 			sourceTree = "<group>";
 		};
+		A2C9F9DA1B78333300EB2DFF /* lelib */ = {
+			isa = PBXGroup;
+			children = (
+				A2C9F9DB1B78333300EB2DFF /* LEBackgroundThread.h */,
+				A2C9F9DC1B78333300EB2DFF /* LEBackgroundThread.m */,
+				A2C9F9DD1B78333300EB2DFF /* lecore.h */,
+				A2C9F9DE1B78333300EB2DFF /* lecore.m */,
+				A2C9F9DF1B78333300EB2DFF /* lelib-Prefix.pch */,
+				A2C9F9E01B78333300EB2DFF /* lelib.h */,
+				A2C9F9E11B78333300EB2DFF /* LELog.h */,
+				A2C9F9E21B78333300EB2DFF /* LELog.m */,
+				A2C9F9E31B78333300EB2DFF /* LeNetworkStatus.h */,
+				A2C9F9E41B78333300EB2DFF /* LeNetworkStatus.m */,
+				A2C9F9E51B78333300EB2DFF /* LogFile.h */,
+				A2C9F9E61B78333300EB2DFF /* LogFile.m */,
+				A2C9F9E71B78333300EB2DFF /* LogFiles.h */,
+				A2C9F9E81B78333300EB2DFF /* LogFiles.m */,
+			);
+			path = lelib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -424,7 +463,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2301B3D1AF41A7C00E2267D /* Main.storyboard in Resources */,
-				A2C9F9D71B782FDD00EB2DFF /* lelib in Resources */,
 				A2301B421AF41A7C00E2267D /* LaunchScreen.xib in Resources */,
 				A2301B3F1AF41A7C00E2267D /* Images.xcassets in Resources */,
 			);
@@ -490,12 +528,17 @@
 				A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */,
 				A273424A1B0EDA4E00C1E219 /* ListViewController.m in Sources */,
 				A24290411B45D7C80070662C /* ParentCustomCell.m in Sources */,
+				A2C9F9ED1B78333300EB2DFF /* LogFile.m in Sources */,
 				A29CD7F61B211FAB000FA1B0 /* WelcomeViewController.m in Sources */,
+				A2C9F9EA1B78333300EB2DFF /* lecore.m in Sources */,
 				A29CD7EA1B1FFB27000FA1B0 /* GetItemsFromDoozer.m in Sources */,
+				A2C9F9EC1B78333300EB2DFF /* LeNetworkStatus.m in Sources */,
 				A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */,
+				A2C9F9EE1B78333300EB2DFF /* LogFiles.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
+				A2C9F9E91B78333300EB2DFF /* LEBackgroundThread.m in Sources */,
 				A22B7F201B5E16740096CEEC /* AddItemViewController.m in Sources */,
 				A27001EA1B61C6C800D1B7B3 /* DueItemsViewController.m in Sources */,
 				A2301B5F1AF6E04F00E2267D /* LoginViewController.m in Sources */,
@@ -503,6 +546,7 @@
 				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
 				A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */,
+				A2C9F9EB1B78333300EB2DFF /* LELog.m in Sources */,
 				A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */,
 				A2AC4D611B70492800B3659F /* ItemVC.m in Sources */,
 			);

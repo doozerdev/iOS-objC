@@ -9,6 +9,7 @@
 #import "CoreDataItemManager.h"
 #import "AppDelegate.h"
 #import "UpdateItemsOnServer.h"
+#import "DoozerSyncManager.h"
 
 NSFetchedResultsController *_fetchedResultsController;
 
@@ -67,14 +68,45 @@ NSFetchedResultsController *_fetchedResultsController;
     int orderStepValue = 1073741824/[arrayOfItems count];
     //int orderStepValue = 32;
     int itemOrderMultiplier = 1;
+    
+    NSMutableArray *listOfItemIds = [[NSMutableArray alloc]init];
+    
     for (Item *eachItem in arrayOfItems) {
         NSLog(@"%@ order is %@", eachItem.title, eachItem.order);
         eachItem.order = [NSNumber numberWithInt:itemOrderMultiplier*orderStepValue];
         NSLog(@"%@ NEW order is %@", eachItem.title, eachItem.order);
-        [UpdateItemsOnServer updateThisItem:eachItem];
+        
+        if (![[eachItem.itemId substringToIndex:1] isEqualToString:@"1"]) {
+            [listOfItemIds addObject:eachItem.itemId];
+        }
         itemOrderMultiplier += 1;
     }
     
+    NSLog(@"list of items to update %@", listOfItemIds);
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSLog(@"before the stduserdefaults in UpdateThisItem Method");
+    
+
+    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+    [newArrayOfItemsToUpdate addObjectsFromArray:listOfItemIds];
+    [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    NSLog(@"after the stduserdefaults in UpdateThisItem Method");
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [DoozerSyncManager syncWithServer];
+    
+    NSLog(@"after all the functions in UpdateThisItem Method");
+
 }
 
 +(NSArray *)findNumberOfDueItems{

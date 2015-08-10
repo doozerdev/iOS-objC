@@ -8,7 +8,7 @@
 
 #ifndef LE_DEBUG_LOGS
     #ifdef DEBUG
-        #define LE_DEBUG_LOGS 1
+        #define LE_DEBUG_LOGS 0
     #else
         #define LE_DEBUG_LOGS 0
     #endif

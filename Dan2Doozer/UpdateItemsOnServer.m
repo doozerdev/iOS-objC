@@ -121,13 +121,15 @@
 }
 
 +(void)updateThisItem:(Item *)itemToUpdate{
+    NSLog(@"start of UpdateThisItem Method");
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     NSString *itemIdCharacter = [itemToUpdate.itemId substringToIndex:1];
     //NSLog(@"first char = %@", itemIdCharacter);
-    
+    NSLog(@"before the stduserdefaults in UpdateThisItem Method");
+
     if ([itemIdCharacter isEqualToString:@"1"]) {
         //do nothing
     }else{
@@ -136,7 +138,8 @@
         [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
+    NSLog(@"after the stduserdefaults in UpdateThisItem Method");
+
     // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
@@ -144,7 +147,8 @@
         abort();
     }
     [DoozerSyncManager syncWithServer];
-    
+    NSLog(@"End of UpdateThisItem Method");
+
     
 }
 
