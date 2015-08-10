@@ -590,6 +590,7 @@
 
     if (self.allowDragging) {
 
+
         UIView *localSnapshot = [self.tableView viewWithTag:414];
         CGPoint center = localSnapshot.center;
         center.y = self.lp_location.y + self.pixelCorrection;
@@ -597,9 +598,8 @@
         
         self.lp_indexPath = [self.tableView indexPathForRowAtPoint:center];
         
-        NSLog(@"indexpath row = %ld, lp_location = %f, pixelCorrection = %f", (long)self.lp_indexPath.row, self.lp_location.y, self.pixelCorrection);
+        //NSLog(@"indexpath row = %ld, lp_location = %f, pixelCorrection = %f", (long)self.lp_indexPath.row, self.lp_location.y, self.pixelCorrection);
 
-        
         if (self.lp_indexPath && (self.lp_indexPath.row != self.lp_sourceindexPath.row) && (self.lp_indexPath.row != self.rowToPass)) {
             self.rowToPass = (int)self.lp_indexPath.row;
             
@@ -627,7 +627,9 @@
                 [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
             }
             self.lp_sourceindexPath = self.lp_indexPath;
+            
         }
+        
     }
     
     if (self.lp_indexPath) {
@@ -651,14 +653,8 @@
             scrollToRect = CGRectMake(0, visibleRect.origin.y - delta, visibleRect.size.width, visibleRect.size.height);
             self.pixelCorrection -= delta;
             [self.tableView scrollRectToVisible:scrollToRect animated:NO];
-
-            
         }
     }
-
-
-    
-
 }
 
 
@@ -731,14 +727,10 @@
                             
                         }];
                     }
-
-
                 }
                 
                 self.longPressActive = YES;
-                
                 self.pixelCorrection = 0;
-                
                 break;
             }
                
@@ -818,14 +810,10 @@
                     
                     [self rebalanceListIfNeeded];
                     
-                    //NSLog(@"right before the fetching");
-                    NSLog(@"%@", self.fetchedResultsController.fetchedObjects);
-                    //NSLog(@"right after the fetching");
-
-                    NSLog(@"reordered item is ======= %@", self.reorderedItem.title);
-                    
                     [UpdateItemsOnServer updateThisItem:self.reorderedItem];
-
+                    
+                    self.fetchedResultsController = nil;
+                    
                     [self.tableView reloadData];
                     
                     ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:self.lp_sourceindexPath];
@@ -848,7 +836,6 @@
                         //clearSnapshot = nil;
                         self.tableView.scrollEnabled = YES;
                         self.longPressActive = NO;
-
                         
                     }];
 
@@ -866,9 +853,6 @@
             
         }
     }
-
-
-
 
 
 - (void)setDisplayList:(id)newDisplayList {
@@ -1067,7 +1051,7 @@
     }
     
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    //NSLog(@"Configuring -------- Cell for item == %@", object.title);
+    //NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
 
     cell.cellItemTitle.enabled = NO;
     
