@@ -35,6 +35,7 @@
 		A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */; };
 		A2C2F1EC1B57144800360A25 /* ColorHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2F1EB1B57144800360A25 /* ColorHelperTests.m */; };
 		A2C2F1F61B588AEB00360A25 /* DoozerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C2F1F51B588AEB00360A25 /* DoozerUITests.m */; };
+		A2C9F9D71B782FDD00EB2DFF /* lelib in Resources */ = {isa = PBXBuildFile; fileRef = A2C9F9D61B782FDD00EB2DFF /* lelib */; };
 		A2FB553A1B2F851700D19660 /* AddItemsToServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB55391B2F851700D19660 /* AddItemsToServer.m */; };
 		A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553C1B2FC02700D19660 /* UpdateItemsOnServer.m */; };
 		A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A2FB553F1B2FC44B00D19660 /* DeleteItemFromServer.m */; };
@@ -110,6 +111,8 @@
 		A2C2F1F31B588AEB00360A25 /* DoozerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C2F1F51B588AEB00360A25 /* DoozerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoozerUITests.m; sourceTree = "<group>"; };
 		A2C2F1F71B588AEB00360A25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2C9F9D61B782FDD00EB2DFF /* lelib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lelib; sourceTree = "<group>"; };
+		A2C9F9D81B78308300EB2DFF /* lelib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lelib; path = "../../../Downloads/le_ios-master/lelib"; sourceTree = "<group>"; };
 		A2FB55381B2F851700D19660 /* AddItemsToServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemsToServer.h; sourceTree = "<group>"; };
 		A2FB55391B2F851700D19660 /* AddItemsToServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemsToServer.m; sourceTree = "<group>"; };
 		A2FB553B1B2FC02700D19660 /* UpdateItemsOnServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateItemsOnServer.h; sourceTree = "<group>"; };
@@ -159,6 +162,7 @@
 		43E9D580928C3349D37B4FA4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A2C9F9D81B78308300EB2DFF /* lelib */,
 				A27439041B55F436002E7CA5 /* FBSDKLoginKit.framework */,
 				A27439021B55F428002E7CA5 /* FBSDKCoreKit.framework */,
 				A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */,
@@ -176,6 +180,7 @@
 				A2301B291AF41A7C00E2267D /* Products */,
 				43A827BFC5215AAE9D57429C /* Pods */,
 				43E9D580928C3349D37B4FA4 /* Frameworks */,
+				A2C9F9D61B782FDD00EB2DFF /* lelib */,
 			);
 			sourceTree = "<group>";
 		};
@@ -419,6 +424,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2301B3D1AF41A7C00E2267D /* Main.storyboard in Resources */,
+				A2C9F9D71B782FDD00EB2DFF /* lelib in Resources */,
 				A2301B421AF41A7C00E2267D /* LaunchScreen.xib in Resources */,
 				A2301B3F1AF41A7C00E2267D /* Images.xcassets in Resources */,
 			);

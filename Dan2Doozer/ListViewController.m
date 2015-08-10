@@ -73,6 +73,7 @@
     self.rowOfNewItem = -1;
     self.isAutoScrolling = NO;
     self.pixelCorrection = 0;
+    self.fetchedResultsController = nil;
     
     [self.tableView reloadData];
     
@@ -326,6 +327,8 @@
         
         [self rebalanceListIfNeeded];
         [UpdateItemsOnServer updateThisItem:swipedItem];
+        
+        self.fetchedResultsController = nil;
 
     }
 }
