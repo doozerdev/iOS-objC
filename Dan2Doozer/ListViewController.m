@@ -500,18 +500,13 @@
     
     if (numberOfResults == 0) {
         newItem.order = [NSNumber numberWithLong:16777216];
-        NSLog(@"Zero items in list - setting order value to 16777216");
     } else if (topRowPath.row == 0){
         newItem.order = [NSNumber numberWithInt:topItem.order.intValue/2];
-        NSLog(@"top row is 0, cutting it's order value in half");
     }
     else{
         Item *secondItem = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0]];
         int newOrderValue = (secondItem.order.intValue - topItem.order.intValue)/2 + topItem.order.intValue;
         newItem.order = [NSNumber numberWithInt:newOrderValue];
-        // newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath. inSection:<#(NSInteger)#>]
-        
-        NSLog(@"top item order = %@, second item order = %@, newItem order = %@", topItem.order, secondItem.order, newItem.order);
         
     }
     

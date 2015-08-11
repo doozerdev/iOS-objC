@@ -30,7 +30,7 @@ double _lastSyncRequest;
 +(void)syncWithServer{
     
     if ([FBSDKAccessToken currentAccessToken]) {
-        NSLog(@"valid token fB");
+        //NSLog(@"valid token fB");
         
         double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
         
@@ -185,6 +185,7 @@ double _lastSyncRequest;
                                             LELog* log = [LELog sharedInstance];
                                             log.token = @"059ad121-e3f3-4a5e-88a4-07278ab04900";
                                             [log log: [NSString stringWithFormat:@"Sync succesful for user %@", [FBSDKProfile currentProfile].userID]];
+                                            NSLog(@"sync op complete");
                                         }
                                         _syncOpActive = NO;
 

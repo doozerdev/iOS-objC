@@ -167,9 +167,7 @@
 }
 
 +(void)addThisItem:(Item *)itemToAdd{
-    
-    NSLog(@" this got called!!!!!!!!!!!!!!!!");
-    
+        
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
