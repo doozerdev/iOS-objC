@@ -168,9 +168,16 @@
         Item *newItem = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
         
         NSArray *itemsOnSelectedList = aFetchedResultsController.fetchedObjects;
-        Item *firstItemOnList = [itemsOnSelectedList objectAtIndex:0];
-        int newItemOrder = firstItemOnList.order.intValue / 2;
-        newItem.order = [NSNumber numberWithInt:newItemOrder];
+        
+        if ([itemsOnSelectedList count] == 0) {
+            newItem.order = [NSNumber numberWithInt:999999999];
+
+        }else{
+            Item *firstItemOnList = [itemsOnSelectedList objectAtIndex:0];
+            int newItemOrder = firstItemOnList.order.intValue / 2;
+            newItem.order = [NSNumber numberWithInt:newItemOrder];
+        }
+
         newItem.title = newItemTitle.text;
         
         newItem.done = 0;

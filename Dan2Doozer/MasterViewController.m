@@ -63,15 +63,16 @@
     
     Item *vacationPlanning = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
     vacationPlanning.parent = nil;
-    vacationPlanning.title = @"Vacation!";
+    vacationPlanning.title = @"Shopping List";
     vacationPlanning.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     vacationPlanning.color = @"46,179,193,1";
     vacationPlanning.order = [NSNumber numberWithInt:2000];
     
+    
     Item *item1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
     item1.parent = vacationPlanning.itemId;
     item1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    item1.title = @"Book hotel";
+    item1.title = @"Hammock";
     item1.order = [NSNumber numberWithInt:1000];
     item1.done = 0;
     item1.notes = @" ";
@@ -83,6 +84,7 @@
     item2.order = [NSNumber numberWithInt:2000];
     item2.done = 0;
     item2.notes = @" ";
+     
     
     [AddItemsToServer addThisItem:houseChoreList];
     [AddItemsToServer addThisItem:chore1];
@@ -149,11 +151,8 @@
     
     [DoozerSyncManager syncWithServer];
     
-    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     
-    NSNumber *count = itemStats[0];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
-    NSString *countString =  [NSString stringWithFormat:@"%ld", (long)count.integerValue];
+
     
     self.rowOfExpandedCell = -1;
     self.navigationController.navigationBar.barStyle  = UIBarStyleDefault;
@@ -163,6 +162,40 @@
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
     self.tableView.separatorColor = [UIColor whiteColor];
+    
+
+    
+    
+    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
+    
+    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
+    
+    NSNumber *count = itemStats[0];
+    
+    [Intercom updateUserWithAttributes:@{
+                                         @"custom_attributes": @{
+                                                 @"list_count" : listCount,
+                                                 @"due_items": count,
+                                                 @"uncompleted_items": itemStats[1],
+                                                 @"total_items": itemStats[2],
+                                                 @"build_number": build
+                                                 }
+                                         }];
+    [self.tableView reloadData]; // to reload selected cell
+    
+    [self setupMenuBarButtons];
+    
+}
+
+- (void)setupMenuBarButtons{
+    
+    NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
+    
+    NSNumber *count = itemStats[0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
+    NSString *countString =  [NSString stringWithFormat:@"%ld", (long)count.integerValue];
     
     UIBarButtonItem *addItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showAddItemCard)];
     UIBarButtonItem *dueItems = [[UIBarButtonItem alloc] initWithTitle:countString style:UIBarButtonItemStylePlain target:self action:@selector(showDueItemView)];
@@ -175,22 +208,13 @@
         dueItems.tintColor = [UIColor redColor];
     }
     NSArray *actionButtonItems = @[addItem, dueItems];
-    self.navigationItem.rightBarButtonItems = actionButtonItems;
     
-    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
-    
-    NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-    
-    [Intercom updateUserWithAttributes:@{
-                                         @"custom_attributes": @{
-                                                 @"list_count" : listCount,
-                                                 @"due_items": count,
-                                                 @"uncompleted_items": itemStats[1],
-                                                 @"total_items": itemStats[2],
-                                                 @"build_number": build
-                                                 }
-                                         }];
-    [self.tableView reloadData]; // to reload selected cell
+    if ([self.fetchedResultsController.fetchedObjects count] == 0) {
+        self.navigationItem.rightBarButtonItems = nil;
+        
+    }else{
+        self.navigationItem.rightBarButtonItems = actionButtonItems;
+    }
     
 }
 
@@ -309,10 +333,12 @@
 
         }
     }
-    
+
     
     self.rowOfExpandedCell = -1;
     [self.tableView reloadData];
+    
+    [self setupMenuBarButtons];
     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     
     
@@ -330,6 +356,9 @@
             [Intercom logEventWithName:@"Deleted_List" metaData: @{@"date": date}];
 
             self.itemToDelete = nil;
+            
+            [self setupMenuBarButtons];
+
         }
     }
 }
@@ -667,7 +696,8 @@
     if ([[segue identifier] isEqualToString:@"showSettings"]){
         DoozerSettingsManager *controller = segue.destinationViewController;
         controller.managedObjectContext = self.managedObjectContext;
-        
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+
         self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
         [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         

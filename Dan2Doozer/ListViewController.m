@@ -950,6 +950,8 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
+    
+    NSLog(@"number of rows = %lu", (unsigned long)[sectionInfo numberOfObjects]);
     return [sectionInfo numberOfObjects];
     //return [[self findChildren] count];
 }
@@ -1124,7 +1126,8 @@
 
             cell.cellItemTitle.attributedText = nil;
             
-            cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+            //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+            cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
@@ -1259,7 +1262,22 @@
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    //NSLog(@"beginning updates now ------------------");
+    
+    /*
+     //self.fetchedResultsController = nil;
+
+    Item *parentItem = self.displayList;
+    NSLog(@"parent ID = %@", parentItem.itemId);
+    
+    
+    for (Item* eachItem in self.fetchedResultsController.fetchedObjects){
+        NSLog(@"Item %@, with parent %@", eachItem.title, eachItem.parent);
+    }
+    */
     [self.tableView beginUpdates];
+
+    
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -1283,6 +1301,11 @@
       newIndexPath:(NSIndexPath *)newIndexPath {
     UITableView *tableView = self.tableView;
     
+    Item * test = (Item *)anObject;
+    Item *parent = (Item *)self.displayList;
+
+    //NSLog(@"title of item ================= %@, parent = %@", test.title, parent.itemId);
+    
     switch(type) {
         case NSFetchedResultsChangeInsert:
             //NSLog(@"ChangeInsert index path to delete = %@", indexPath);
@@ -1290,7 +1313,10 @@
             break;
             
         case NSFetchedResultsChangeDelete:
-            //NSLog(@"ChangeDelete index path to delete = %@", indexPath);
+            
+            
+            //NSLog(@"ChangeDelete row = %ld, item title = %@, parent = %@", (long)indexPath.row, test.title, test.parent);
+
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
         
@@ -1310,7 +1336,12 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    
     [self.tableView endUpdates];
+    
+    //NSLog(@"ending updates now - after table endUpdates -------------");
+
 }
 
 #pragma mark - Helper methods

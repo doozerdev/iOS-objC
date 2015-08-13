@@ -373,12 +373,6 @@
                                 <segue destination="YFT-UZ-tcf" kind="show" identifier="showSettings" id="yU8-dJ-AzT"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="AJD-4Q-zKb">
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            <connections>
-                                <action selector="addItemButton:" destination="7bK-jq-Zjz" id="Xq8-GR-GVE"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
