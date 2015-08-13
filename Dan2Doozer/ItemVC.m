@@ -100,22 +100,23 @@
     UIImage *image = [[UIImage alloc]init];
     
     if (self.detailItem.done.intValue == 0) {
-        image = [UIImage imageNamed:@"circleundone"];
+        image = [UIImage imageNamed:@"outlinecheckundone"];
+        self.toggleCompleteButton.backgroundColor = [UIColor lightGrayColor];
+
     }else{
-        image = [UIImage imageNamed:@"circledone"];
+        image = [UIImage imageNamed:@"outlinecircledone"];
+        self.toggleCompleteButton.backgroundColor = themeColor;
+
     }
     
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(toggleComplete) forControlEvents:UIControlEventTouchUpInside];
-    button.adjustsImageWhenHighlighted = NO;
-    UIBarButtonItem *rightButton =[[UIBarButtonItem alloc] initWithCustomView:button];
-    self.navigationItem.rightBarButtonItem = rightButton;
+    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
     
 }
 
-- (void)toggleComplete{
-    
+
+- (IBAction)toggleCompleteButtonPressed:(id)sender {
+
+
     NSArray *listArray = [self fetchEntireList];
     int indexOfCompletedHeader = 0;
     int loopcount = 0;
@@ -131,7 +132,8 @@
     int newOrder = 0;
     if (self.detailItem.done.intValue == 0) {
         self.detailItem.done = [NSNumber numberWithInt:1];
-        image = [UIImage imageNamed:@"circledone"];
+        image = [UIImage imageNamed:@"outlinecircledone"];
+        self.toggleCompleteButton.backgroundColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
         
         if ([listArray count] - 1 > indexOfCompletedHeader) {
             Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader+1];
@@ -142,10 +144,12 @@
         int timestamp = [[NSDate date] timeIntervalSince1970];
         NSString *date = [NSString stringWithFormat:@"%d", timestamp];
         [Intercom logEventWithName:@"Completed_Item_From_Item_Screen" metaData: @{@"date": date}];
-
+        
     }else{
         self.detailItem.done = [NSNumber numberWithInt:0];
-        image = [UIImage imageNamed:@"circleundone"];
+        image = [UIImage imageNamed:@"outlinecheckundone"];
+        self.toggleCompleteButton.backgroundColor = [UIColor lightGrayColor];
+
         
         if (indexOfCompletedHeader == 0) {
             
@@ -161,20 +165,16 @@
         [Intercom logEventWithName:@"Uncompleted_Item_From_Item_Screen" metaData: @{@"date": date}];
     }
     self.detailItem.order = [NSNumber numberWithInt:newOrder];
-
     
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(toggleComplete) forControlEvents:UIControlEventTouchUpInside];
-    button.adjustsImageWhenHighlighted = NO;
-    UIBarButtonItem *rightButton =[[UIBarButtonItem alloc] initWithCustomView:button];
-    self.navigationItem.rightBarButtonItem = rightButton;
+    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
+    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateHighlighted];
 
-        
+
     [self rebalanceListIfNeeded];
     [UpdateItemsOnServer updateThisItem:self.detailItem];
-    
+
 }
+
 
 
 -(void)rebalanceListIfNeeded{

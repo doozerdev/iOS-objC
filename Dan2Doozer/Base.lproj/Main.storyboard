@@ -155,7 +155,7 @@
                                         </constraints>
                                     </view>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Item Title" translatesAutoresizingMaskIntoConstraints="NO" id="NCv-0O-ejP">
-                                        <rect key="frame" x="14" y="10" width="572" height="45"/>
+                                        <rect key="frame" x="55" y="10" width="531" height="45"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="100" constant="45" id="U4i-Xe-pgz"/>
@@ -172,6 +172,19 @@
                                             <outlet property="delegate" destination="tAf-os-SWk" id="paG-7D-NcA"/>
                                         </connections>
                                     </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4GC-ZN-xC1">
+                                        <rect key="frame" x="20" y="17" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="h9Q-fJ-jqQ"/>
+                                            <constraint firstAttribute="width" constant="30" id="iYu-WX-mxh"/>
+                                        </constraints>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="toggleCompleteButtonPressed:" destination="tAf-os-SWk" eventType="touchUpInside" id="Yab-bv-VV1"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -179,11 +192,14 @@
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="leading" id="1UE-z0-2M4"/>
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="3Vv-SJ-5CD"/>
                                     <constraint firstAttribute="trailing" secondItem="prS-sP-AW0" secondAttribute="trailing" id="4aj-pV-TUb"/>
+                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="centerY" secondItem="NCv-0O-ejP" secondAttribute="centerY" id="5vJ-VZ-cmy"/>
                                     <constraint firstItem="3nn-yf-KOr" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="bottom" constant="10" id="Cbl-0z-uiv"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="leading" secondItem="3nn-yf-KOr" secondAttribute="trailing" id="Deh-EW-lAR"/>
+                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="20" id="IHx-5B-zmu"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" id="Jfb-mf-MAy"/>
                                     <constraint firstItem="g3J-It-PDJ" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="20" id="Lqb-7V-C5Z"/>
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="centerX" secondItem="3nn-yf-KOr" secondAttribute="centerX" id="MrF-TL-ICL"/>
+                                    <constraint firstItem="NCv-0O-ejP" firstAttribute="leading" secondItem="4GC-ZN-xC1" secondAttribute="trailing" constant="5" id="NQa-uN-bvh"/>
                                     <constraint firstItem="3nn-yf-KOr" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="leading" id="PUP-2J-MSu"/>
                                     <constraint firstItem="NCv-0O-ejP" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="14" id="RED-cb-dtp"/>
                                     <constraint firstAttribute="bottom" secondItem="prS-sP-AW0" secondAttribute="bottom" id="RPL-JD-tZS"/>
@@ -191,6 +207,7 @@
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="top" secondItem="g3J-It-PDJ" secondAttribute="bottom" constant="10" id="VHp-yU-Xkl"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="Zf9-TH-IWy"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="bottom" secondItem="3nn-yf-KOr" secondAttribute="bottom" id="ber-6I-NF0"/>
+                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="top" secondItem="NCv-0O-ejP" secondAttribute="top" constant="7" id="d2u-Hv-Z0q"/>
                                     <constraint firstAttribute="trailing" secondItem="NCv-0O-ejP" secondAttribute="trailing" constant="14" id="fHP-DB-LWv"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="top" secondItem="St5-CG-wWv" secondAttribute="bottom" id="hyf-sA-Yjc"/>
                                     <constraint firstAttribute="height" constant="530" id="iZA-9e-qt4"/>
@@ -203,6 +220,8 @@
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
+                                        <exclude reference="5vJ-VZ-cmy"/>
+                                        <exclude reference="RED-cb-dtp"/>
                                         <exclude reference="vXl-1D-vA2"/>
                                         <exclude reference="RPL-JD-tZS"/>
                                         <exclude reference="1UE-z0-2M4"/>
@@ -226,6 +245,7 @@
                         <outlet property="dateButton3" destination="k2m-y2-Nr0" id="cMb-3t-ZeJ"/>
                         <outlet property="dateButton4" destination="St5-CG-wWv" id="RHd-pm-qaY"/>
                         <outlet property="datePicker" destination="prS-sP-AW0" id="fyp-eC-DkK"/>
+                        <outlet property="toggleCompleteButton" destination="4GC-ZN-xC1" id="0hP-DC-IG7"/>
                         <outlet property="upperViewPanel" destination="RU8-eL-alB" id="HEV-PN-mAs"/>
                     </connections>
                 </viewController>

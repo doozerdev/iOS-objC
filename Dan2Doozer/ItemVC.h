@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *dateButton3;
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton4;
+@property (weak, nonatomic) IBOutlet UIButton *toggleCompleteButton;
 
 
 @property Item * detailItem;
