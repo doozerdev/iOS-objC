@@ -743,7 +743,7 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     int numOfRows = (int)[sectionInfo numberOfObjects];
-    return numOfRows+1;
+    return numOfRows+3;
     
 }
 
@@ -790,10 +790,11 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:30];
 
-        
+        cell.userInteractionEnabled = YES;
+
         return cell;
         
-    }else{
+    }else if (indexPath.row < [self.fetchedResultsController.fetchedObjects count]){
         
         Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
         cell.itemInCell = itemInCell;
@@ -897,8 +898,19 @@
             [cell.PurpleButton.layer setBorderColor:[[UIColor whiteColor] CGColor]];
         }
 
+        cell.userInteractionEnabled = YES;
         return cell;
         
+    }else{
+        NSLog(@"else else else");
+        
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.cellItemTitle.text = nil;
+        cell.cellItemSubTitle.text = nil;
+        
+        cell.userInteractionEnabled = NO;
+        
+        return cell;
     }
 }
 
@@ -1029,6 +1041,9 @@
                                          }
                                          
                                          [self.tableView reloadSections:[[NSIndexSet alloc]initWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+                                         [self.tableView scrollToRowAtIndexPath:indexPath
+                                                               atScrollPosition:UITableViewScrollPositionTop
+                                                                       animated:YES];
                                          
                                      }];
     
@@ -1057,7 +1072,7 @@
         if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
             [self addItemList];
         }else{
-            if (indexPath) {
+            if (indexPath.row < [self.fetchedResultsController.fetchedObjects count]) {
                 [self performSegueWithIdentifier:@"showList" sender:indexPath];
             }
         }
