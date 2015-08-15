@@ -29,9 +29,11 @@ double _lastSyncRequest;
 
 +(void)syncWithServer{
     
+    NSLog(@"---------FB access token ======= %@", [FBSDKAccessToken currentAccessToken]);
+    
     if ([FBSDKAccessToken currentAccessToken]) {
         //NSLog(@"valid token fB");
-        
+
         double currentSyncRequest = [[NSDate date] timeIntervalSince1970];
         
         NSLog(@"diff in time sync requests is %f", currentSyncRequest - _lastSyncRequest);
@@ -64,28 +66,35 @@ double _lastSyncRequest;
                 if ((currentTime - lastDoozerAuth.intValue) > 23*60*60 || currentSessionId == nil) {
                     NSLog(@"Sync starts with LOGIN");
                     
-                    NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-                    NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
-                    
-                    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-                    [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    [FBSDKAccessToken refreshCurrentAccessToken:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
                         
-                        NSString * sessionID = [responseObject objectForKey:@"sessionId"];
-                        [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        NSLog(@"returning message from login operation");
+                        NSLog(@"************ Refreshed Access Token === %@", [FBSDKAccessToken currentAccessToken]);
+                        NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
+                        NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
                         
-                        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        
-                        
-                        [self performSyncSteps];
-                        
-                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                        NSLog(@"Error: %@", error);
-                        
+                        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+                        [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                            
+                            NSString * sessionID = [responseObject objectForKey:@"sessionId"];
+                            [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                            NSLog(@"returning message from login operation");
+                            
+                            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                            
+                            
+                            [self performSyncSteps];
+                            
+                        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                            NSLog(@"Error: %@", error);
+                            
+                            
+                        }];
                         
                     }];
+                    
+
                 }else{
                     NSLog(@"Sync WITHOUT login needed");
 
@@ -95,6 +104,8 @@ double _lastSyncRequest;
         }
     }else{
         NSLog(@"no FB token - should direct back to login screen");
+        
+        
         /*
         LoginViewController *loginController = [[LoginViewController alloc]
                                                   init];

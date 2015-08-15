@@ -30,6 +30,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
+    
     if ([FBSDKAccessToken currentAccessToken]) {
         NSString *fbUserId = [FBSDKProfile currentProfile].userID;
         [Intercom registerUserWithUserId:fbUserId];

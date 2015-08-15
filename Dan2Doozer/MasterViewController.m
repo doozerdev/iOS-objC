@@ -173,6 +173,8 @@
     NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     
     NSNumber *count = itemStats[0];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
+
     
     [Intercom updateUserWithAttributes:@{
                                          @"custom_attributes": @{
@@ -194,7 +196,6 @@
     NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     
     NSNumber *count = itemStats[0];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = count.integerValue;
     NSString *countString =  [NSString stringWithFormat:@"%ld", (long)count.integerValue];
     
     UIBarButtonItem *addItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showAddItemCard)];
