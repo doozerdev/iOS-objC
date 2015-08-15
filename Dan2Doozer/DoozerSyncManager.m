@@ -247,7 +247,7 @@ double _lastSyncRequest;
         
         /*
          
-         TODO - fix this
+         TODO - fix this -- delete local copies of items that have been deleted on the server -- waiting on joe
          
         NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
         NSLog(@"archive value = %@", archiveValue);
@@ -259,20 +259,21 @@ double _lastSyncRequest;
         
         
         if (length > 0) {
-            //keep server copy if item is NOT in update queue. keep app copy if item IS in update queue.
+           //We actually want to keep the server or app copy of the item based on which was more recently updated.
+        
+            Item *existingItem = [results objectAtIndex:0];
             
-            NSMutableArray *itemsToUpdate = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"];
-            NSLog(@"itemsToUpdate = %@", itemsToUpdate);
-            BOOL inUpdateQueue = NO;
+            double local = [existingItem.updated_at timeIntervalSince1970];
             
-            for (id eachItemInArray in itemsToUpdate) {
-                if ([eachItemInArray isEqualToString:idOfServerItem]){
-                    inUpdateQueue = YES;
-                }
-            }
+            NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
+            NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
+            [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+            NSDate* updatedDate = [df2 dateFromString:updatedAtString];
+            double server = [updatedDate timeIntervalSince1970];
             
-            if (!inUpdateQueue) {
-                Item *existingItem = [results objectAtIndex:0];
+            if (server > local) {
+                
+                existingItem.updated_at = updatedDate;
                 
                 NSString *title = [eachArrayElement objectForKey:@"title"];
                 existingItem.title = title;
@@ -365,6 +366,12 @@ double _lastSyncRequest;
             [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
             NSDate* duedate = [df dateFromString:duedateString];
             newItem.duedate = duedate;
+            
+            NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
+            NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
+            [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+            NSDate* updatedDate = [df2 dateFromString:updatedAtString];
+            newItem.updated_at = updatedDate;
             
             NSNumber *children_undone = [eachArrayElement objectForKey:@"children_undone"];
             newItem.children_undone = children_undone;

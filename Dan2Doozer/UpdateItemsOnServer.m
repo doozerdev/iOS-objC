@@ -79,7 +79,7 @@
         NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            //NSLog(@"Successful JSON update %@", responseObject);
+            NSLog(@"Successful JSON update %@", responseObject);
 
             NSError *error = nil;
             if (![passOnContext save:&error]) {
@@ -124,6 +124,9 @@
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    NSLog(@"updated at value == %@", itemToUpdate.updated_at);
+    
+    itemToUpdate.updated_at = [NSDate date];
     
     NSString *itemIdCharacter = [itemToUpdate.itemId substringToIndex:1];
     //NSLog(@"first char = %@", itemIdCharacter);
