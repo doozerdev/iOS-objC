@@ -405,26 +405,8 @@
         [self openDatePanel];
     }
 }
+    
 
-- (IBAction)doneButtonPressed:(id)sender {
-    
-    [self.view endEditing:YES];
-    
-    self.detailItem.duedate = self.datePicker.date;
-    
-    NSDateFormatter *df = [[NSDateFormatter alloc]init];
-    [df setDateFormat:@"EEE MMM dd, yyyy"];
-    NSString * dateString = [df stringFromDate:self.datePicker.date];
-    
-    [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
-
-
-    [UpdateItemsOnServer updateThisItem:self.detailItem];
-    
-    [self closeDatePanel];
-    
-    
-}
 - (IBAction)dateButton2Pressed:(id)sender {
     
     NSDate *today = [NSDate date];
@@ -491,8 +473,11 @@
     [df setDateFormat:@"EEE MMM dd, yyyy"];
     NSString * dateString = [df stringFromDate:self.datePicker.date];
     
+    self.detailItem.duedate = self.datePicker.date;
+    
     [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
-
+    
+    [UpdateItemsOnServer updateThisItem:self.detailItem];
     
 }
 

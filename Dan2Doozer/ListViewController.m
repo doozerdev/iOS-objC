@@ -922,17 +922,15 @@
 #pragma mark - Segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showItem"]) {
-        //NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        
         NSIndexPath *indexPath = sender;
 
         Item *itemToDisplay = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-        //ItemViewController *controller = (ItemViewController *)[[segue destinationViewController] topViewController];
-        ItemVC *itemController = segue.destinationViewController;
+        NSLog(@"segue happending for show item -- %@", itemToDisplay.title);
+
         
-        //itemController.managedObjectContext = self.managedObjectContext;
-        //[itemController setDetailItem:object];
-        //[itemController setDisplayListOfItem:self.displayList];
+        ItemVC *itemController = segue.destinationViewController;
         
         itemController.detailItem = itemToDisplay;
         itemController.parentList = (Item *)self.displayList;
@@ -1038,7 +1036,10 @@
                 
             }else{
                 if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
+                    NSLog(@"trying to show item page");
                     [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+                    NSLog(@"after trying to show item page");
+
                 }
             }
         }

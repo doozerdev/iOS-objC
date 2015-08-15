@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="FTq-Ug-CqQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8173.3" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="FTq-Ug-CqQ">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8142"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -46,7 +47,7 @@
                         <color key="sectionIndexBackgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="dueCells" textLabel="5yq-7z-sUK" style="IBUITableViewCellStyleDefault" id="oE5-cx-oKL">
-                                <rect key="frame" x="0.0" y="50" width="600" height="44"/>
+                                <rect key="frame" x="0.0" y="114" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oE5-cx-oKL" id="WWm-CR-ng6">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
@@ -90,7 +91,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RU8-eL-alB">
-                                <rect key="frame" x="0.0" y="20" width="600" height="530"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="530"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="add notes here..." translatesAutoresizingMaskIntoConstraints="NO" id="g3J-It-PDJ">
                                         <rect key="frame" x="20" y="75" width="560" height="100"/>
@@ -112,7 +113,7 @@
                                         </connections>
                                     </button>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="prS-sP-AW0">
-                                        <rect key="frame" x="0.0" y="255" width="600" height="162"/>
+                                        <rect key="frame" x="0.0" y="255" width="600" height="216"/>
                                         <date key="date" timeIntervalSinceReferenceDate="460358881.80394202">
                                             <!--2015-08-04 05:28:01 +0000-->
                                         </date>
@@ -271,7 +272,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="169"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Item SubTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-b5-X4r">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item SubTitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNe-b5-X4r">
                                             <rect key="frame" x="20" y="67" width="100" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -397,7 +398,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="Lzo-3s-ZiQ" kind="show" identifier="showList" id="bKz-BE-hvA"/>
-                        <segue destination="bSc-Uq-o0v" kind="presentation" identifier="showAddItemView" modalPresentationStyle="overFullScreen" animates="NO" id="Jmj-u2-g1N"/>
+                        <segue destination="bSc-Uq-o0v" kind="presentation" identifier="showAddItemView" animates="NO" modalPresentationStyle="overFullScreen" id="Jmj-u2-g1N"/>
                         <segue destination="aJg-PE-leZ" kind="show" identifier="showDueItemView" id="AlK-es-znz"/>
                     </connections>
                 </tableViewController>
@@ -418,7 +419,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8EV-Gm-cZL" customClass="FBSDKProfilePictureView">
-                                <rect key="frame" x="225" y="40" width="150" height="150"/>
+                                <rect key="frame" x="225" y="84" width="150" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="75L-pP-UL6"/>
@@ -428,7 +429,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIF-1a-1Km">
-                                <rect key="frame" x="26" y="200" width="548" height="40"/>
+                                <rect key="frame" x="30" y="244" width="540" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Dzq-Fq-1kJ"/>
                                     <constraint firstAttribute="height" constant="40" id="MBx-By-Xaw"/>
@@ -443,7 +444,7 @@
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="88J-g0-xaj">
-                                <rect key="frame" x="228" y="302" width="145" height="37"/>
+                                <rect key="frame" x="228" y="346" width="145" height="37"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
                                 <state key="normal" title="Provide Feedback">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -453,7 +454,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ycY-4g-2tU">
-                                <rect key="frame" x="234" y="250" width="133" height="37"/>
+                                <rect key="frame" x="234" y="294" width="133" height="37"/>
                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
                                 <state key="normal" title="Contact Support">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -713,7 +714,7 @@
                         </variation>
                     </view>
                     <connections>
-                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" animates="NO" id="Xen-ta-xmP"/>
+                        <segue destination="Ecz-Fx-uwS" kind="presentation" identifier="showLoginView" animates="NO" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="Xen-ta-xmP"/>
                         <segue destination="RMx-3f-FxP" kind="showDetail" identifier="showMasterView" id="mIu-Sg-Gjf"/>
                     </connections>
                 </viewController>
@@ -733,7 +734,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="you get stuff done" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogG-Hk-QQz">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="you get stuff done" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogG-Hk-QQz">
                                 <rect key="frame" x="40" y="283" width="520" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="T8B-Ih-kgs"/>
@@ -788,7 +789,7 @@
                                     <constraint firstAttribute="height" constant="100" id="jqg-Fj-ToV"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="The to-do list that helps" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bbG-bs-Lh4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The to-do list that helps" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bbG-bs-Lh4">
                                 <rect key="frame" x="40" y="245" width="520" height="28"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="28" id="lKD-0z-Rp1"/>
@@ -847,7 +848,7 @@
             <objects>
                 <tableViewController title="List" clearsSelectionOnViewWillAppear="NO" id="Lzo-3s-ZiQ" customClass="ListViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2Ae-g9-6L4">
-                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -898,7 +899,6 @@
                                 <connections>
                                     <outlet property="cellDueFlag" destination="Q56-Q4-Fv2" id="Lhh-92-bxr"/>
                                     <outlet property="cellItemTitle" destination="uvy-Ow-oPA" id="ryP-AB-Qmc"/>
-                                    <segue destination="tAf-os-SWk" kind="show" identifier="showItem" id="k9y-P3-oVd"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -921,6 +921,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="listNavBar" destination="cE7-nX-Yxx" id="jIo-vN-jfL"/>
+                        <segue destination="tAf-os-SWk" kind="show" identifier="showItem" id="98e-9g-Ut1"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ygx-FV-Pgj" sceneMemberID="firstResponder"/>
@@ -934,8 +935,8 @@
         <image name="WelcomePageLogo" width="280" height="75"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UMx-Ri-m6V"/>
-        <segue reference="O3e-c8-Xp2"/>
-        <segue reference="ddX-ID-X4a"/>
+        <segue reference="Xen-ta-xmP"/>
+        <segue reference="mIu-Sg-Gjf"/>
+        <segue reference="98e-9g-Ut1"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -121,24 +121,29 @@
 }
 
 +(void)updateThisItem:(Item *)itemToUpdate{
-    NSLog(@"start of UpdateThisItem Method");
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     NSString *itemIdCharacter = [itemToUpdate.itemId substringToIndex:1];
     //NSLog(@"first char = %@", itemIdCharacter);
-    NSLog(@"before the stduserdefaults in UpdateThisItem Method");
+    NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
+    
+    BOOL inQueueAlready = NO;
+    
+    for (NSString *eachString in newArrayOfItemsToUpdate){
+        if ([itemToUpdate.itemId isEqualToString:eachString]) {
+            inQueueAlready = YES;
+        }
+    }
 
-    if ([itemIdCharacter isEqualToString:@"1"]) {
+    if ([itemIdCharacter isEqualToString:@"1"] || inQueueAlready) {
         //do nothing
     }else{
-        NSMutableArray *newArrayOfItemsToUpdate = [[[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToUpdate"]mutableCopy];
         [newArrayOfItemsToUpdate addObject:itemToUpdate.itemId];
         [[NSUserDefaults standardUserDefaults] setObject:newArrayOfItemsToUpdate forKey:@"itemsToUpdate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    NSLog(@"after the stduserdefaults in UpdateThisItem Method");
 
     // Save the context.
     NSError *error = nil;
