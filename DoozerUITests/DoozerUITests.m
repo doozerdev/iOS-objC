@@ -10,7 +10,11 @@
 
 @interface DoozerUITests : XCTestCase
 
+
+
 @end
+
+NSString *listTitle;
 
 @implementation DoozerUITests
 
@@ -30,30 +34,59 @@
     [super tearDown];
 }
 
-- (void)addListAndItem {
+- (void)testCreateList{
+    
     XCUIApplication *app = [[XCUIApplication alloc] init];
     XCUIElementQuery *tablesQuery = app.tables;
     [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:@"╋︎"] childrenMatchingType:XCUIElementTypeTextField].element tap];
-    NSString *listTimestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    [app typeText:listTimestamp];
+    listTitle = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    [app typeText:listTitle];
     [app typeText:@"\r"];
     
     [app pressForDuration:1];
     
-    [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:listTimestamp] childrenMatchingType:XCUIElementTypeTextField].element tap];
-    [app.navigationBars[listTimestamp].buttons[@"Add"] tap];
-    NSString *itemTimestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    [app typeText:itemTimestamp];
-    [app typeText:@"\r"];
+    [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:listTitle] childrenMatchingType:XCUIElementTypeTextField].element tap];
     
-    [app pressForDuration:1];
-    [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:itemTimestamp] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    [app.navigationBars[listTitle].buttons[@"Add"] tap];
     
-    NSString *itemName = [[[tablesQuery.cells containingType:XCUIElementTypeTextField identifier:itemTimestamp] childrenMatchingType:XCUIElementTypeTextField].element value];
+    for (int i = 0; i < 7; i++) {
+        NSString *itemTimestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+        [app typeText:itemTimestamp];
+        [app typeText:@"\r"];
+    }
     
-    XCTAssertEqualObjects(itemTimestamp, itemName, @"Item entered successfuly!");
+    XCUIApplication *app2 = [[XCUIApplication alloc] init];
+    [[[[app2.tables childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:1] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    
+    int rows = (int)[tablesQuery.cells count];
+    
+    int count = 8;
+        
+    XCTAssertEqual(rows, count , @"list created successfuly!");
     
 }
 
+-(void)testDeleteItems{
+    
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    XCUIElementQuery *tablesQuery = app.tables;
+   [[[[tablesQuery childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    
+    XCUIElement *textField2 = [[[tablesQuery childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeTextField].element;
+    [textField2 swipeLeft];
+    
+    XCUIElement *deleteButton = tablesQuery.buttons[@"DELETE"];
+    [deleteButton tap];
+    [textField2 swipeLeft];
+    [deleteButton tap];
+    [textField2 swipeLeft];
+    [deleteButton tap];
+    
+    int rows = (int)[tablesQuery.cells count];
+    int count = 5;
+
+    XCTAssertEqual(rows, count , @"list created successfuly!");
+    
+}
 
 @end

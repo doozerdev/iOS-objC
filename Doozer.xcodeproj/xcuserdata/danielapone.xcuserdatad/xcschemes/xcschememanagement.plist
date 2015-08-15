@@ -9,9 +9,19 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>DoozerUITestsUpdated.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>A2190CF71B7E9B9000267578</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>A2301B271AF41A7C00E2267D</key>
 		<dict>
 			<key>primary</key>

@@ -432,13 +432,6 @@
 
 
 
-- (IBAction)addItemButton:(id)sender {
-    NSLog(@"prssed button");
-    
-    [self performSegueWithIdentifier:@"showAddItemView" sender:self];
-    
-}
-
 - (IBAction)longPressGestureRecognized:(id)sender {
     
     UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer *)sender;
@@ -455,7 +448,7 @@
     
     switch (state) {
         case UIGestureRecognizerStateBegan: {
-            if (indexPath) {
+            if (indexPath.row < [self.fetchedResultsController.fetchedObjects count]) {
                     
                 self.originalIndex = [self.tableView indexPathForRowAtPoint:location];
                 originalCell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:self.originalIndex];
@@ -491,7 +484,7 @@
             
         case UIGestureRecognizerStateChanged: {
             NSLog(@"original cell tag = %ld", (long)originalCell.tag);
-               if (cell.tag != 111 && originalCell.tag != 111 && self.originalIndex) {
+               if (cell.tag != 111 && originalCell.tag != 111 && self.originalIndex && indexPath.row < [self.fetchedResultsController.fetchedObjects count]) {
             
                     if (indexPath) {
                         NSLog(@"indexpath row and source = %ld - %ld", (long)indexPath.row, (long)sourceIndexPath.row);

@@ -1301,8 +1301,8 @@
       newIndexPath:(NSIndexPath *)newIndexPath {
     UITableView *tableView = self.tableView;
     
-    Item * test = (Item *)anObject;
-    Item *parent = (Item *)self.displayList;
+    //Item * test = (Item *)anObject;
+    //Item *parent = (Item *)self.displayList;
 
     //NSLog(@"title of item ================= %@, parent = %@", test.title, parent.itemId);
     
