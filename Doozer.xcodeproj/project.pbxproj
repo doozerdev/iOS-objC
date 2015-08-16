@@ -74,6 +74,7 @@
 		73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		808A8A0F4B6CF0A061F79A27 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A21658311B800B1700D5900C /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		A2190CF81B7E9B9000267578 /* DoozerUITestsUpdated.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerUITestsUpdated.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22B7F1E1B5E16740096CEEC /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemViewController.h; sourceTree = "<group>"; };
 		A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemViewController.m; sourceTree = "<group>"; };
@@ -250,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				A2301B2C1AF41A7C00E2267D /* Info.plist */,
+				A21658311B800B1700D5900C /* Constants.h */,
 				A2301B2D1AF41A7C00E2267D /* main.m */,
 			);
 			name = "Supporting Files";
@@ -887,6 +889,7 @@
 				A2190D001B7E9B9000267578 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A2301B231AF41A7C00E2267D /* Build configuration list for PBXProject "Doozer" */ = {
 			isa = XCConfigurationList;

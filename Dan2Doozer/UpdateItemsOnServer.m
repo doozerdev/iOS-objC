@@ -11,6 +11,7 @@
 #import "Item.h"
 #import "AppDelegate.h"
 #import "DoozerSyncManager.h"
+#import "Constants.h"
 
 @implementation UpdateItemsOnServer
 
@@ -76,7 +77,7 @@
         }else{
             params[@"archive"] = itemToUpdate.archive;
         }
-        NSString *urlBase = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", itemToUpdate.itemId];
+        NSString *urlBase = [NSString stringWithFormat:@"%@items/%@", kBaseAPIURL, itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"Successful JSON update %@", responseObject);

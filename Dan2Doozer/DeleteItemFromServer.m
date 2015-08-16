@@ -11,6 +11,7 @@
 #import "Item.h"
 #import "AppDelegate.h"
 #import "DoozerSyncManager.h"
+#import "Constants.h"
 
 @implementation DeleteItemFromServer
 
@@ -40,7 +41,7 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
         
-        NSString *URL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@/archive", itemIdToDelete];
+        NSString *URL = [NSString stringWithFormat:@"%@items/%@/archive", kBaseAPIURL, itemIdToDelete];
         
         [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"successful JSON delete %@", responseObject);

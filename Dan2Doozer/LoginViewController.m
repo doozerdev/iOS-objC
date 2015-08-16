@@ -15,6 +15,7 @@
 #import "intercom.h"
 #import "AppDelegate.h"
 #import "AddItemsToServer.h"
+#import "Constants.h"
 
 
 @interface LoginViewController ()  <UIAlertViewDelegate> 
@@ -187,8 +188,8 @@ NSString *sessionID = nil;
         
         
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-        NSString *startOfURL = @"http://warm-atoll-6588.herokuapp.com/api/login/";
-        NSString *targetURL = [NSString stringWithFormat:@"%@%@", startOfURL, fbAccessToken];
+
+        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", kBaseAPIURL, fbAccessToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             

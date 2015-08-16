@@ -922,10 +922,11 @@
     }
 }
 
-
+/*
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
 
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSLog(@"inside the mystery move row at indexpath method");
+    //NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
 
     Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
     NSDecimalNumber *newOrder = nil;
@@ -954,10 +955,15 @@
         reorderedItem.order = newOrder;
     }
     
+    
+    
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
+    //NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
+    NSString *updateURL = [NSString stringWithFormat:@"http://ec2-52-25-226-188.us-west-2.compute.amazonaws.com/api/items/%@", reorderedItem.itemId];
+
+    
     NSDictionary *params = @{
                              @"order": newOrder
                              };
@@ -975,12 +981,12 @@
         NSLog(@"Error: %@", error);
     }];
     
+    
     [self.tableView reloadData];
-    
-    
+ 
 }
 
-
+*/
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {

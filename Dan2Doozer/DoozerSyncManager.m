@@ -17,9 +17,10 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 #import "lelib.h"
+#import "Constants.h"
 
 
-BOOL _syncOpActive; //heroku is slow - don't request another sync op if one is active
+BOOL _syncOpActive; //if server is slow - don't request another sync op if one is active
 int _syncTryCount;
 double _lastSyncRequest;
 
@@ -70,7 +71,7 @@ double _lastSyncRequest;
                         
                         NSLog(@"************ Refreshed Access Token === %@", [FBSDKAccessToken currentAccessToken]);
                         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-                        NSString *targetURL = [NSString stringWithFormat:@"http://warm-atoll-6588.herokuapp.com/api/login/%@", fbAccessToken];
+                        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", kBaseAPIURL ,fbAccessToken];
                         
                         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
                         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {

@@ -9,6 +9,7 @@
 #import "GetItemsFromDoozer.h"
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
+#import "Constants.h"
 
 
 @implementation GetItemsFromDoozer
@@ -32,7 +33,7 @@
         params = @{@"last_sync" : dateString};
         }
     
-    NSString * NewURL = @"http://warm-atoll-6588.herokuapp.com/api/items";
+    NSString * NewURL = [NSString stringWithFormat:@"%@items", kBaseAPIURL];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     

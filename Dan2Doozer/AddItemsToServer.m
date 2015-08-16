@@ -11,6 +11,7 @@
 #import "Item.h"
 #import "AppDelegate.h"
 #import "DoozerSyncManager.h"
+#import "Constants.h"
 
 
 @implementation AddItemsToServer
@@ -73,7 +74,9 @@
             params[@"color"] = itemToAdd.color;
         }
         
-        [manager POST:@"https://warm-atoll-6588.herokuapp.com/api/items" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSString *URLstring = [NSString stringWithFormat:@"%@items", kBaseAPIURL];
+        
+        [manager POST:URLstring parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"Successful JSON ADD ITEM");
         
             NSDictionary *serverResponse = (NSDictionary *)responseObject;
