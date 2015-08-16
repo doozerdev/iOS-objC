@@ -217,7 +217,7 @@ double _lastSyncRequest;
 
 
 +(void)copyFromServer :(NSMutableArray *)inputArray{
-    
+    NSLog(@"starting copy from server function");
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
 
@@ -235,7 +235,7 @@ double _lastSyncRequest;
         NSArray *results = [context executeFetchRequest:fetchRequest error:&firsterror];
         //NSLog(@"results = %@", results);
         NSUInteger length = [results count];
-        NSLog(@"does the server item match a local item = %lu", (unsigned long)length);
+        //NSLog(@"does the server item match a local item = %lu", (unsigned long)length);
         
         NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
         NSString *idOfServerItem = [eachArrayElement objectForKey:@"id"];
@@ -246,142 +246,157 @@ double _lastSyncRequest;
             }
         }
         
-        /*
-         
-         TODO - fix this -- delete local copies of items that have been deleted on the server -- waiting on joe
-         
+        
         NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
-        NSLog(@"archive value = %@", archiveValue);
+        //NSLog(@"archive value = %@", archiveValue);
         
-        if ([archiveValue isEqualToString:@"1"]) {
-            NSLog(@"item ID %@ has been deleted", itemId);
-        }
-         */
+        int numnum = archiveValue.intValue;
         
-        
-        if (length > 0) {
-           //We actually want to keep the server or app copy of the item based on which was more recently updated.
-        
-            Item *existingItem = [results objectAtIndex:0];
+        if (numnum == 1) {
+            //NSLog(@"item ID %@ has been deleted, don't create a local item", itemId);
             
-            double local = [existingItem.updated_at timeIntervalSince1970];
-            
-            NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
-            NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
-            [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-            NSDate* updatedDate = [df2 dateFromString:updatedAtString];
-            double server = [updatedDate timeIntervalSince1970];
-            
-            if (server > local) {
+            if (length > 0) {
                 
-                existingItem.updated_at = updatedDate;
+                Item *existingItem = [results objectAtIndex:0];
+                
+                [context deleteObject:existingItem];
+                
+                
+                // Save the context.
+                NSError *error = nil;
+                if (![context save:&error]) {
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+                
+                
+            }
+        }else{
+         
+            if (length > 0) {
+               //We actually want to keep the server or app copy of the item based on which was more recently updated.
+            
+                Item *existingItem = [results objectAtIndex:0];
+                
+                double local = [existingItem.updated_at timeIntervalSince1970];
+                
+                NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
+                NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
+                [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                NSDate* updatedDate = [df2 dateFromString:updatedAtString];
+                double server = [updatedDate timeIntervalSince1970];
+                
+                if (server > local) {
+                    
+                    existingItem.updated_at = updatedDate;
+                    
+                    NSString *title = [eachArrayElement objectForKey:@"title"];
+                    existingItem.title = title;
+                    
+                    NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
+                    existingItem.order = [NSNumber numberWithInt:ordertemp.intValue];
+                    
+                    NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
+                    existingItem.color = colorTemp;
+                    
+                    NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
+                    existingItem.done = donetemp;
+                    
+                    NSString *notes = [eachArrayElement objectForKey:@"notes"];
+                    existingItem.notes = notes;
+                    if (existingItem.notes == nil) {
+                        existingItem.notes = @" ";
+                    }
+                    
+                    NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
+                    NSDateFormatter* df = [[NSDateFormatter alloc]init];
+                    [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                    NSDate* duedate = [df dateFromString:duedateString];
+                    existingItem.duedate = duedate;
+                    
+                    NSError *error = nil;
+                    if (![context save:&error]) {
+                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                        abort();
+                    }
+                }
+            }
+            
+            if (length == 0 && !inDeleteQueue){
+                Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+                
+                //NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
+                //NSLog(@"archive value is = %@", archiveValue);
                 
                 NSString *title = [eachArrayElement objectForKey:@"title"];
-                existingItem.title = title;
+                newItem.title = title;
+                //NSLog(@"creating an item of title %@", newItem.title);
                 
                 NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
-                existingItem.order = [NSNumber numberWithInt:ordertemp.intValue];
+                NSInteger ordertempInt = [ordertemp integerValue];
+                NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
+                newItem.order = order;
                 
-                NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
-                existingItem.color = colorTemp;
+                NSString *parenttemp = [eachArrayElement objectForKey:@"parent"];
+                if (parenttemp.length < 3){
+                    newItem.parent = nil;
+                }else{
+                    newItem.parent = parenttemp;
+                }
                 
+                NSString *idtemp = [eachArrayElement objectForKey:@"id"];
+                newItem.itemId = idtemp;
+                
+                NSString *typeTemp = [eachArrayElement objectForKey:@"type"];
+                newItem.type = typeTemp;
+                
+                if (!newItem.parent) {
+                    NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
+                    if (colorTemp.length < 1) {
+                        NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
+                        
+                        colorTemp = [ColorHelper returnUIColorString:colorPicker.intValue];
+                        int newColorPickerValue = 1 + colorPicker.intValue;
+                        if (newColorPickerValue > 4) {
+                            newColorPickerValue = 0;
+                        }
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
+                    newItem.color = colorTemp;
+
+                }
+            
                 NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
-                existingItem.done = donetemp;
+                newItem.done = donetemp;
                 
                 NSString *notes = [eachArrayElement objectForKey:@"notes"];
-                existingItem.notes = notes;
-                if (existingItem.notes == nil) {
-                    existingItem.notes = @" ";
+                newItem.notes = notes;
+                if (newItem.notes == nil) {
+                    newItem.notes = @" ";
                 }
                 
                 NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
                 NSDateFormatter* df = [[NSDateFormatter alloc]init];
                 [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
                 NSDate* duedate = [df dateFromString:duedateString];
-                existingItem.duedate = duedate;
+                newItem.duedate = duedate;
                 
+                NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
+                NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
+                [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                NSDate* updatedDate = [df2 dateFromString:updatedAtString];
+                newItem.updated_at = updatedDate;
+                
+                NSNumber *children_undone = [eachArrayElement objectForKey:@"children_undone"];
+                newItem.children_undone = children_undone;
+                
+                // Save the context.
                 NSError *error = nil;
                 if (![context save:&error]) {
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     abort();
                 }
-            }
-        }
-        
-        if (length == 0 && !inDeleteQueue){
-            Item *newItem = [[Item alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
-            
-            //NSString *archiveValue = [eachArrayElement objectForKey:@"archive"];
-            //NSLog(@"archive value is = %@", archiveValue);
-            
-            NSString *title = [eachArrayElement objectForKey:@"title"];
-            newItem.title = title;
-            NSLog(@"creating an item of title %@", newItem.title);
-            
-            NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
-            NSInteger ordertempInt = [ordertemp integerValue];
-            NSNumber *order = [NSNumber numberWithInteger:ordertempInt];
-            newItem.order = order;
-            
-            NSString *parenttemp = [eachArrayElement objectForKey:@"parent"];
-            if (parenttemp.length < 3){
-                newItem.parent = nil;
-            }else{
-                newItem.parent = parenttemp;
-            }
-            
-            NSString *idtemp = [eachArrayElement objectForKey:@"id"];
-            newItem.itemId = idtemp;
-            
-            NSString *typeTemp = [eachArrayElement objectForKey:@"type"];
-            newItem.type = typeTemp;
-            
-            if (!newItem.parent) {
-                NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
-                if (colorTemp.length < 1) {
-                    NSNumber *colorPicker = [[NSUserDefaults standardUserDefaults] valueForKey:@"colorPicker"];
-                    
-                    colorTemp = [ColorHelper returnUIColorString:colorPicker.intValue];
-                    int newColorPickerValue = 1 + colorPicker.intValue;
-                    if (newColorPickerValue > 4) {
-                        newColorPickerValue = 0;
-                    }
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:newColorPickerValue] forKey:@"colorPicker"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                }
-                newItem.color = colorTemp;
-
-            }
-        
-            NSNumber *donetemp = [eachArrayElement objectForKey:@"done"];
-            newItem.done = donetemp;
-            
-            NSString *notes = [eachArrayElement objectForKey:@"notes"];
-            newItem.notes = notes;
-            if (newItem.notes == nil) {
-                newItem.notes = @" ";
-            }
-            
-            NSString *duedateString = [eachArrayElement objectForKey:@"duedate"];
-            NSDateFormatter* df = [[NSDateFormatter alloc]init];
-            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-            NSDate* duedate = [df dateFromString:duedateString];
-            newItem.duedate = duedate;
-            
-            NSString *updatedAtString = [eachArrayElement objectForKey:@"updated_at"];
-            NSDateFormatter* df2 = [[NSDateFormatter alloc]init];
-            [df2 setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-            NSDate* updatedDate = [df2 dateFromString:updatedAtString];
-            newItem.updated_at = updatedDate;
-            
-            NSNumber *children_undone = [eachArrayElement objectForKey:@"children_undone"];
-            newItem.children_undone = children_undone;
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
             }
         }
     }
@@ -393,6 +408,8 @@ double _lastSyncRequest;
         [[NSUserDefaults standardUserDefaults] setObject:launchCount forKey:@"NumberOfLaunches"];
     }
     
+    NSLog(@"ending copy from server function");
+
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
