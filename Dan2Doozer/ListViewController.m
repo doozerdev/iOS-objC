@@ -214,9 +214,14 @@
                                          completion:^(BOOL finished)
                          {
                              //NSLog(@"Completed");
-                             [self cleanUpSwipedItem:swipedItem];
+                             [self cleanUpSwipedItem:swipedItem :originalIndexPath];
                              [snapshot removeFromSuperview];
+                             //self.fetchedResultsController = nil;
+                             //[self.tableView reloadData];
+                             //[self.tableView deleteRowsAtIndexPaths:@[originalIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+
                              
+                             /*
                              NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
                              for (Item *eachItem in itemsOnList) {
                                  if ([eachItem.type isEqualToString:@"completed_header"]) {
@@ -226,6 +231,7 @@
                                      eachItem.forceUpdateString = @" ";
                                  }
                              }
+                              */
                              self.isRightSwiping = NO;
 
                          }];
@@ -245,7 +251,9 @@
                          {
                              //NSLog(@"ReturniedCell");
                              [snapshot removeFromSuperview];
-                             swipedItem.forceUpdateString = @" ";
+                             self.fetchedResultsController = nil;
+                             [self.tableView reloadData];
+
                              self.isRightSwiping = NO;
 
                         }];
@@ -256,7 +264,9 @@
                         //NSLog(@"Catch all case for ENDED");
                         [snapshot removeFromSuperview];
                         originalCell.hidden = NO;
-                        swipedItem.forceUpdateString = @" ";
+                        if(self.isRightSwiping){
+                            [self.tableView reloadData];
+                        }
                         self.isRightSwiping = NO;
 
                     }
@@ -276,13 +286,16 @@
     }
 }
 
--(void)cleanUpSwipedItem:(Item *)swipedItem{
+-(void)cleanUpSwipedItem:(Item *)swipedItem :(NSIndexPath *)originalIndexPath{
 
     if (![swipedItem.type isEqualToString:@"completed_header"]) {
         //NSLog(@"item title to toggle = %@", swipedItem.title);
         
+        //[self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
         NSArray *listArray = [self.fetchedResultsController fetchedObjects];
         int indexOfCompletedHeader = 0;
+        int newIndexOfCompletedHeader = 0;
         int loopcount = 0;
         for (Item *eachItem in listArray) {
             if ([eachItem.type isEqualToString:@"completed_header"]) {
@@ -291,7 +304,6 @@
             loopcount += 1;
         }
         Item *completedHeader = [listArray objectAtIndex:indexOfCompletedHeader];
-        
         int newOrder = 0;
         if (swipedItem.done.intValue == 0) {
             swipedItem.done = [NSNumber numberWithInt:1];
@@ -302,14 +314,14 @@
             }else{
                 newOrder = completedHeader.order.intValue + 100000000;
             }
-            
+            newIndexOfCompletedHeader = indexOfCompletedHeader - 1;
             int timestamp = [[NSDate date] timeIntervalSince1970];
             NSString *date = [NSString stringWithFormat:@"%d", timestamp];
             [Intercom logEventWithName:@"Completed_Item_From_List_Screen" metaData: @{@"date": date}];
             
         }else{
             swipedItem.done = [NSNumber numberWithInt:0];
-            
+
             if (indexOfCompletedHeader == 0) {
                 
                 newOrder = completedHeader.order.intValue / 2;
@@ -319,11 +331,33 @@
                 Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader-1];
                 newOrder = ((completedHeader.order.intValue - adjacentItem.order.intValue) / 2) + adjacentItem.order.intValue;
             }
+            
+            newIndexOfCompletedHeader = indexOfCompletedHeader + 1;
+
             int timestamp = [[NSDate date] timeIntervalSince1970];
             NSString *date = [NSString stringWithFormat:@"%d", timestamp];
             [Intercom logEventWithName:@"Uncompleted_Item_From_List_Screen" metaData: @{@"date": date}];
         }
         swipedItem.order = [NSNumber numberWithInt:newOrder];
+        NSIndexPath *targetPath = [NSIndexPath indexPathForRow:indexOfCompletedHeader inSection:0];
+
+        self.fetchedResultsController = nil;
+        NSLog(@"FRC = %@", self.fetchedResultsController.fetchedObjects);
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:@[originalIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView insertRowsAtIndexPaths:@[targetPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        [self.tableView endUpdates];
+        
+        ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:targetPath];
+        [self configureCell:cell atIndexPath:targetPath];
+        NSIndexPath *newCompletedHeaderIndex = [NSIndexPath indexPathForRow:newIndexOfCompletedHeader inSection:0];
+
+        ListCustomCell *completedHeaderCell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:newCompletedHeaderIndex];
+        [self configureCell:completedHeaderCell atIndexPath:newCompletedHeaderIndex];
+
+
+        NSLog(@"target index path row is === %ld", (long)targetPath.row);
         
         [self rebalanceListIfNeeded];
         [UpdateItemsOnServer updateThisItem:swipedItem];
@@ -536,20 +570,33 @@
         newItemIndexPath = [NSIndexPath indexPathForRow:topRowPath.row+1 inSection:0];
     }
     
+
+    
+    self.fetchedResultsController = nil;
+
+    [self.tableView insertRowsAtIndexPaths:@[newItemIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    
     ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:newItemIndexPath];
     self.rowOfNewItem = (int)newItemIndexPath.row;
     cell.cellItemTitle.enabled = YES;
     cell.cellItemTitle.delegate = self;
     
+    //[self.tableView reloadData];
+    //NSLog(@"FRC = %@", self.fetchedResultsController.fetchedObjects);
+    //NSLog(@"row of new item = %d", self.rowOfNewItem);
+    
     for (int i = 0; i <= (int)numberOfResults; i++) {
         
+        NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
+        
         if (i != self.rowOfNewItem) {
-            NSIndexPath *pathToLoad = [NSIndexPath indexPathForRow:i inSection:0];
-            Item *itemToReload = [self.fetchedResultsController objectAtIndexPath:pathToLoad];
-            itemToReload.forceUpdateString = @" ";
-            //NSLog(@"row to load = %d", i);
+            //[self.tableView reloadRowsAtIndexPaths:@[pathToLoad] withRowAnimation:UITableViewRowAnimationFade];
+            [self configureCell:(ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathToLoad] atIndexPath:pathToLoad];
+
         }
+
     }
+    
     [cell.cellItemTitle becomeFirstResponder];
     
 }
@@ -896,7 +943,11 @@
     if (currentText.length == 0) {
         NSLog(@"deleting just created row");
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0]]];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
+        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        
+        self.fetchedResultsController = nil;
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }else{
         
@@ -949,7 +1000,7 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     
-    NSLog(@"number of rows = %lu", (unsigned long)[sectionInfo numberOfObjects]);
+    //NSLog(@"number of rows = %lu", (unsigned long)[sectionInfo numberOfObjects]);
     return [sectionInfo numberOfObjects];
     //return [[self findChildren] count];
 }
@@ -1056,7 +1107,7 @@
     }
     
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    //NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
+    NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
 
     cell.cellItemTitle.enabled = NO;
     
@@ -1187,6 +1238,24 @@
                                             Item *itemToDelete = [self.fetchedResultsController objectAtIndexPath:indexPath];
                                             
                                             [DeleteItemFromServer deleteThisItem:itemToDelete];
+                                            self.fetchedResultsController = nil;
+                                            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                                            
+                                            NSArray *listArray = [self.fetchedResultsController fetchedObjects];
+                                            int indexOfCompletedHeader = 0;
+                                            int loopcount = 0;
+                                            for (Item *eachItem in listArray) {
+                                                if ([eachItem.type isEqualToString:@"completed_header"]) {
+                                                    indexOfCompletedHeader = loopcount;
+                                                }
+                                                loopcount += 1;
+                                            }
+
+                                            NSIndexPath *indexPathOfCompleted = [NSIndexPath indexPathForRow:indexOfCompletedHeader inSection:0];
+                                            ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:indexPathOfCompleted];
+                                            [self configureCell:cell atIndexPath:indexPathOfCompleted];
+
+
                                             int timestamp = [[NSDate date] timeIntervalSince1970];
                                             NSString *date = [NSString stringWithFormat:@"%d", timestamp];
                                             [Intercom logEventWithName:@"Deleted_Item_From_List_Screen" metaData: @{@"date": date}];
@@ -1217,7 +1286,7 @@
         return _fetchedResultsController;
     }
     
-    NSLog(@"start of FRC");
+    //NSLog(@"start of FRC");
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
@@ -1256,26 +1325,27 @@
         abort();
     }
     
-    NSLog(@"END of FRC");
+    //NSLog(@"END of FRC");
 
     
     return _fetchedResultsController;
 }
 
+/*
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     //NSLog(@"beginning updates now ------------------");
     
-    /*
+ 
      //self.fetchedResultsController = nil;
 
-    Item *parentItem = self.displayList;
-    NSLog(@"parent ID = %@", parentItem.itemId);
+    //Item *parentItem = self.displayList;
+    //NSLog(@"parent ID = %@", parentItem.itemId);
     
     
-    for (Item* eachItem in self.fetchedResultsController.fetchedObjects){
-        NSLog(@"Item %@, with parent %@", eachItem.title, eachItem.parent);
-    }
-    */
+    //for (Item* eachItem in self.fetchedResultsController.fetchedObjects){
+        //NSLog(@"Item %@, with parent %@", eachItem.title, eachItem.parent);
+    //}
+    
     [self.tableView beginUpdates];
 
     
@@ -1309,27 +1379,27 @@
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            //NSLog(@"ChangeInsert index path to delete = %@", indexPath);
+            NSLog(@"ChangeInsert index path to delete = %@", indexPath);
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
             
             
-            //NSLog(@"ChangeDelete row = %ld, item title = %@, parent = %@", (long)indexPath.row, test.title, test.parent);
+            NSLog(@"ChangeDelete row = %ld", (long)indexPath.row);
 
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
         
         case NSFetchedResultsChangeUpdate:
-            //NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
+            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
             [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
          
             
         case NSFetchedResultsChangeMove:
-            //NSLog(@"moving rows in CHANGEMOVE");
+            NSLog(@"moving rows in CHANGEMOVE");
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
@@ -1344,6 +1414,9 @@
     //NSLog(@"ending updates now - after table endUpdates -------------");
 
 }
+
+*/
+
 
 #pragma mark - Helper methods
 - (UIView *)customSnapshoFromView:(UIView *)inputView {

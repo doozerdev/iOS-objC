@@ -26,7 +26,7 @@
     NSString *newTestDateString = [NSString stringWithFormat:@"%d", newTestDate];
     
     int currentTime = [[NSDate date] timeIntervalSince1970];
-    NSLog(@"current time is %d, and last sync time was %@", currentTime, dateString);
+    //NSLog(@"current time is %d, and last sync time was %@", currentTime, dateString);
     
     NSDictionary *params = nil;
     if (syncDate == NULL) {
@@ -46,12 +46,12 @@
     [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];    
     
     [cats GET:NewURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"Request is %@", cats);
+        //NSLog(@"Request is %@", cats);
 
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         itemsArray = [jsonDict objectForKey:@"items"];
-        NSLog(@" heres' the server response =%@", itemsArray);
-        NSLog(@"Count of items from doozer server = %lu", (unsigned long)itemsArray.count);
+        //NSLog(@" heres' the server response =%@", itemsArray);
+        //NSLog(@"Count of items from doozer server = %lu", (unsigned long)itemsArray.count);
         
         _completionHandler(itemsArray);
         _completionHandler = nil;

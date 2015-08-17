@@ -30,7 +30,7 @@ double _lastSyncRequest;
 
 +(void)syncWithServer{
     
-    NSLog(@"---------FB access token ======= %@", [FBSDKAccessToken currentAccessToken]);
+    //NSLog(@"---------FB access token ======= %@", [FBSDKAccessToken currentAccessToken]);
     
     if ([FBSDKAccessToken currentAccessToken]) {
         //NSLog(@"valid token fB");
@@ -217,7 +217,7 @@ double _lastSyncRequest;
 
 
 +(void)copyFromServer :(NSMutableArray *)inputArray{
-    NSLog(@"starting copy from server function");
+    //NSLog(@"starting copy from server function");
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
 
@@ -408,7 +408,7 @@ double _lastSyncRequest;
         [[NSUserDefaults standardUserDefaults] setObject:launchCount forKey:@"NumberOfLaunches"];
     }
     
-    NSLog(@"ending copy from server function");
+    //NSLog(@"ending copy from server function");
 
 }
 

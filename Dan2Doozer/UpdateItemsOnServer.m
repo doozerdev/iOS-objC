@@ -80,7 +80,7 @@
         NSString *urlBase = [NSString stringWithFormat:@"%@items/%@", kBaseAPIURL, itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSLog(@"Successful JSON update %@", responseObject);
+            //NSLog(@"Successful JSON update %@", responseObject);
 
             NSError *error = nil;
             if (![passOnContext save:&error]) {
@@ -156,7 +156,7 @@
         abort();
     }
     [DoozerSyncManager syncWithServer];
-    NSLog(@"End of UpdateThisItem Method");
+    //NSLog(@"End of UpdateThisItem Method");
 
     
 }
