@@ -210,8 +210,6 @@ double _lastSyncRequest;
             }];
         }
     }];
-
-    
 }
 
 

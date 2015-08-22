@@ -25,7 +25,7 @@
     int newTestDate = dateString.intValue - 10;
     NSString *newTestDateString = [NSString stringWithFormat:@"%d", newTestDate];
     
-    int currentTime = [[NSDate date] timeIntervalSince1970];
+    //int currentTime = [[NSDate date] timeIntervalSince1970];
     //NSLog(@"current time is %d, and last sync time was %@", currentTime, dateString);
     
     NSDictionary *params = nil;
