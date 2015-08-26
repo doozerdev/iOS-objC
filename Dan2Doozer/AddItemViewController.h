@@ -10,9 +10,13 @@
 #import <CoreData/CoreData.h>
 #import "Item.h"
 
+@protocol AddItemViewControllerDelegate;
 
 
 @interface AddItemViewController : UIViewController <UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
+
+@property (nonatomic, weak) id<AddItemViewControllerDelegate> delegate;
+
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
@@ -21,6 +25,14 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *lowerContentPanel;
 
+- (void)closeDownView;
 
+
+@end
+
+
+@protocol AddItemViewControllerDelegate <NSObject>
+
+- (void)reloadAndDrawLists;
 
 @end

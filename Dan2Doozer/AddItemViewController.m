@@ -55,9 +55,11 @@
         [self dismissViewControllerAnimated:NO completion:nil];
 
     }];
-    
 
-    
+    id<AddItemViewControllerDelegate> strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(reloadAndDrawLists)]) {
+        [strongDelegate reloadAndDrawLists];
+    }
 
 }
 
@@ -281,18 +283,6 @@
     
     
 }
-
-/*
-
- #pragma mark - Segues
- 
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- 
-     if ([[segue identifier] isEqualToString:@"unwindToMaster"]) {
-         NSLog(@"prepare for segue unwind to master");
-     }
- }
-*/
 
 
 - (NSFetchedResultsController *)fetchedResultsController

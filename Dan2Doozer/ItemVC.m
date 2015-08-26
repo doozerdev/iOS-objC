@@ -28,8 +28,6 @@
     
     self.ItemTitle.text = self.detailItem.title;
     
-
-    
     if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
         self.Notes.text = self.detailItem.notes;
         self.Notes.font = [UIFont fontWithName:@"Avenir" size:17];

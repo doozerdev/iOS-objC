@@ -114,13 +114,6 @@
     [self rebalanceListOrdersIfNeeded];
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-   /*
-    if (numberOfLaunches.intValue == 0) {
-        NSLog(@"first launch -- not syncing when loading main screen");
-    }else{
-        [DoozerSyncManager syncWithServer];
-    }
-    */
     
     //make a sample set of data for brand new users
     NSLog(@"num launeces = %@, array count = %lu", numberOfLaunches, (unsigned long)[self.fetchedResultsController.fetchedObjects count]);
@@ -145,14 +138,58 @@
     
 }
 
+- (void)findNumberOfItemsOnLists{
+    
+    
+    if (self.numberOfItemsOnLists) {
+        [self.numberOfItemsOnLists removeAllObjects];
+        NSLog(@"NILing the NSMutableArray");
+    }else{
+        self.numberOfItemsOnLists = [[NSMutableArray alloc]init];
+        NSLog(@"allocating new NSMutableARray");
+    }
+    
+     NSArray *lists = self.fetchedResultsController.fetchedObjects;
+     
+     for (Item *eachItem in lists) {
+     
+         NSArray *eachList = [self fetchItemsOnList:eachItem.itemId];
+         
+         int numberOfUncompleted = -1;
+         
+         for (Item *subItem in eachList) {
+             if (subItem.done.intValue == 0) {
+                 numberOfUncompleted += 1;
+             }
+         }
+         
+         NSNumber *itemCount = [NSNumber numberWithInt:numberOfUncompleted];
+         
+         [self.numberOfItemsOnLists addObject:itemCount];
+         
+     }
+    
+    NSLog(@"item on list count ====== %@", self.numberOfItemsOnLists);
+    
+}
+
+- (void)reloadAndDrawLists{
+    
+    [self findNumberOfItemsOnLists];
+    [self.tableView reloadData];
+    
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    
+    NSLog(@"view will appear is called");
+    
     [DoozerSyncManager syncWithServer];
     
-    
-
+    [self findNumberOfItemsOnLists];
     
     self.rowOfExpandedCell = -1;
     self.navigationController.navigationBar.barStyle  = UIBarStyleDefault;
@@ -162,9 +199,6 @@
                                                             NSFontAttributeName: [UIFont fontWithName:@"Avenir" size:20],
                                                             }];
     self.tableView.separatorColor = [UIColor whiteColor];
-    
-
-    
     
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
@@ -190,6 +224,8 @@
     [self setupMenuBarButtons];
     
 }
+
+
 
 - (void)setupMenuBarButtons{
     
@@ -702,6 +738,7 @@
 
         AddItemViewController *modalViewController = segue.destinationViewController;
         modalViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+        modalViewController.delegate = self;
         
         if (self.rowOfExpandedCell != -1) {
             if (self.addingAnItem) {
@@ -796,6 +833,7 @@
         cell.tag = 0;
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 
+        /*
         NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
         int numKids = 0;
         if ([launchCount intValue] == 0) {
@@ -803,12 +841,15 @@
         }else{
             numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId];
         }
+        */
+        
+        NSNumber * numKids = [self.numberOfItemsOnLists objectAtIndex:indexPath.row];
         
         cell.cellItemTitle.text = itemInCell.title;
         //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", itemInCell.title, itemInCell.order];
         
         cell.cellItemSubTitle.hidden = NO;
-        cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%d ITEMS", numKids];
+        cell.cellItemSubTitle.text = [NSString stringWithFormat:@"%@ ITEMS", numKids];
         cell.cellItemSubTitle.textColor = [UIColor whiteColor];
         cell.cellItemSubTitle.font = [UIFont fontWithName:@"Avenir-Medium" size:14];
         cell.cellItemSubTitle.textAlignment = NSTextAlignmentLeft;

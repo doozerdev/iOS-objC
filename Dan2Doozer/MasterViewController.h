@@ -10,13 +10,13 @@
 #import <CoreData/CoreData.h>
 #import <QuartzCore/QuartzCore.h>
 #import "Item.h"
-
+#import "AddItemViewController.h"
 
 
 @class DetailViewController;
 @class ListViewController;
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, AddItemViewControllerDelegate>
 
 //@property (strong, nonatomic) DetailViewController *detailViewController;
 @property (strong, nonatomic) ListViewController *listViewController;
@@ -33,6 +33,8 @@
 @property (strong, nonatomic) Item *itemToDelete;
 @property BOOL addingAnItem;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *dueButton;
+
+@property NSMutableArray *numberOfItemsOnLists;
 
 
 @end
