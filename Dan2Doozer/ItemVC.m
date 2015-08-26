@@ -97,16 +97,13 @@
     NSLog(@"original titlefieldextraheight == === = = %f", self.titleFieldExtraHeight);
     
     
-    UIImage *image = [[UIImage alloc]init];
+    UIImage *image = [UIImage imageNamed:@"outlinecircledone"];
     
     if (self.detailItem.done.intValue == 0) {
-        image = [UIImage imageNamed:@"outlinecheckundone"];
-        self.toggleCompleteButton.backgroundColor = [UIColor lightGrayColor];
+        self.toggleCompleteButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
 
     }else{
-        image = [UIImage imageNamed:@"outlinecircledone"];
         self.toggleCompleteButton.backgroundColor = themeColor;
-
     }
     
     [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
@@ -130,6 +127,7 @@
     UIImage *image = [[UIImage alloc]init];
     
     int newOrder = 0;
+    
     if (self.detailItem.done.intValue == 0) {
         self.detailItem.done = [NSNumber numberWithInt:1];
         image = [UIImage imageNamed:@"outlinecircledone"];
@@ -147,9 +145,9 @@
         
     }else{
         self.detailItem.done = [NSNumber numberWithInt:0];
-        image = [UIImage imageNamed:@"outlinecheckundone"];
-        self.toggleCompleteButton.backgroundColor = [UIColor lightGrayColor];
-
+        image = [UIImage imageNamed:@"outlinecircledone"];
+        self.toggleCompleteButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        
         
         if (indexOfCompletedHeader == 0) {
             
@@ -164,6 +162,7 @@
         NSString *date = [NSString stringWithFormat:@"%d", timestamp];
         [Intercom logEventWithName:@"Uncompleted_Item_From_Item_Screen" metaData: @{@"date": date}];
     }
+     
     self.detailItem.order = [NSNumber numberWithInt:newOrder];
     
     [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
