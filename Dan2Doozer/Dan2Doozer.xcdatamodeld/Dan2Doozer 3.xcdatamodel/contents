@@ -6,6 +6,7 @@
         <attribute name="color" optional="YES" attributeType="String" valueTransformerName="NSKeyedUnarchiveFromDataTransformerName" syncable="YES"/>
         <attribute name="done" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="duedate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fakeNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="forceUpdateString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="localItemId" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +21,6 @@
         <userInfo/>
     </entity>
     <elements>
-        <element name="ItemRecord" positionX="261" positionY="189" width="128" height="285"/>
+        <element name="ItemRecord" positionX="261" positionY="189" width="128" height="300"/>
     </elements>
 </model>
