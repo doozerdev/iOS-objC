@@ -16,6 +16,9 @@
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
+            <string>Avenir-Book</string>
+            <string>Avenir-Book</string>
+            <string>Avenir-Book</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -427,8 +430,8 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="kgU-is-0V8"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIF-1a-1Km">
-                                <rect key="frame" x="30" y="244" width="540" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIF-1a-1Km">
+                                <rect key="frame" x="26" y="244" width="548" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Dzq-Fq-1kJ"/>
                                     <constraint firstAttribute="height" constant="40" id="MBx-By-Xaw"/>
@@ -450,6 +453,28 @@
                                 </state>
                                 <connections>
                                     <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="Hcl-hG-GKD"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wqp-C9-zpx">
+                                <rect key="frame" x="0.0" y="414" width="200" height="37"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
+                                <state key="normal" title="Terms">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="mF4-zq-HBb"/>
+                                    <action selector="pressedTermsButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="gax-1f-y0O"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Put-Ye-hYw">
+                                <rect key="frame" x="400" y="414" width="200" height="37"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
+                                <state key="normal" title="Review">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="jRx-fo-bJZ"/>
+                                    <action selector="pressedReviewButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="HJk-zP-Xqx"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ycY-4g-2tU">
@@ -489,21 +514,41 @@
                                     <constraint firstAttribute="bottom" secondItem="rPP-3b-pfW" secondAttribute="bottom" id="w5S-8K-DoP"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fcn-zz-Nqh">
+                                <rect key="frame" x="200" y="414" width="200" height="37"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
+                                <state key="normal" title="Privacy">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="Zh9-C1-H8K"/>
+                                    <action selector="pressedPrivacyButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="xo9-sx-y2C"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wga-7f-cxi" firstAttribute="centerX" secondItem="PD9-rp-ugQ" secondAttribute="centerX" id="0f5-ix-rrl"/>
+                            <constraint firstItem="Put-Ye-hYw" firstAttribute="leading" secondItem="fcn-zz-Nqh" secondAttribute="trailing" id="0jZ-vH-JG9"/>
+                            <constraint firstItem="fcn-zz-Nqh" firstAttribute="top" secondItem="wqp-C9-zpx" secondAttribute="top" id="1aD-Ha-7M9"/>
                             <constraint firstItem="88J-g0-xaj" firstAttribute="centerX" secondItem="PD9-rp-ugQ" secondAttribute="centerX" id="8di-68-7zY"/>
                             <constraint firstAttribute="centerX" secondItem="8EV-Gm-cZL" secondAttribute="centerX" id="AcS-uB-cxs"/>
+                            <constraint firstItem="wqp-C9-zpx" firstAttribute="top" secondItem="zIF-1a-1Km" secondAttribute="bottom" constant="130" id="Anj-RG-Xyl"/>
                             <constraint firstItem="ycY-4g-2tU" firstAttribute="top" secondItem="zIF-1a-1Km" secondAttribute="bottom" constant="10" id="Ccq-Qa-AfU"/>
                             <constraint firstAttribute="trailingMargin" secondItem="zIF-1a-1Km" secondAttribute="trailing" constant="10" id="CrZ-p2-Szm"/>
                             <constraint firstItem="zIF-1a-1Km" firstAttribute="top" secondItem="8EV-Gm-cZL" secondAttribute="bottom" constant="10" id="Cs8-jt-jSY"/>
                             <constraint firstItem="ycY-4g-2tU" firstAttribute="centerX" secondItem="PD9-rp-ugQ" secondAttribute="centerX" id="EjH-PE-Eg8"/>
                             <constraint firstAttribute="centerX" secondItem="zIF-1a-1Km" secondAttribute="centerX" id="JQv-yA-wcD"/>
+                            <constraint firstItem="fcn-zz-Nqh" firstAttribute="top" secondItem="Put-Ye-hYw" secondAttribute="top" id="LxI-xN-DND"/>
                             <constraint firstItem="88J-g0-xaj" firstAttribute="top" secondItem="ycY-4g-2tU" secondAttribute="bottom" constant="15" id="SR4-dd-vbe"/>
                             <constraint firstAttribute="centerX" secondItem="zIF-1a-1Km" secondAttribute="centerX" id="U9s-tl-5ji"/>
                             <constraint firstItem="XGe-Fd-G6C" firstAttribute="top" secondItem="wga-7f-cxi" secondAttribute="bottom" constant="34" id="X1y-5G-6DL"/>
+                            <constraint firstItem="wqp-C9-zpx" firstAttribute="leading" secondItem="PD9-rp-ugQ" secondAttribute="leading" id="aIw-Ne-rmE"/>
+                            <constraint firstItem="fcn-zz-Nqh" firstAttribute="width" secondItem="wqp-C9-zpx" secondAttribute="width" id="cxg-I7-c9W"/>
+                            <constraint firstItem="fcn-zz-Nqh" firstAttribute="width" secondItem="Put-Ye-hYw" secondAttribute="width" id="gce-ZE-8pQ"/>
                             <constraint firstItem="8EV-Gm-cZL" firstAttribute="top" secondItem="KsC-AP-k7o" secondAttribute="bottom" constant="20" id="i2b-Lc-azl"/>
+                            <constraint firstAttribute="trailing" secondItem="Put-Ye-hYw" secondAttribute="trailing" id="p0d-Kx-1uJ"/>
+                            <constraint firstItem="fcn-zz-Nqh" firstAttribute="leading" secondItem="wqp-C9-zpx" secondAttribute="trailing" id="qL5-e2-JdU"/>
                             <constraint firstItem="zIF-1a-1Km" firstAttribute="leading" secondItem="PD9-rp-ugQ" secondAttribute="leadingMargin" constant="10" id="rU4-C4-cBT"/>
                         </constraints>
                         <variation key="default">
@@ -934,8 +979,8 @@
         <image name="WelcomePageLogo" width="280" height="75"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Xen-ta-xmP"/>
         <segue reference="mIu-Sg-Gjf"/>
         <segue reference="98e-9g-Ut1"/>
+        <segue reference="ddX-ID-X4a"/>
     </inferredMetricsTieBreakers>
 </document>

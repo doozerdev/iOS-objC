@@ -47,6 +47,28 @@
     
 }
 
+- (IBAction)pressedPrivacyButton:(id)sender {
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.doozer.tips/legal/privacy-policy.html"]];
+    
+}
+
+- (IBAction)pressedTermsButton:(id)sender {
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.doozer.tips/legal/Terms.html"]];
+
+    
+}
+
+- (IBAction)pressedReviewButton:(id)sender {
+    
+    NSString *iTunesLink = @"itms://itunes.apple.com/us/app/angry-birds/id343200656?mt=8";
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iTunesLink]];
+    
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
