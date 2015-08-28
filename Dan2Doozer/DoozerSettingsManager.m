@@ -19,22 +19,7 @@
 
 @implementation DoozerSettingsManager
 
-- (IBAction)pressedFeedbackButton:(id)sender {
-    
-    #define URLEMail @"mailto:info@doozer.tips?subject=Hey Doozer!&body=Here's what I think about..."
-    
-    NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
-    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
-    
-}
 
-- (IBAction)pressedSupportButton:(id)sender {
-    
-    #define URLEMail2 @"mailto:info@doozer.tips?subject=Help me!&body=I need help with..."
-    
-    NSString *url = [URLEMail2 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
-    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
-}
 
 - (IBAction)pressedLogOutButton:(id)sender {
     
@@ -48,12 +33,16 @@
 }
 
 - (IBAction)pressedPrivacyButton:(id)sender {
+    NSLog(@"pressed PRIVACY button");
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.doozer.tips/legal/privacy-policy.html"]];
     
 }
 
 - (IBAction)pressedTermsButton:(id)sender {
+    
+    NSLog(@"pressed TERMS button");
+
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.doozer.tips/legal/Terms.html"]];
 
@@ -62,9 +51,35 @@
 
 - (IBAction)pressedReviewButton:(id)sender {
     
+    NSLog(@"pressed REVIEW button");
+
+    
     NSString *iTunesLink = @"itms://itunes.apple.com/us/app/angry-birds/id343200656?mt=8";
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iTunesLink]];
     
+}
+
+- (IBAction)pressedFeedbackButton:(id)sender {
+    
+    NSLog(@"pressed FEDDBACK button");
+
+    
+#define URLEMail @"mailto:info@doozer.tips?subject=Hey Doozer!&body=Here's what I think about..."
+    
+    NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
+    
+}
+
+- (IBAction)pressedSupportButton:(id)sender {
+    
+    NSLog(@"pressed SUPPORT button");
+
+    
+#define URLEMail2 @"mailto:info@doozer.tips?subject=Help me!&body=I need help with..."
+    
+    NSString *url = [URLEMail2 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
 }
 
 

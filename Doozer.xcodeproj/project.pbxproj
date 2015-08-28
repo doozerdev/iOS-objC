@@ -105,6 +105,7 @@
 		A26174A71B8FD6420004B371 /* Dan2Doozer 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 2.xcdatamodel"; sourceTree = "<group>"; };
 		A26174A81B8FD8340004B371 /* Dan2Doozer 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 3.xcdatamodel"; sourceTree = "<group>"; };
 		A26174A91B8FD87C0004B371 /* Dan2Doozer 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 4.xcdatamodel"; sourceTree = "<group>"; };
+		A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 5.xcdatamodel"; sourceTree = "<group>"; };
 		A27001E81B61C6C800D1B7B3 /* DueItemsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DueItemsViewController.h; sourceTree = "<group>"; };
 		A27001E91B61C6C800D1B7B3 /* DueItemsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DueItemsViewController.m; sourceTree = "<group>"; };
 		A27282961B0D6728002D5BE5 /* libPods-AFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AFNetworking.a"; path = "Pods/../build/Debug-iphoneos/libPods-AFNetworking.a"; sourceTree = "<group>"; };
@@ -936,12 +937,13 @@
 		A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */,
 				A26174A91B8FD87C0004B371 /* Dan2Doozer 4.xcdatamodel */,
 				A26174A81B8FD8340004B371 /* Dan2Doozer 3.xcdatamodel */,
 				A26174A71B8FD6420004B371 /* Dan2Doozer 2.xcdatamodel */,
 				A2301B331AF41A7C00E2267D /* Dan2Doozer.xcdatamodel */,
 			);
-			currentVersion = A26174A91B8FD87C0004B371 /* Dan2Doozer 4.xcdatamodel */;
+			currentVersion = A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */;
 			path = Dan2Doozer.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

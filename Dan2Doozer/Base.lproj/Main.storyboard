@@ -462,7 +462,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="mF4-zq-HBb"/>
                                     <action selector="pressedTermsButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="gax-1f-y0O"/>
                                 </connections>
                             </button>
@@ -473,7 +472,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="jRx-fo-bJZ"/>
                                     <action selector="pressedReviewButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="HJk-zP-Xqx"/>
                                 </connections>
                             </button>
@@ -521,7 +519,6 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="pressedFeedbackButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="Zh9-C1-H8K"/>
                                     <action selector="pressedPrivacyButton:" destination="YFT-UZ-tcf" eventType="touchUpInside" id="xo9-sx-y2C"/>
                                 </connections>
                             </button>

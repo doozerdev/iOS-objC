@@ -84,7 +84,14 @@
     item2.order = [NSNumber numberWithInt:2000];
     item2.done = 0;
     item2.notes = @" ";
-     
+    
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [self reloadAndDrawLists];
     
     [AddItemsToServer addThisItem:houseChoreList];
     [AddItemsToServer addThisItem:chore1];
@@ -155,10 +162,10 @@
      
          NSArray *eachList = [self fetchItemsOnList:eachItem.itemId];
          
-         int numberOfUncompleted = -1;
+         int numberOfUncompleted = 0;
          
          for (Item *subItem in eachList) {
-             if (subItem.done.intValue == 0) {
+             if (subItem.done.intValue == 0 && ![subItem.type isEqualToString:@"completed_header"]) {
                  numberOfUncompleted += 1;
              }
          }
@@ -395,6 +402,7 @@
             self.itemToDelete = nil;
             
             [self setupMenuBarButtons];
+            [self findNumberOfItemsOnLists];
 
         }
     }
@@ -403,6 +411,9 @@
 
 
 - (void)addItemList {
+    
+    NSNumber *newListItemCount = [NSNumber numberWithInt:0];
+    [self.numberOfItemsOnLists addObject:newListItemCount];
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
@@ -465,6 +476,7 @@
     [self.tableView scrollToRowAtIndexPath:newItemIndexPath
                           atScrollPosition:UITableViewScrollPositionTop
                                   animated:YES];
+    
 }
 
 
@@ -612,7 +624,7 @@
                 [Intercom logEventWithName:@"Rearranged_List_On_Main_Screen" metaData: @{@"date": date}];
                 self.originalIndex = nil;
                 [DoozerSyncManager syncWithServer];
-                [self.tableView reloadData];
+                [self reloadAndDrawLists];
             
             }
         }
@@ -963,71 +975,6 @@
     }
 }
 
-/*
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
-
-    NSLog(@"inside the mystery move row at indexpath method");
-    //NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-
-    Item *reorderedItem = [self.fetchedResultsController.fetchedObjects objectAtIndex:sourceIndexPath.row];
-    NSDecimalNumber *newOrder = nil;
-    
-    if(destinationIndexPath>sourceIndexPath){
-        
-        Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-        Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row+1];
-        
-        NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-        NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-        NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-        NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-        reorderedItem.order = newOrder;
-    }else{
-        
-        Item *previousItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row-1];
-        Item *followingItem  = [self.fetchedResultsController.fetchedObjects objectAtIndex:destinationIndexPath.row];
-        
-        NSDecimalNumber *previousItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[previousItem.order decimalValue]];
-        NSDecimalNumber *followingItemOrder = [NSDecimalNumber decimalNumberWithDecimal:[followingItem.order decimalValue]];
-        NSDecimalNumber *totalOrder = [followingItemOrder decimalNumberByAdding:previousItemOrder];
-        NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"2"];
-        newOrder = [totalOrder decimalNumberByDividingBy:divisor];
-        reorderedItem.order = newOrder;
-    }
-    
-    
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    //NSString *updateURL = [NSString stringWithFormat:@"https://warm-atoll-6588.herokuapp.com/api/items/%@", reorderedItem.itemId];
-    NSString *updateURL = [NSString stringWithFormat:@"http://ec2-52-25-226-188.us-west-2.compute.amazonaws.com/api/items/%@", reorderedItem.itemId];
-
-    
-    NSDictionary *params = @{
-                             @"order": newOrder
-                             };
-    
-    [manager PUT:updateURL parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-    }];
-    
-    
-    [self.tableView reloadData];
- 
-}
-
-*/
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {

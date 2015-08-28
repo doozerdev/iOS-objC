@@ -16,7 +16,7 @@
 #import "ColorHelper.h"
 #import "AppDelegate.h"
 #import "LoginViewController.h"
-#import "lelib.h"
+//#import "lelib.h"
 #import "Constants.h"
 
 
@@ -154,9 +154,9 @@ double _lastSyncRequest;
             NSMutableArray *itemsToDelete = [[NSUserDefaults standardUserDefaults] valueForKey:@"itemsToDelete"];
             NSLog(@"items to delete from server = %@", itemsToDelete);
             
-            LELog* log = [LELog sharedInstance];
-            log.token = @"059ad121-e3f3-4a5e-88a4-07278ab04900";
-            [log log: [NSString stringWithFormat:@"Sync. Lists - %@, Items - %@, Updates - %@, Delete - %@, for user %@", newArrayOfListsToAdd, newArrayOfItemsToAdd, itemsToUpdate, itemsToDelete, [FBSDKProfile currentProfile].userID]];
+            //LELog* log = [LELog sharedInstance];
+            //log.token = @"059ad121-e3f3-4a5e-88a4-07278ab04900";
+            //[log log: [NSString stringWithFormat:@"Sync. Lists - %@, Items - %@, Updates - %@, Delete - %@, for user %@", newArrayOfListsToAdd, newArrayOfItemsToAdd, itemsToUpdate, itemsToDelete, [FBSDKProfile currentProfile].userID]];
             
             AddItemsToServer *moo = [[AddItemsToServer alloc] init];
             [moo addItemsToServer:newArrayOfListsToAdd :context :^(int handler) {
@@ -194,9 +194,9 @@ double _lastSyncRequest;
                                             [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
                                             [[NSUserDefaults standardUserDefaults] synchronize];
                                             
-                                            LELog* log = [LELog sharedInstance];
-                                            log.token = @"059ad121-e3f3-4a5e-88a4-07278ab04900";
-                                            [log log: [NSString stringWithFormat:@"Sync succesful for user %@", [FBSDKProfile currentProfile].userID]];
+                                            //LELog* log = [LELog sharedInstance];
+                                            //log.token = @"059ad121-e3f3-4a5e-88a4-07278ab04900";
+                                            //[log log: [NSString stringWithFormat:@"Sync succesful for user %@", [FBSDKProfile currentProfile].userID]];
                                             NSLog(@"sync op complete");
                                         }
                                         _syncOpActive = NO;
