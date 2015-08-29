@@ -939,10 +939,11 @@
     ListCustomCell *cell = (ListCustomCell *)[self.tableView cellForRowAtIndexPath:pathOfNewItem];
     Item *itemToSave = [self.fetchedResultsController objectAtIndexPath:pathOfNewItem];
     
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    
     NSString *currentText = cell.cellItemTitle.text;
     if (currentText.length == 0) {
         NSLog(@"deleting just created row");
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowOfNewItem inSection:0];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
@@ -952,9 +953,19 @@
     }else{
         
         itemToSave.title = currentText;
-        [self rebalanceListIfNeeded];
+        /*
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        */
         
         [AddItemsToServer addThisItem:itemToSave];
+        
+        [self rebalanceListIfNeeded];
+
         
         int timestamp = [[NSDate date] timeIntervalSince1970];
         NSString *date = [NSString stringWithFormat:@"%d", timestamp];
@@ -1151,7 +1162,9 @@
         if (object.done.intValue == 1) {
             
             
-            NSString *titleText = object.title;
+            //NSString *titleText = object.title;
+            NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+
             cell.cellItemTitle.hidden = YES;
             cell.cellDueFlag.text = @"";
 
@@ -1178,8 +1191,8 @@
 
             cell.cellItemTitle.attributedText = nil;
             
-            //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
-            cell.cellItemTitle.text = object.title;
+            cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+            //cell.cellItemTitle.text = object.title;
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;

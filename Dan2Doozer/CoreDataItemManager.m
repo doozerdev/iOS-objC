@@ -67,8 +67,8 @@ NSFetchedResultsController *_fetchedResultsController;
 +(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems{
     
     NSLog(@"beginning the rebalance operation ---------------");
-    int orderStepValue = 1073741824/[arrayOfItems count];
-    //int orderStepValue = 32;
+    //int orderStepValue = 1073741824/[arrayOfItems count];
+    int orderStepValue = 32;
     int itemOrderMultiplier = 1;
     
     NSMutableArray *listOfItemIds = [[NSMutableArray alloc]init];

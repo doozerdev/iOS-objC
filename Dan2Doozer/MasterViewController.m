@@ -689,7 +689,9 @@
     Item *itemToChangeColor = [self.fetchedResultsController objectAtIndexPath:indexPath];
     itemToChangeColor.color = [ColorHelper returnUIColorString:colorIndex];
    
-    [UpdateItemsOnServer updateThisItem:itemToChangeColor];
+    ParentCustomCell *cell = (ParentCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    itemToChangeColor.title = cell.cellItemTitle.text;
+    
     int timestamp = [[NSDate date] timeIntervalSince1970];
     NSString *date = [NSString stringWithFormat:@"%d", timestamp];
     [Intercom logEventWithName:@"Edited_List_Color" metaData: @{@"date": date}];
