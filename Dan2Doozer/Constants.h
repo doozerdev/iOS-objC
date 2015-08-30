@@ -15,6 +15,7 @@
 //Strings
 //#define kBaseAPIURL @"http://warm-atoll-6588.herokuapp.com/api/"
 
-#define kBaseAPIURL @"http://ec2-52-25-226-188.us-west-2.compute.amazonaws.com/api/"
+//#define kBaseAPIURL @"http://ec2-52-25-226-188.us-west-2.compute.amazonaws.com/api/"
 
 
+#define kBaseAPIURL @"http://api.doozer.tips/api/"

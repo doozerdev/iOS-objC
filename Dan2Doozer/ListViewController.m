@@ -521,6 +521,8 @@
         [self.tableView reloadData];
     }
     
+    [self rebalanceListIfNeeded];
+
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
     
@@ -952,21 +954,18 @@
         
     }else{
         
-        itemToSave.title = currentText;
-        /*
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        */
+        NSDateFormatter *df = [[NSDateFormatter alloc]init];
+        [df setDateFormat:@"mm:ss.SS"];
+        NSString *currentDateString = [df stringFromDate:[NSDate date]];
         
-        [AddItemsToServer addThisItem:itemToSave];
+        itemToSave.title = currentDateString;
+        //itemToSave.title = currentText;
         
-        [self rebalanceListIfNeeded];
+        
+        //[self rebalanceListIfNeeded];
 
-        
+        [AddItemsToServer addThisItem:itemToSave];
+
         int timestamp = [[NSDate date] timeIntervalSince1970];
         NSString *date = [NSString stringWithFormat:@"%d", timestamp];
         [Intercom logEventWithName:@"Created_Item_From_List_Screen" metaData: @{@"date": date}];
