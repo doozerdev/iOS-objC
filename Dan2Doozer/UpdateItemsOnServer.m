@@ -32,7 +32,7 @@
     int loopcount = 0;
     
     for(id itemIdToUpdate in itemsToUpdate){
-        NSLog(@"ItemID to updated is ==== %@", itemIdToUpdate);
+        //NSLog(@"ItemID to updated is ==== %@", itemIdToUpdate);
         loopcount += 1;
         //NSLog(@"loopcount = %d", loopcount);
         

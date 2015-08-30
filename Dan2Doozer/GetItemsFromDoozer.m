@@ -22,7 +22,9 @@
     NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
     
     NSString* dateString = [NSString stringWithFormat:@"%@", syncDate];
-    int newTestDate = dateString.intValue - 10;
+    //int newTestDate = dateString.intValue - 10;
+    int newTestDate = dateString.intValue;
+
     NSString *newTestDateString = [NSString stringWithFormat:@"%d", newTestDate];
     
     //int currentTime = [[NSDate date] timeIntervalSince1970];

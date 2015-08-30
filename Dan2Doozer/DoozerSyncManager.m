@@ -129,7 +129,7 @@ double _lastSyncRequest;
     //NSLog(@"launching the GET ITEMS FROM DOOZER operatrion");
     [foo getItemsOnServer:^(NSMutableArray * itemsBigArray) {
         
-        NSLog(@"items from server ============= %@", itemsBigArray);
+        //NSLog(@"items from server ============= %@", itemsBigArray);
         
         id firstItem = nil;
         if ([itemsBigArray count] > 0) {

@@ -520,7 +520,6 @@
         self.rowOfNewItem = -1;
         [self.tableView reloadData];
     }
-    
     [self rebalanceListIfNeeded];
 
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -598,7 +597,7 @@
         }
 
     }
-    
+
     [cell.cellItemTitle becomeFirstResponder];
     
 }
@@ -958,8 +957,8 @@
         [df setDateFormat:@"mm:ss.SS"];
         NSString *currentDateString = [df stringFromDate:[NSDate date]];
         
-        itemToSave.title = currentDateString;
-        //itemToSave.title = currentText;
+        //itemToSave.title = currentDateString;
+        itemToSave.title = currentText;
         
         
         //[self rebalanceListIfNeeded];
@@ -1117,7 +1116,7 @@
     }
     
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
+    //NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
 
     cell.cellItemTitle.enabled = NO;
     
@@ -1161,8 +1160,8 @@
         if (object.done.intValue == 1) {
             
             
-            //NSString *titleText = object.title;
-            NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+            NSString *titleText = object.title;
+            //NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
 
             cell.cellItemTitle.hidden = YES;
             cell.cellDueFlag.text = @"";
@@ -1190,8 +1189,9 @@
 
             cell.cellItemTitle.attributedText = nil;
             
-            cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
-            //cell.cellItemTitle.text = object.title;
+            //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
+            cell.cellItemTitle.text = object.title;
+            
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
