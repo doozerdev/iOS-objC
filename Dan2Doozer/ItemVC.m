@@ -20,11 +20,10 @@
 @implementation ItemVC
 
 
-
 - (void)viewDidLoad {
+
     [super viewDidLoad];
-    
-    NSLog(@"item view loaded");
+    NSLog(@"start of view did load");
     
     self.ItemTitle.text = self.detailItem.title;
     
@@ -39,14 +38,24 @@
         self.Notes.textColor = [UIColor lightGrayColor];
     }
     
+
+    
     self.Notes.layer.borderWidth = 1.0f;
     self.Notes.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     
     UIColor *themeColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
 
+    NSLog(@"item view loaded - 22222222!!!!!");
+    
     self.view.backgroundColor = themeColor;
+    
+    NSLog(@"item view loaded - 33333!!!!!");
+
+    
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
     self.navigationController.navigationBar.barTintColor = themeColor;
+    
+
     
     self.showingDatePanel = NO;
     
@@ -61,6 +70,8 @@
     self.dateButton2.tintColor = themeColor;
     self.dateButton3.tintColor = themeColor;
     self.dateButton4.tintColor = themeColor;
+    
+
     
     if (self.detailItem.duedate) {
         
@@ -105,6 +116,10 @@
     }
     
     [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
+    
+    
+    NSLog(@"item view loaded - END!!!!!");
+
     
 }
 

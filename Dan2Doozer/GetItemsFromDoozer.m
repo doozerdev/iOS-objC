@@ -32,12 +32,17 @@
     
     NSDictionary *params = nil;
     if (syncDate == NULL) {
+        NSLog(@"************** No date PARAMS *************");
+        params = @{@"last_sync" : @"0"};
+
         //do nothing
     }else{
         //params = @{@"last_sync" : dateString};
         params = @{@"last_sync" : newTestDateString};
+        NSLog(@"************** Date is %@ *************", newTestDateString);
 
-        }
+
+    }
     
     NSString * NewURL = [NSString stringWithFormat:@"%@items", kBaseAPIURL];
     
@@ -52,7 +57,7 @@
 
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         itemsArray = [jsonDict objectForKey:@"items"];
-        //NSLog(@" heres' the server response =%@", itemsArray);
+        NSLog(@" heres' the server response =%@", itemsArray);
         //NSLog(@"Count of items from doozer server = %lu", (unsigned long)itemsArray.count);
         
         _completionHandler(itemsArray);

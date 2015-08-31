@@ -342,7 +342,7 @@
         NSIndexPath *targetPath = [NSIndexPath indexPathForRow:indexOfCompletedHeader inSection:0];
 
         self.fetchedResultsController = nil;
-        NSLog(@"FRC = %@", self.fetchedResultsController.fetchedObjects);
+        //NSLog(@"FRC = %@", self.fetchedResultsController.fetchedObjects);
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:@[originalIndexPath] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView insertRowsAtIndexPaths:@[targetPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -953,16 +953,8 @@
         
     }else{
         
-        NSDateFormatter *df = [[NSDateFormatter alloc]init];
-        [df setDateFormat:@"mm:ss.SS"];
-        NSString *currentDateString = [df stringFromDate:[NSDate date]];
-        
-        //itemToSave.title = currentDateString;
         itemToSave.title = currentText;
         
-        
-        //[self rebalanceListIfNeeded];
-
         [AddItemsToServer addThisItem:itemToSave];
 
         int timestamp = [[NSDate date] timeIntervalSince1970];
@@ -987,17 +979,17 @@
 
         Item *itemToDisplay = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-        NSLog(@"segue happending for show item -- %@", itemToDisplay.title);
-
-        
         ItemVC *itemController = segue.destinationViewController;
         
         itemController.detailItem = itemToDisplay;
         itemController.parentList = (Item *)self.displayList;
         
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:self.navigationItem.backBarButtonItem.style target:nil action:nil];
+        NSLog(@"segue prep work complete for show item -- %@", itemToDisplay.title);
+
 
     }
+
 }
 
 #pragma mark - Table View
@@ -1098,6 +1090,7 @@
                 if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
                     NSLog(@"trying to show item page");
                     [self performSegueWithIdentifier:@"showItem" sender:indexPath];
+                    
                     NSLog(@"after trying to show item page");
 
                 }
