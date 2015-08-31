@@ -639,7 +639,7 @@
         
         NSMutableArray *dueItems = [[NSMutableArray alloc]init];
         for (Item *eachItem in itemsOnList){
-            NSLog(@"items %@", eachItem.title);
+            //NSLog(@"items %@", eachItem.title);
             if (eachItem.done.intValue == 0) {
                 NSString *dueDateString = [df stringFromDate:eachItem.duedate];
                 if (dueDateString.intValue > 0 && dueDateString.intValue <= currentDateString.intValue) {

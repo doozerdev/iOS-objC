@@ -23,6 +23,8 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+    
+    
     NSLog(@"start of view did load");
     
     self.ItemTitle.text = self.detailItem.title;
@@ -327,6 +329,7 @@
 
 
 -(void)viewDidLayoutSubviews {
+    NSLog(@"start of layout subviews!");
         
     CGFloat fixedWidth = self.ItemTitle.frame.size.width;
     CGSize newSize = [self.ItemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];

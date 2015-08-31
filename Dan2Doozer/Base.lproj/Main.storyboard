@@ -156,7 +156,7 @@
                                             <constraint firstItem="k2m-y2-Nr0" firstAttribute="centerY" secondItem="Otx-7y-POO" secondAttribute="centerY" id="xYa-d3-srn"/>
                                         </constraints>
                                     </view>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Item Title" translatesAutoresizingMaskIntoConstraints="NO" id="NCv-0O-ejP">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NCv-0O-ejP">
                                         <rect key="frame" x="65" y="10" width="521" height="45"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -191,25 +191,20 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="leading" secondItem="Otx-7y-POO" secondAttribute="trailing" id="1D0-Dy-kud"/>
-                                    <constraint firstItem="St5-CG-wWv" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="leading" id="1UE-z0-2M4"/>
                                     <constraint firstItem="St5-CG-wWv" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="3Vv-SJ-5CD"/>
                                     <constraint firstAttribute="trailing" secondItem="prS-sP-AW0" secondAttribute="trailing" id="4aj-pV-TUb"/>
-                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="centerY" secondItem="NCv-0O-ejP" secondAttribute="centerY" id="5vJ-VZ-cmy"/>
                                     <constraint firstItem="3nn-yf-KOr" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="bottom" constant="10" id="Cbl-0z-uiv"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="leading" secondItem="3nn-yf-KOr" secondAttribute="trailing" id="Deh-EW-lAR"/>
                                     <constraint firstItem="4GC-ZN-xC1" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="20" id="IHx-5B-zmu"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" id="Jfb-mf-MAy"/>
                                     <constraint firstItem="g3J-It-PDJ" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="20" id="Lqb-7V-C5Z"/>
-                                    <constraint firstItem="St5-CG-wWv" firstAttribute="centerX" secondItem="3nn-yf-KOr" secondAttribute="centerX" id="MrF-TL-ICL"/>
                                     <constraint firstItem="NCv-0O-ejP" firstAttribute="leading" secondItem="4GC-ZN-xC1" secondAttribute="trailing" constant="5" id="NQa-uN-bvh"/>
+                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="top" secondItem="RU8-eL-alB" secondAttribute="top" constant="12" id="OI4-tz-Ux8"/>
                                     <constraint firstItem="3nn-yf-KOr" firstAttribute="leading" secondItem="ARp-C1-spx" secondAttribute="leading" id="PUP-2J-MSu"/>
-                                    <constraint firstItem="NCv-0O-ejP" firstAttribute="leading" secondItem="RU8-eL-alB" secondAttribute="leading" constant="14" id="RED-cb-dtp"/>
-                                    <constraint firstAttribute="bottom" secondItem="prS-sP-AW0" secondAttribute="bottom" id="RPL-JD-tZS"/>
                                     <constraint firstItem="g3J-It-PDJ" firstAttribute="top" secondItem="NCv-0O-ejP" secondAttribute="bottom" constant="20" id="Rd8-rM-UW1"/>
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="top" secondItem="g3J-It-PDJ" secondAttribute="bottom" constant="10" id="VHp-yU-Xkl"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="top" secondItem="3nn-yf-KOr" secondAttribute="top" id="Zf9-TH-IWy"/>
                                     <constraint firstItem="Otx-7y-POO" firstAttribute="bottom" secondItem="3nn-yf-KOr" secondAttribute="bottom" id="ber-6I-NF0"/>
-                                    <constraint firstItem="4GC-ZN-xC1" firstAttribute="top" secondItem="NCv-0O-ejP" secondAttribute="top" constant="2" id="d2u-Hv-Z0q"/>
                                     <constraint firstAttribute="trailing" secondItem="NCv-0O-ejP" secondAttribute="trailing" constant="14" id="fHP-DB-LWv"/>
                                     <constraint firstItem="prS-sP-AW0" firstAttribute="top" secondItem="St5-CG-wWv" secondAttribute="bottom" id="hyf-sA-Yjc"/>
                                     <constraint firstAttribute="height" constant="530" id="iZA-9e-qt4"/>
@@ -217,19 +212,8 @@
                                     <constraint firstItem="NCv-0O-ejP" firstAttribute="top" secondItem="RU8-eL-alB" secondAttribute="top" constant="10" id="lXL-ya-Pzs"/>
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="leading" secondItem="g3J-It-PDJ" secondAttribute="leading" id="uhY-yj-huy"/>
                                     <constraint firstItem="ARp-C1-spx" firstAttribute="trailing" secondItem="g3J-It-PDJ" secondAttribute="trailing" id="vKx-mW-6zk"/>
-                                    <constraint firstItem="Otx-7y-POO" firstAttribute="top" secondItem="ARp-C1-spx" secondAttribute="bottom" constant="2" id="vXl-1D-vA2"/>
                                     <constraint firstAttribute="trailing" secondItem="g3J-It-PDJ" secondAttribute="trailing" constant="20" id="wRB-qO-I4E"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="5vJ-VZ-cmy"/>
-                                        <exclude reference="RED-cb-dtp"/>
-                                        <exclude reference="vXl-1D-vA2"/>
-                                        <exclude reference="RPL-JD-tZS"/>
-                                        <exclude reference="1UE-z0-2M4"/>
-                                        <exclude reference="MrF-TL-ICL"/>
-                                    </mask>
-                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
