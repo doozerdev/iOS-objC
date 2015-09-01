@@ -61,6 +61,9 @@ NSString *listTitle;
     int rows = (int)[tablesQuery.cells count];
     
     int count = 8;
+    
+    [[[[[[XCUIApplication alloc] init].tables childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:2] childrenMatchingType:XCUIElementTypeTextField].element pressForDuration:1.7];
+    
         
     XCTAssertEqual(rows, count , @"list created successfuly!");
     
@@ -86,6 +89,28 @@ NSString *listTitle;
     int count = 5;
 
     XCTAssertEqual(rows, count , @"list created successfuly!");
+    
+}
+
+-(void)testSetDueDate{
+    
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    XCUIElementQuery *tablesQuery = app.tables;
+    [[[[tablesQuery childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    
+    [[[[tablesQuery childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    [app.buttons[@"Due Someday"] tap];
+    [app.buttons[@"Today"] tap];
+    
+    [app.navigationBars[@"Master"].buttons[@"Back"] tap];
+        [[[[tablesQuery childrenMatchingType:XCUIElementTypeCell] elementBoundByIndex:0] childrenMatchingType:XCUIElementTypeTextField].element tap];
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc]init];
+    [df setDateFormat:@"EEE MMM dd, yyyy"];
+    NSString * dateString = [NSString stringWithFormat:@"Due %@", [df stringFromDate:[NSDate date]]];
+    
+    [app.buttons[dateString] tap];
+
     
 }
 
