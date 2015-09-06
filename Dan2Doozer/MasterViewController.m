@@ -23,6 +23,8 @@
 #import "intercom.h"
 #import "AddItemViewController.h"
 #import "AppDelegate.h"
+#import "Constants.h"
+#import "Solution.h"
 
 
 @interface MasterViewController () <UITextFieldDelegate>
@@ -110,6 +112,7 @@
     }
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -142,6 +145,7 @@
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.tableView addGestureRecognizer:tapGesture];
+    
     
 }
 

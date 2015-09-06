@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		44E46C46C83E9BD0B2F3592A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 808A8A0F4B6CF0A061F79A27 /* libPods.a */; };
 		A22B7F201B5E16740096CEEC /* AddItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */; };
+		A22C5F1B1B9A430D001210C1 /* Solution.m in Sources */ = {isa = PBXBuildFile; fileRef = A22C5F1A1B9A430D001210C1 /* Solution.m */; };
+		A22C5F1F1B9B6CC5001210C1 /* SolutionCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */; };
 		A2301B2E1AF41A7C00E2267D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B2D1AF41A7C00E2267D /* main.m */; };
 		A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A2301B301AF41A7C00E2267D /* AppDelegate.m */; };
 		A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */; };
@@ -78,6 +80,11 @@
 		A2190CF81B7E9B9000267578 /* DoozerUITestsUpdated.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoozerUITestsUpdated.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22B7F1E1B5E16740096CEEC /* AddItemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddItemViewController.h; sourceTree = "<group>"; };
 		A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddItemViewController.m; sourceTree = "<group>"; };
+		A22C5F191B9A430D001210C1 /* Solution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Solution.h; sourceTree = "<group>"; };
+		A22C5F1A1B9A430D001210C1 /* Solution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Solution.m; sourceTree = "<group>"; };
+		A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 6.xcdatamodel"; sourceTree = "<group>"; };
+		A22C5F1D1B9B6CC5001210C1 /* SolutionCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolutionCustomCell.h; sourceTree = "<group>"; };
+		A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SolutionCustomCell.m; sourceTree = "<group>"; };
 		A2301B281AF41A7C00E2267D /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B2C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B2D1AF41A7C00E2267D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -286,6 +293,8 @@
 				A24290401B45D7C80070662C /* ParentCustomCell.m */,
 				A253AD271B4AEF1200D896E1 /* ListCustomCell.h */,
 				A253AD281B4AEF1200D896E1 /* ListCustomCell.m */,
+				A22C5F1D1B9B6CC5001210C1 /* SolutionCustomCell.h */,
+				A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */,
 			);
 			name = CustomCells;
 			sourceTree = "<group>";
@@ -335,6 +344,8 @@
 			children = (
 				A2301B5A1AF43CAE00E2267D /* Item.h */,
 				A2301B5B1AF43CAE00E2267D /* Item.m */,
+				A22C5F191B9A430D001210C1 /* Solution.h */,
+				A22C5F1A1B9A430D001210C1 /* Solution.m */,
 				A2C2255B1B1989B1002E5F97 /* CoreDataItemManager.h */,
 				A2C2255C1B1989B1002E5F97 /* CoreDataItemManager.m */,
 				A24290421B45E3260070662C /* ColorHelper.h */,
@@ -604,9 +615,11 @@
 				A2301B311AF41A7C00E2267D /* AppDelegate.m in Sources */,
 				A2C2255D1B1989B1002E5F97 /* CoreDataItemManager.m in Sources */,
 				A2301B2E1AF41A7C00E2267D /* main.m in Sources */,
+				A22C5F1F1B9B6CC5001210C1 /* SolutionCustomCell.m in Sources */,
 				A2FB55401B2FC44B00D19660 /* DeleteItemFromServer.m in Sources */,
 				A2C9F9EB1B78333300EB2DFF /* LELog.m in Sources */,
 				A29CD7E11B1ACAF5000FA1B0 /* DoozerSyncManager.m in Sources */,
+				A22C5F1B1B9A430D001210C1 /* Solution.m in Sources */,
 				A2AC4D611B70492800B3659F /* ItemVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -937,13 +950,14 @@
 		A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */,
 				A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */,
 				A26174A91B8FD87C0004B371 /* Dan2Doozer 4.xcdatamodel */,
 				A26174A81B8FD8340004B371 /* Dan2Doozer 3.xcdatamodel */,
 				A26174A71B8FD6420004B371 /* Dan2Doozer 2.xcdatamodel */,
 				A2301B331AF41A7C00E2267D /* Dan2Doozer.xcdatamodel */,
 			);
-			currentVersion = A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */;
+			currentVersion = A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */;
 			path = Dan2Doozer.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

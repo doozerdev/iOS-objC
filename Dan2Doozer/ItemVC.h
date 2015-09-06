@@ -11,7 +11,8 @@
 
 #import "Item.h"
 
-@interface ItemVC : UIViewController
+@interface ItemVC : UIViewController <UITableViewDelegate, UITableViewDataSource>
+
 @property (weak, nonatomic) IBOutlet UITextView *ItemTitle;
 @property (weak, nonatomic) IBOutlet UITextView *Notes;
 @property (weak, nonatomic) IBOutlet UIView *upperViewPanel;
@@ -21,14 +22,21 @@
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton4;
 @property (weak, nonatomic) IBOutlet UIButton *toggleCompleteButton;
+@property (weak, nonatomic) IBOutlet UIView *lowerViewPanel;
 
 
 @property Item * detailItem;
 @property Item * parentList;
+@property UIColor *themeColor;
 
 @property float titleFieldExtraHeight;
 
 @property BOOL showingDatePanel;
+
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property NSMutableArray *hyperlinks;
+@property NSMutableArray *solutions;
+
 
 
 @end

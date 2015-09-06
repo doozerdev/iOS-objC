@@ -12,6 +12,8 @@
 #import "Intercom.h"
 #import "CoreDataItemManager.h"
 #import "AppDelegate.h"
+#import "SolutionCustomCell.h"
+#import "Solution.h"
 
 @interface ItemVC () <UIGestureRecognizerDelegate, UITextViewDelegate>
 
@@ -24,8 +26,8 @@
 
     [super viewDidLoad];
     
-    
-    NSLog(@"start of view did load");
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    self.managedObjectContext = appDelegate.managedObjectContext;
     
     self.ItemTitle.text = self.detailItem.title;
     
@@ -40,24 +42,17 @@
         self.Notes.textColor = [UIColor lightGrayColor];
     }
     
-
-    
     self.Notes.layer.borderWidth = 1.0f;
     self.Notes.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     
-    UIColor *themeColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
+    self.themeColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
 
-    NSLog(@"item view loaded - 22222222!!!!!");
     
-    self.view.backgroundColor = themeColor;
+    self.view.backgroundColor = self.themeColor;
     
-    NSLog(@"item view loaded - 33333!!!!!");
-
     
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
-    self.navigationController.navigationBar.barTintColor = themeColor;
-    
-
+    self.navigationController.navigationBar.barTintColor = self.themeColor;
     
     self.showingDatePanel = NO;
     
@@ -68,10 +63,10 @@
     self.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
     self.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
 
-    self.dateButton.tintColor = themeColor;
-    self.dateButton2.tintColor = themeColor;
-    self.dateButton3.tintColor = themeColor;
-    self.dateButton4.tintColor = themeColor;
+    self.dateButton.tintColor = self.themeColor;
+    self.dateButton2.tintColor = self.themeColor;
+    self.dateButton3.tintColor = self.themeColor;
+    self.dateButton4.tintColor = self.themeColor;
     
 
     
@@ -105,23 +100,19 @@
     
     self.ItemTitle.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
     
-    NSLog(@"original titlefieldextraheight == === = = %f", self.titleFieldExtraHeight);
-    
-    
     UIImage *image = [UIImage imageNamed:@"outlinecircledone"];
     
     if (self.detailItem.done.intValue == 0) {
         self.toggleCompleteButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
 
     }else{
-        self.toggleCompleteButton.backgroundColor = themeColor;
+        self.toggleCompleteButton.backgroundColor = self.themeColor;
     }
     
     [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
     
-    
-    NSLog(@"item view loaded - END!!!!!");
-
+    self.hyperlinks = [[NSMutableArray alloc]init];
+    [self fetchSolutions];
     
 }
 
@@ -344,10 +335,13 @@
     if (self.showingDatePanel) {
         CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
         self.upperViewPanel.frame = newFrame;
+        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 480 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
+
 
     }else{
         CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225 + self.titleFieldExtraHeight);
         self.upperViewPanel.frame = newFrame;
+        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 225 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
 
     }
 }
@@ -366,6 +360,8 @@
     
     [UIView animateWithDuration:0.5f animations:^{
         self.upperViewPanel.frame = newFrame;
+        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 480 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
+
     } completion:^(BOOL finished) {
         self.showingDatePanel = YES;
         self.dateButton2.userInteractionEnabled = YES;
@@ -396,6 +392,7 @@
     
     [UIView animateWithDuration:0.5f animations:^{
         self.upperViewPanel.frame = newFrame;
+        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 225 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
     } completion:^(BOOL finished) {
         
         
@@ -493,6 +490,104 @@
     [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
+    
+}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
+
+    return [array count];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    NSLog(@"heightForRowAtIndexPath is being called now");
+    
+    return 200;
+    
+}
+- (IBAction)solutionsButtonPressed:(UIButton*)button {
+    
+    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    NSLog(@"hyperlink in solutions pressed - row %ld, value %@", (long)button.tag, solution.link);
+
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:solution.link]];
+
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *MyIdentifier = @"solutionCell";
+    SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+    if (cell == nil) {
+        cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+    }
+    
+    Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+    
+    cell.descriptionText.text = solutionInCell.sol_description;
+    cell.solutionTitle.text = solutionInCell.sol_title;
+    
+    NSLog(@"setting cell data for row %ld", (long)indexPath.row);
+    
+    cell.expertNameLabel.textColor = self.themeColor;
+    cell.solutionTitle.textColor = self.themeColor;
+    cell.expertNameLabel.text = @"Daniel Apone";
+    cell.expertTitleLabel.text = @"CEO, Doozer";
+    cell.solutionLinkButton.tag = indexPath.row;
+    
+
+    return cell;
+}
+
+- (void)fetchSolutions{
+    
+    self.solutions = [[NSMutableArray alloc]init];
+    NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
+    
+    for (NSString *solutionID in array){
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:self.managedObjectContext];
+        [fetchRequest setEntity:entity];
+        
+        // Set the batch size to a suitable number.
+        [fetchRequest setFetchBatchSize:20];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sol_ID == %@", solutionID];
+        [fetchRequest setPredicate:predicate];
+        
+        
+        // Edit the sort key as appropriate.
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sol_ID" ascending:YES];
+        NSArray *sortDescriptors = @[sortDescriptor];
+        
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        
+        // Edit the section name key path and cache name if appropriate.
+        // nil for section name key path means "no sections".
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Solution"];
+        [NSFetchedResultsController deleteCacheWithName:@"Solution"];
+        
+        NSError *error = nil;
+        if (![aFetchedResultsController performFetch:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        [self.solutions addObject:[aFetchedResultsController.fetchedObjects objectAtIndex:0]];
+        
+    }
+    
+    NSLog(@"solutions array is %@", self.solutions);
     
 }
 

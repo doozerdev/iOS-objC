@@ -206,7 +206,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Number of rows is the number of time zones in the region for the specified section.
     NSInteger rowCount = [self.fetchedResultsController.fetchedObjects count];
     return rowCount;
 }
