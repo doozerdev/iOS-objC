@@ -18,4 +18,6 @@
 //#define kBaseAPIURL @"http://ec2-52-25-226-188.us-west-2.compute.amazonaws.com/api/"
 
 
-#define kBaseAPIURL @"http://api.doozer.tips/api/"
+//#define kBaseAPIURL @"http://api.doozer.tips/api/"
+
+#define kBaseAPIURL @"http://api.beta.doozer.tips/api/"

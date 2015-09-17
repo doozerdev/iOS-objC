@@ -4,20 +4,35 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Dan2Doozer.xcscheme</key>
+		<key>Doozer BETA.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>Doozer Production.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>Doozer copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>DoozerUITestsUpdated.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>5</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>A2190CF71B7E9B9000267578</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A22C5F201B9F580D001210C1</key>
 		<dict>
 			<key>primary</key>
 			<true/>

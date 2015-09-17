@@ -214,6 +214,11 @@
     NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
     
     NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSLog(@"here's the CFBundleVersion == %@", build);
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSLog(@"here's the bundle Identifier == %@", bundleIdentifier);
+
+    
     
     NSArray *itemStats = [CoreDataItemManager findNumberOfDueItems];
     

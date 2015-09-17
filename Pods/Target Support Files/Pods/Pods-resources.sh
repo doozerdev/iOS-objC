@@ -63,6 +63,9 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle"
 fi
+if [[ "$CONFIGURATION" == "Beta" ]]; then
+  install_resource "Intercom/Intercom.framework/Versions/A/Resources/Intercom.bundle"
+fi
 
 rsync -avr --copy-links --no-relative --exclude '*/.svn/*' --files-from="$RESOURCES_TO_COPY" / "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 if [[ "${ACTION}" == "install" ]]; then

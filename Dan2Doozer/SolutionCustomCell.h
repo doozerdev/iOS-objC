@@ -12,9 +12,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *expertNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *expertTitleLabel;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionText;
-@property (weak, nonatomic) IBOutlet UILabel *solutionTitle;
-@property (weak, nonatomic) IBOutlet UIView *solutionPanelLink;
-@property (weak, nonatomic) IBOutlet UIButton *solutionLinkButton;
+@property (weak, nonatomic) IBOutlet UIView *solutionsPanel;
 
 
 

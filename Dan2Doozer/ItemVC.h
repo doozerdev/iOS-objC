@@ -25,6 +25,9 @@
 @property (weak, nonatomic) IBOutlet UIView *lowerViewPanel;
 
 
+@property (weak, nonatomic) IBOutlet UITableView *solutionsTable;
+
+
 @property Item * detailItem;
 @property Item * parentList;
 @property UIColor *themeColor;
@@ -36,6 +39,7 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property NSMutableArray *hyperlinks;
 @property NSMutableArray *solutions;
+@property NSMutableArray *images;
 
 
 

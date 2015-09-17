@@ -329,7 +329,6 @@ double _lastSyncRequest;
                 
                 NSString *title = [eachArrayElement objectForKey:@"title"];
                 newItem.title = title;
-                //NSLog(@"creating an item of title %@", newItem.title);
                 
                 NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
                 NSInteger ordertempInt = [ordertemp integerValue];
@@ -396,8 +395,11 @@ double _lastSyncRequest;
                 
                 
                 NSNumber *solutionsCount = [eachArrayElement objectForKey:@"solutions_count"];
+                
+                NSLog(@"creating! %@ %@ %@", newItem.title, newItem.itemId, solutionsCount);
 
-                if (solutionsCount.intValue > 0) {
+
+                if (solutionsCount.intValue >= 0) {
                     
                 
                     NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", kBaseAPIURL, newItem.itemId];

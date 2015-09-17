@@ -68,8 +68,6 @@
     self.dateButton3.tintColor = self.themeColor;
     self.dateButton4.tintColor = self.themeColor;
     
-
-    
     if (self.detailItem.duedate) {
         
         
@@ -493,6 +491,13 @@
     
 }
 
+- (IBAction)solutionsButtonPressed:(UIButton*)button {
+    
+
+    
+    
+}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -500,27 +505,33 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
-
-    return [array count];
+    return [self.solutions count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     NSLog(@"heightForRowAtIndexPath is being called now");
+    Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+
+    float cellHeightOffset = 0;
     
-    return 200;
+    if (solutionInCell.phone_number) {
+        cellHeightOffset += 30;
+    }
+    if (solutionInCell.address) {
+        cellHeightOffset += 30;
+    }
+    if (solutionInCell.open_hours) {
+        cellHeightOffset += 30;
+    }
+    if (solutionInCell.price) {
+        cellHeightOffset += 30;
+    }
+    
+    return cellHeightOffset + 180;
     
 }
-- (IBAction)solutionsButtonPressed:(UIButton*)button {
-    
-    Solution *solution = [self.solutions objectAtIndex:button.tag];
-    NSLog(@"hyperlink in solutions pressed - row %ld, value %@", (long)button.tag, solution.link);
 
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:solution.link]];
-
-    
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *MyIdentifier = @"solutionCell";
@@ -529,28 +540,150 @@
         cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
     }
     
+    for (UIView *view in [cell.solutionsPanel subviews])
+    {
+        [view removeFromSuperview];
+    }
+    
     Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
     
     cell.descriptionText.text = solutionInCell.sol_description;
-    cell.solutionTitle.text = solutionInCell.sol_title;
     
     NSLog(@"setting cell data for row %ld", (long)indexPath.row);
     
     cell.expertNameLabel.textColor = self.themeColor;
-    cell.solutionTitle.textColor = self.themeColor;
     cell.expertNameLabel.text = @"Daniel Apone";
     cell.expertTitleLabel.text = @"CEO, Doozer";
-    cell.solutionLinkButton.tag = indexPath.row;
-    
 
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    
+    float horizOffset = 0;
+    
+        UIImage *image = [self.images objectAtIndex:indexPath.row];
+        
+        UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [imageButton addTarget:self
+                        action:@selector(solutionTitleButtonPressed:)
+              forControlEvents:UIControlEventTouchUpInside];
+        imageButton.frame = CGRectMake(5, 5, screenRect.size.width / 4, screenRect.size.width / 4);
+        imageButton.tag = indexPath.row;
+        [imageButton setBackgroundImage:image forState:UIControlStateNormal];
+    
+    if (solutionInCell.img_link) {
+
+        [cell.solutionsPanel addSubview:imageButton];
+
+        horizOffset = screenRect.size.width / 4;
+    }else{
+        [imageButton removeFromSuperview];
+    }
+    
+    //create solutions title button
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button addTarget:self
+               action:@selector(solutionTitleButtonPressed:)
+     forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
+    [button setTitleColor:self.themeColor forState:UIControlStateNormal];
+    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    button.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+    button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width - 70, 30);
+    button.tag = indexPath.row;
+    [cell.solutionsPanel addSubview:button];
+    float vertOffset = 30;
+
+    if (solutionInCell.phone_number) {
+
+        NSLog(@"here's the phone number %@", solutionInCell.phone_number);
+        UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [phoneButton addTarget:self
+                   action:@selector(phoneButtonPressed:)
+         forControlEvents:UIControlEventTouchUpInside];
+        [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
+        [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+        phoneButton.tag = indexPath.row;
+    
+        [cell.solutionsPanel addSubview:phoneButton];
+        vertOffset += 30;
+        NSLog(@"new vert offset is %f", vertOffset);
+    }
+    if (solutionInCell.address) {
+
+        NSLog(@"here's the address %@", solutionInCell.address);
+        UIButton *addressButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [addressButton addTarget:self
+                        action:@selector(addressButtonPressed:)
+              forControlEvents:UIControlEventTouchUpInside];
+        [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
+        [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+        addressButton.tag = indexPath.row;
+        [cell.solutionsPanel addSubview:addressButton];
+        vertOffset += 30;
+        NSLog(@"new vert offset is %f", vertOffset);
+    }
+    
+    //if (solutionInCell.email) {
+        //NSLog(@"here's the email %@", solutionInCell.email);
+        UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [emailButton addTarget:self
+                          action:@selector(emailButtonPressed:)
+                forControlEvents:UIControlEventTouchUpInside];
+        [emailButton setTitle:@"dan@doozer.tips" forState:UIControlStateNormal];
+        [emailButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        emailButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        emailButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+        emailButton.tag = indexPath.row;
+        [cell.solutionsPanel addSubview:emailButton];
+        vertOffset += 30;
+        NSLog(@"new vert offset is %f", vertOffset);
+    //}
+    
+    if (solutionInCell.open_hours) {
+        NSLog(@"setting open hours label");
+        
+        UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
+        hoursLabel.textColor = [UIColor darkGrayColor];
+        hoursLabel.text = solutionInCell.open_hours;
+        hoursLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        vertOffset += 30;
+        NSLog(@"new vert offset is %f", vertOffset);
+
+        [cell.solutionsPanel addSubview:hoursLabel];
+
+    }
+    
+    if (solutionInCell.price) {
+        NSLog(@"setting price label");
+        
+        UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
+        priceLabel.textColor = [UIColor darkGrayColor];
+        priceLabel.text = solutionInCell.price.stringValue;
+        priceLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        vertOffset += 30;
+        NSLog(@"new vert offset is %f", vertOffset);
+        
+        [cell.solutionsPanel addSubview:priceLabel];
+        
+    }
+    
     return cell;
 }
 
 - (void)fetchSolutions{
     
     self.solutions = [[NSMutableArray alloc]init];
+    self.images = [[NSMutableArray alloc]init];
+    
     NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
     
+    int index = 0;
     for (NSString *solutionID in array){
         
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -583,13 +716,92 @@
             abort();
         }
         
-        [self.solutions addObject:[aFetchedResultsController.fetchedObjects objectAtIndex:0]];
+        Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
         
+        [self.solutions addObject: solution];
+        
+        NSLog(@"Index %d and the solutions image link = %@",index, solution.img_link);
+
+        if (solution.img_link.length > 3) {
+            NSLog(@"image array index is = %d", index);
+            
+             __block UIImage *image = [[UIImage alloc]init];
+            [self.images insertObject:image atIndex:index];
+
+             dispatch_async(dispatch_get_global_queue(0,0), ^{
+                 NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: solution.img_link]];
+                 if ( data == nil )
+                 return;
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                 // WARNING: is the cell still using the same data by this point??
+                     image = [UIImage imageWithData: data];
+                     [self.images replaceObjectAtIndex:index withObject:image];
+                     image = nil;
+                     [self.solutionsTable reloadData];
+                     //data = nil;
+                 });
+             });
+             
+
+        }else{
+            NSLog(@"print that an image was skipped....");
+            UIImage * image = [[UIImage alloc]init];
+            [self.images insertObject:image atIndex:index];
+
+        }
+        
+        index += 1;
     }
     
-    NSLog(@"solutions array is %@", self.solutions);
+    //NSLog(@"solutions array is %@", self.solutions);
     
 }
+
+-(void)phoneButtonPressed:(UIButton *)button{
+    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    NSLog(@"hyperlink in phone button pressed - row %ld, value %@", (long)button.tag, solution.phone_number);
+    
+    NSString *URLString = [@"tel:" stringByAppendingString:solution.phone_number];
+    
+    NSURL *URL = [NSURL URLWithString:URLString];
+    
+    [[UIApplication sharedApplication] openURL:URL];
+
+    
+    
+}
+
+-(void)solutionTitleButtonPressed:(UIButton *)button{
+    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    NSLog(@"hyperlink in solutions pressed - row %ld, value %@", (long)button.tag, solution.link);
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:solution.link]];
+    
+}
+
+-(void)addressButtonPressed:(UIButton *)button{
+    
+    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    NSLog(@"hyperlink in address pressed - row %ld, value %@", (long)button.tag, solution.address);
+    
+    NSString* addr = [NSString stringWithFormat:@"http://maps.apple.com/?q=%@",solution.address];
+    NSURL* url = [[NSURL alloc] initWithString:[addr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    [[UIApplication sharedApplication] openURL:url];
+}
+
+-(void)emailButtonPressed:(UIButton *)button{
+    
+    //Solution *solution = [self.solutions objectAtIndex:button.tag];
+    //NSLog(@"hyperlink in email pressed - row %ld, value %@", (long)button.tag, solution.email);
+    
+    #define URLEMail @"mailto:dan@doozer.tips?subject=Hey! Doozer sent me your way..."
+    
+    NSString *url = [URLEMail stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    [[UIApplication sharedApplication]  openURL: [NSURL URLWithString: url]];
+    
+}
+
+
 
 
 @end
