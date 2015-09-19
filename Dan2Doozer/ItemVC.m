@@ -14,6 +14,9 @@
 #import "AppDelegate.h"
 #import "SolutionCustomCell.h"
 #import "Solution.h"
+#import "AFNetworking.h"
+#import "Constants.h"
+#import "DoozerSyncManager.h"
 
 @interface ItemVC () <UIGestureRecognizerDelegate, UITextViewDelegate>
 
@@ -25,6 +28,7 @@
 - (void)viewDidLoad {
 
     [super viewDidLoad];
+    
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     self.managedObjectContext = appDelegate.managedObjectContext;
@@ -49,7 +53,8 @@
 
     
     self.view.backgroundColor = self.themeColor;
-    
+    self.solutionsTable.backgroundColor = self.themeColor;
+    self.solutionsTable.separatorColor = self.themeColor;
     
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlack;
     self.navigationController.navigationBar.barTintColor = self.themeColor;
@@ -110,7 +115,41 @@
     [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
     
     self.hyperlinks = [[NSMutableArray alloc]init];
-    [self fetchSolutions];
+    
+    if (self.detailItem.solutions.length > 5) {
+        [self fetchSolutions];
+
+    }
+    
+    [self markSolutionsViewed];
+    
+    [DoozerSyncManager getSolutions:self.detailItem];
+    
+}
+
+
+- (void)markSolutionsViewed{
+        
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    
+    for (Solution *eachSolution in self.solutions) {
+        
+        NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/view/%@", kBaseAPIURL, eachSolution.sol_ID, self.detailItem.itemId];
+        
+        //NSLog(@"here's the urlstring: %@", URLstring);
+        
+        [manager POST:URLstring parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            //NSDictionary *serverResponse = (NSDictionary *)responseObject;
+            NSLog(@"heres the server response = %@", responseObject);
+            
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Error: %@", error);
+            
+        }];
+    }
     
 }
 
@@ -306,7 +345,7 @@
     
     CGPoint location = [tapGesture locationInView:self.view];
     
-    NSLog(@"location = %f,%f", location.x, location.y);
+    //NSLog(@"location = %f,%f", location.x, location.y);
     
     [self.view endEditing:YES];
     
@@ -318,7 +357,7 @@
 
 
 -(void)viewDidLayoutSubviews {
-    NSLog(@"start of layout subviews!");
+    //NSLog(@"start of layout subviews!");
         
     CGFloat fixedWidth = self.ItemTitle.frame.size.width;
     CGSize newSize = [self.ItemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
@@ -354,7 +393,7 @@
     
     CGRect currentFrame = self.upperViewPanel.frame;
     CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
-    NSLog(@"opening the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+    //NSLog(@"opening the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
     
     [UIView animateWithDuration:0.5f animations:^{
         self.upperViewPanel.frame = newFrame;
@@ -382,7 +421,7 @@
     
     CGRect currentFrame = self.upperViewPanel.frame;
     CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225+self.titleFieldExtraHeight);
-    NSLog(@"closing the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+    //NSLog(@"closing the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
     
     int timestamp = [[NSDate date] timeIntervalSince1970];
     NSString *date = [NSString stringWithFormat:@"%d", timestamp];
@@ -421,7 +460,7 @@
     
     NSDate *today = [NSDate date];
         
-    NSLog(@"today = %@", today);
+    //NSLog(@"today = %@", today);
     
     self.detailItem.duedate = today;
     
@@ -510,7 +549,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSLog(@"heightForRowAtIndexPath is being called now");
+    //NSLog(@"heightForRowAtIndexPath is being called now");
     Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
 
     float cellHeightOffset = 0;
@@ -526,6 +565,9 @@
     }
     if (solutionInCell.price) {
         cellHeightOffset += 30;
+    }
+    if (solutionInCell.img_link && cellHeightOffset < 40) {
+        cellHeightOffset = 40;
     }
     
     return cellHeightOffset + 180;
@@ -549,12 +591,26 @@
     
     cell.descriptionText.text = solutionInCell.sol_description;
     
-    NSLog(@"setting cell data for row %ld", (long)indexPath.row);
+    //NSLog(@"setting cell data for row %ld", (long)indexPath.row);
     
     cell.expertNameLabel.textColor = self.themeColor;
     cell.expertNameLabel.text = @"Daniel Apone";
     cell.expertTitleLabel.text = @"CEO, Doozer";
 
+    cell.thumbsUp.tag = indexPath.row;
+    cell.thumbsDown.tag = indexPath.row;
+    
+    if ([solutionInCell.state isEqualToString:@"liked"]) {
+        cell.thumbsUp.backgroundColor = self.themeColor;
+        cell.thumbsDown.backgroundColor = [UIColor clearColor];
+    }else if ([solutionInCell.state isEqualToString:@"disliked"]){
+        cell.thumbsUp.backgroundColor = [UIColor clearColor];
+        cell.thumbsDown.backgroundColor = self.themeColor;
+    }else{
+        cell.thumbsDown.backgroundColor = [UIColor clearColor];
+        cell.thumbsUp.backgroundColor = [UIColor clearColor];
+    }
+    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     
     float horizOffset = 0;
@@ -594,7 +650,7 @@
 
     if (solutionInCell.phone_number) {
 
-        NSLog(@"here's the phone number %@", solutionInCell.phone_number);
+        //NSLog(@"here's the phone number %@", solutionInCell.phone_number);
         UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [phoneButton addTarget:self
                    action:@selector(phoneButtonPressed:)
@@ -608,11 +664,11 @@
     
         [cell.solutionsPanel addSubview:phoneButton];
         vertOffset += 30;
-        NSLog(@"new vert offset is %f", vertOffset);
+        //NSLog(@"new vert offset is %f", vertOffset);
     }
     if (solutionInCell.address) {
 
-        NSLog(@"here's the address %@", solutionInCell.address);
+        //NSLog(@"here's the address %@", solutionInCell.address);
         UIButton *addressButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [addressButton addTarget:self
                         action:@selector(addressButtonPressed:)
@@ -625,7 +681,7 @@
         addressButton.tag = indexPath.row;
         [cell.solutionsPanel addSubview:addressButton];
         vertOffset += 30;
-        NSLog(@"new vert offset is %f", vertOffset);
+        //NSLog(@"new vert offset is %f", vertOffset);
     }
     
     //if (solutionInCell.email) {
@@ -642,32 +698,32 @@
         emailButton.tag = indexPath.row;
         [cell.solutionsPanel addSubview:emailButton];
         vertOffset += 30;
-        NSLog(@"new vert offset is %f", vertOffset);
+        //NSLog(@"new vert offset is %f", vertOffset);
     //}
     
     if (solutionInCell.open_hours) {
-        NSLog(@"setting open hours label");
+        //NSLog(@"setting open hours label");
         
         UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
         hoursLabel.textColor = [UIColor darkGrayColor];
         hoursLabel.text = solutionInCell.open_hours;
         hoursLabel.font = [UIFont fontWithName:@"Avenir" size:18];
         vertOffset += 30;
-        NSLog(@"new vert offset is %f", vertOffset);
+        //NSLog(@"new vert offset is %f", vertOffset);
 
         [cell.solutionsPanel addSubview:hoursLabel];
 
     }
     
     if (solutionInCell.price) {
-        NSLog(@"setting price label");
+        //NSLog(@"setting price label");
         
         UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
         priceLabel.textColor = [UIColor darkGrayColor];
         priceLabel.text = solutionInCell.price.stringValue;
         priceLabel.font = [UIFont fontWithName:@"Avenir" size:18];
         vertOffset += 30;
-        NSLog(@"new vert offset is %f", vertOffset);
+        //NSLog(@"new vert offset is %f", vertOffset);
         
         [cell.solutionsPanel addSubview:priceLabel];
         
@@ -726,8 +782,23 @@
             NSLog(@"image array index is = %d", index);
             
              __block UIImage *image = [[UIImage alloc]init];
+            NSLog(@"setting image placeholder at index %d", index);
             [self.images insertObject:image atIndex:index];
 
+            /*
+            NSString *sampleString = nil;
+            
+            if(index == 1){
+                //NSString *testString = @"https://cdn2.vox-cdn.com/thumbor/rOmgKTCjoOmRNYJAwqjWdyx93So=/0x0:1050x591/400x225/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/47087140/heatmap-image.0.0.0.0.jpg";
+                sampleString = @"https://cdn2.vox-cdn.com/thumbor/rOmgKTCjoOmRNYJAwqjWdyx93So=/0x0:1050x591/400x225/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/47087140/heatmap-image.0.0.0.0.jpg";
+                //sampleString = [testString stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet];
+
+
+            }else{
+                sampleString = solution.img_link;
+            }
+            */
+            
              dispatch_async(dispatch_get_global_queue(0,0), ^{
                  NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: solution.img_link]];
                  if ( data == nil )
@@ -735,7 +806,11 @@
                  dispatch_async(dispatch_get_main_queue(), ^{
                  // WARNING: is the cell still using the same data by this point??
                      image = [UIImage imageWithData: data];
-                     [self.images replaceObjectAtIndex:index withObject:image];
+                     NSLog(@"setting an image for index %d", index);
+                     NSLog(@"image data = %@", image);
+                     if (image) {
+                         [self.images replaceObjectAtIndex:index withObject:image];
+                     }
                      image = nil;
                      [self.solutionsTable reloadData];
                      //data = nil;
@@ -801,7 +876,77 @@
     
 }
 
+- (IBAction)thumbsUpPressed:(UIButton *)button {
+    
+    int row = (int)button.tag;
+    NSLog(@"thumbs up pressed at row == %d", row);
+    Solution *likedSolution = [self.solutions objectAtIndex:row];
+    
+    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/like/%@", kBaseAPIURL, likedSolution.sol_ID, self.detailItem.itemId];
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    [manager POST:URLstring parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        NSLog(@"heres the server response = %@", responseObject);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+        
+    }];
+    
+    likedSolution.state = @"liked";
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [self.solutionsTable reloadData];
+ 
+    
+}
 
+- (IBAction)thumbsDownPressed:(UIButton *)button {
+    
+    int row = (int)button.tag;
+
+    NSLog(@"thumbs down pressed at row == %d", row);
+    
+    Solution *dislikedSolution = [self.solutions objectAtIndex:row];
+    
+    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/dislike/%@", kBaseAPIURL, dislikedSolution.sol_ID, self.detailItem.itemId];
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    [manager POST:URLstring parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //NSDictionary *serverResponse = (NSDictionary *)responseObject;
+        NSLog(@"heres the server response = %@", responseObject);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+        
+    }];
+    
+    dislikedSolution.state = @"disliked";
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+
+    [self.solutionsTable reloadData];
+
+    
+}
 
 
 @end

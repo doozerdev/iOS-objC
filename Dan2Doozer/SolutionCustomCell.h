@@ -14,6 +14,8 @@
 @property (weak, nonatomic) IBOutlet UITextView *descriptionText;
 @property (weak, nonatomic) IBOutlet UIView *solutionsPanel;
 
+@property (weak, nonatomic) IBOutlet UIButton *thumbsUp;
+@property (weak, nonatomic) IBOutlet UIButton *thumbsDown;
 
 
 

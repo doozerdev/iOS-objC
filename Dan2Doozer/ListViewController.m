@@ -60,7 +60,7 @@
     [self.view addGestureRecognizer:panGesture];
     panGesture.delegate =self;
     
-    NSLog(@"all items = %@", self.fetchedResultsController.fetchedObjects);
+    //NSLog(@"all items = %@", self.fetchedResultsController.fetchedObjects);
 
     
 }

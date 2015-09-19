@@ -31,6 +31,29 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+#if DEBUG == 1
+    NSLog(@"Debug == 1");
+#else
+    NSLog(@"Debug not set");
+#endif
+    
+#if BETA == 1
+    NSLog(@"Beta == 1");
+#else
+    NSLog(@"Beta not set");
+#endif
+    
+#if RELEASE == 1
+    NSLog(@"Release == 1");
+#else
+    NSLog(@"Release not set");
+#endif
+    
+    
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    
+    NSLog(@"bundle is = %@", bundleIdentifier);
+    
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches == NULL){
         numberOfLaunches = [NSNumber numberWithInt:0];

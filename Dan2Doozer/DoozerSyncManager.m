@@ -8,7 +8,6 @@
 
 #import "DoozerSyncManager.h"
 #import "AFNetworking.h"
-#import "Item.h"
 #import "GetItemsFromDoozer.h"
 #import "AddItemsToServer.h"
 #import "UpdateItemsOnServer.h"
@@ -313,6 +312,16 @@ double _lastSyncRequest;
                     NSDate* duedate = [df dateFromString:duedateString];
                     existingItem.duedate = duedate;
                     
+                    NSNumber *solutionsCount = [eachArrayElement objectForKey:@"solutions_count"];
+                    
+                    NSLog(@"creating! %@ %@ %@", existingItem.title, existingItem.itemId, solutionsCount);
+                    
+                    
+                    if (solutionsCount.intValue > 0) {
+                        
+                        [self getSolutions:existingItem];
+                    }
+                    
                     NSError *error = nil;
                     if (![context save:&error]) {
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
@@ -397,85 +406,12 @@ double _lastSyncRequest;
                 NSNumber *solutionsCount = [eachArrayElement objectForKey:@"solutions_count"];
                 
                 NSLog(@"creating! %@ %@ %@", newItem.title, newItem.itemId, solutionsCount);
+                
+                
+                if (solutionsCount.intValue > 0) {
 
-
-                if (solutionsCount.intValue >= 0) {
-                    
-                
-                    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", kBaseAPIURL, newItem.itemId];
-                    
-                    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-                    
-                    AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
-                    
-                    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-                    
-                    NSMutableArray *solutionsList = [[NSMutableArray alloc]init];
-                    
-                    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        
-                        NSDictionary *jsonDict = (NSDictionary *) responseObject;
-                        NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-                        NSLog(@" heres' the server response =%@", itemsArray);
-                        
-                        
-                        for (id eachArrayElement in itemsArray) {
-                            NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
-                            Solution *newSolution = [[Solution alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
-                            
-                            newSolution.sol_title = [eachArrayElement objectForKey:@"title"];
-                            newSolution.address = [eachArrayElement objectForKey:@"address"];
-                            newSolution.sol_description = [eachArrayElement objectForKey:@"description"];
-                            newSolution.expire_date = [eachArrayElement objectForKey:@"expireDate"];
-                            newSolution.sol_ID = [eachArrayElement objectForKey:@"id"];
-                            newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
-                            newSolution.link = [eachArrayElement objectForKey:@"link"];
-                            newSolution.notes = [eachArrayElement objectForKey:@"notes"];
-                            newSolution.open_hours = [eachArrayElement objectForKey:@"openHours"];
-                            newSolution.phone_number = [eachArrayElement objectForKey:@"phoneNumber"];
-                            newSolution.price = [eachArrayElement objectForKey:@"price"];
-                            newSolution.source = [eachArrayElement objectForKey:@"source"];
-                            newSolution.tags = [eachArrayElement objectForKey:@"tags"];
-                            
-                            [solutionsList addObject:newSolution.sol_ID];
-                            
-                            // Save the context.
-                            NSError *error = nil;
-                            if (![context save:&error]) {
-                                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                                abort();
-                            }
-                            
-                        }
-                        
-                        
-                        newItem.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
-                        NSLog(@"Solutions found!!! and then equal == %@", newItem.solutions);
-                        
-                        // Save the context.
-                        NSError *error = nil;
-                        if (![context save:&error]) {
-                            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                            abort();
-                        }
-                        
-                        
-                    }
-                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          NSLog(@"Error: %@", error);
-                          
-                      }];
-
-                
-                
-                
-                
+                    [self getSolutions:newItem];
                 }
-                
-                
-                /////////////////Solutions Fetching Here!!!!!!!!
-                
-                
                 
                 
                 // Save the context.
@@ -499,13 +435,13 @@ double _lastSyncRequest;
 
 }
 
-/*
-+ (NSArray *)getSolutions:(NSString *)itemID{
+
++ (void)getSolutions:(Item *)item{
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
-    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", kBaseAPIURL, itemID];
+    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", kBaseAPIURL, item.itemId];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     
@@ -548,18 +484,30 @@ double _lastSyncRequest;
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 abort();
             }
+            
         }
+        
+        
+        item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
+        NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        
     }
       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
           NSLog(@"Error: %@", error);
           
       }];
     
-    return solutionsList;
     
 }
- 
- */
+
 
 
 

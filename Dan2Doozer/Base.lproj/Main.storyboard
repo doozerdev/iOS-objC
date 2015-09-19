@@ -275,6 +275,9 @@
                                                             <state key="normal" backgroundImage="thumbsdown2">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="thumbsDownPressed:" destination="tAf-os-SWk" eventType="touchUpInside" id="TsE-Sf-Q7o"/>
+                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OyE-lI-zDr">
                                                             <rect key="frame" x="490" y="5" width="40" height="40"/>
@@ -285,6 +288,9 @@
                                                             <state key="normal" backgroundImage="thumbsup2">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="thumbsUpPressed:" destination="tAf-os-SWk" eventType="touchUpInside" id="Iiq-qX-uUZ"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -326,6 +332,8 @@
                                                     <outlet property="expertNameLabel" destination="tFk-yy-eTf" id="nFP-MZ-DY9"/>
                                                     <outlet property="expertTitleLabel" destination="tyB-M4-9mB" id="VLa-hE-pdJ"/>
                                                     <outlet property="solutionsPanel" destination="KVQ-ws-TxE" id="XHu-QF-1VY"/>
+                                                    <outlet property="thumbsDown" destination="vOo-Kj-kSC" id="7Yh-w5-fUS"/>
+                                                    <outlet property="thumbsUp" destination="OyE-lI-zDr" id="z7q-bE-86G"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>

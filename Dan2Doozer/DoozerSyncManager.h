@@ -10,12 +10,15 @@
 #import <CoreData/Coredata.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "Item.h"
 
 @interface DoozerSyncManager : NSObject 
 
 
 + (void)syncWithServer;
 + (void)copyFromServer :(NSMutableArray *)inputArray;
++ (void)getSolutions:(Item *)item;
+
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;

@@ -24,7 +24,7 @@
 @property (nonatomic, retain) NSString *img_link;
 @property (nonatomic, retain) NSString *notes;
 @property (nonatomic, retain) NSNumber *archive;
-
+@property (nonatomic, retain) NSString *state;
 
 
 @end

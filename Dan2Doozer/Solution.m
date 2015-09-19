@@ -24,6 +24,6 @@
 @synthesize img_link;
 @synthesize notes;
 @synthesize archive;
-
+@synthesize state;
 
 @end

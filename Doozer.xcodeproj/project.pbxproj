@@ -85,7 +85,6 @@
 		A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 6.xcdatamodel"; sourceTree = "<group>"; };
 		A22C5F1D1B9B6CC5001210C1 /* SolutionCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SolutionCustomCell.h; sourceTree = "<group>"; };
 		A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SolutionCustomCell.m; sourceTree = "<group>"; };
-		A22C5F4E1B9F580E001210C1 /* Doozer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Doozer copy-Info.plist"; path = "/Users/danielapone/Documents/doozer/iOS-objC/Doozer copy-Info.plist"; sourceTree = "<absolute>"; };
 		A2301B281AF41A7C00E2267D /* Doozer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doozer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2301B2C1AF41A7C00E2267D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2301B2D1AF41A7C00E2267D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -227,7 +226,6 @@
 				A2301B291AF41A7C00E2267D /* Products */,
 				43A827BFC5215AAE9D57429C /* Pods */,
 				43E9D580928C3349D37B4FA4 /* Frameworks */,
-				A22C5F4E1B9F580E001210C1 /* Doozer copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -734,6 +732,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "BETA=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -754,11 +753,13 @@
 			baseConfigurationReference = 7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUNDLE_DISPLAY_NAME_SUFFIX = " BETA";
-				BUNDLE_ID_SUFFIX = .BETA;
+				BUNDLE_DISPLAY_NAME = DoozerBETA;
+				BUNDLE_ID = com.doozer.Doozer.BETA;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
+				FB_APP_ID = 1637385519866455;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
@@ -767,7 +768,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.doozer.Doozer;
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -883,6 +884,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -902,11 +904,14 @@
 			baseConfigurationReference = 73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUNDLE_DISPLAY_NAME_SUFFIX = " DEBUG";
-				BUNDLE_ID_SUFFIX = .DEBUG;
+				BUNDLE_DISPLAY_NAME = DoozerDEBUG;
+				BUNDLE_ID = com.doozer.Doozer.DEBUG;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = YES;
+				ENABLE_TESTABILITY = YES;
+				FB_APP_ID = 1637385749866432;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
@@ -915,7 +920,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doozer.Doozer;
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -927,11 +933,13 @@
 			baseConfigurationReference = 7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUNDLE_DISPLAY_NAME_SUFFIX = "";
-				BUNDLE_ID_SUFFIX = "";
+				BUNDLE_DISPLAY_NAME = Doozer;
+				BUNDLE_ID = com.doozer.Doozer;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
+				FB_APP_ID = 1474823829455959;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
@@ -940,7 +948,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.doozer.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.doozer.Doozer;
 				PRODUCT_NAME = Doozer;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
