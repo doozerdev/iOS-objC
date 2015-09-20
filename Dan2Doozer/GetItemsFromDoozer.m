@@ -10,6 +10,7 @@
 #import "AFNetworking.h"
 #import "DoozerSyncManager.h"
 #import "Constants.h"
+#import "AppDelegate.h"
 
 
 @implementation GetItemsFromDoozer
@@ -44,7 +45,8 @@
 
     }
     
-    NSString * NewURL = [NSString stringWithFormat:@"%@items", kBaseAPIURL];
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSString * NewURL = [NSString stringWithFormat:@"%@items", appDelegate.SERVER_URI];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     

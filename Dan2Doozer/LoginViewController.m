@@ -189,7 +189,8 @@ NSString *sessionID = nil;
         
         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
 
-        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", kBaseAPIURL, fbAccessToken];
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", appDelegate.SERVER_URI, fbAccessToken];
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             

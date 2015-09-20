@@ -71,7 +71,8 @@ double _lastSyncRequest;
                         
                         NSLog(@"************ Refreshed Access Token === %@", [FBSDKAccessToken currentAccessToken]);
                         NSString *fbAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-                        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", kBaseAPIURL ,fbAccessToken];
+                        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+                        NSString *targetURL = [NSString stringWithFormat:@"%@login/%@", appDelegate.SERVER_URI ,fbAccessToken];
                         
                         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
                         [manager GET:targetURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -441,7 +442,7 @@ double _lastSyncRequest;
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
-    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", kBaseAPIURL, item.itemId];
+    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", appDelegate.SERVER_URI, item.itemId];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     

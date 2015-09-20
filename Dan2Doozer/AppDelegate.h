@@ -21,6 +21,8 @@
 - (NSURL *)applicationDocumentsDirectory;
 + (AppDelegate *)sharedAppDelegate;
 
+@property (readonly, strong, nonatomic) NSString *SERVER_URI;
+
 
 @end
 

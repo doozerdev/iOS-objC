@@ -129,7 +129,7 @@
 
 
 - (void)markSolutionsViewed{
-        
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
@@ -137,7 +137,7 @@
     
     for (Solution *eachSolution in self.solutions) {
         
-        NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/view/%@", kBaseAPIURL, eachSolution.sol_ID, self.detailItem.itemId];
+        NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/view/%@", appDelegate.SERVER_URI, eachSolution.sol_ID, self.detailItem.itemId];
         
         //NSLog(@"here's the urlstring: %@", URLstring);
         
@@ -881,8 +881,9 @@
     int row = (int)button.tag;
     NSLog(@"thumbs up pressed at row == %d", row);
     Solution *likedSolution = [self.solutions objectAtIndex:row];
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     
-    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/like/%@", kBaseAPIURL, likedSolution.sol_ID, self.detailItem.itemId];
+    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/like/%@", appDelegate.SERVER_URI, likedSolution.sol_ID, self.detailItem.itemId];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
@@ -918,8 +919,8 @@
     NSLog(@"thumbs down pressed at row == %d", row);
     
     Solution *dislikedSolution = [self.solutions objectAtIndex:row];
-    
-    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/dislike/%@", kBaseAPIURL, dislikedSolution.sol_ID, self.detailItem.itemId];
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/dislike/%@", appDelegate.SERVER_URI, dislikedSolution.sol_ID, self.detailItem.itemId];
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];

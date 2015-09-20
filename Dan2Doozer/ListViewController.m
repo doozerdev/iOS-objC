@@ -1188,18 +1188,53 @@
             cell.cellItemTitle.textColor = [UIColor blackColor];
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
-            NSDateFormatter *df = [[NSDateFormatter alloc]init];
-            [df setDateFormat:@"yyyyMMdd"];
-            NSString *currentDateString = [df stringFromDate:[NSDate date]];
-            NSString *dueDateString = [df stringFromDate:object.duedate];
+           
+
+
             
             if (object.duedate) {
+                
+
+                //NSString *dueDateString = [df stringFromDate:object.duedate];
+                NSDateFormatter *df2 = [[NSDateFormatter alloc]init];
+                [df2 setDateFormat:@"MM/dd"];
+                NSString *dueDateDisplay = [df2 stringFromDate:object.duedate];
+                
+                double dateInt = [object.duedate timeIntervalSince1970];
+                double delta = dateInt - [[NSDate new]timeIntervalSince1970];
+                /*
                 if (dueDateString.intValue <= currentDateString.intValue) {
                     cell.cellDueFlag.text = @"DUE";
                     cell.cellDueFlag.textColor = [UIColor redColor];
                 }else{
                     cell.cellDueFlag.text = @"";
                 }
+                 */
+                
+                NSLog(@"due date int is %d", dueDateDisplay.intValue);
+                
+                NSLog(@"delta equals === %f, duedate is %@", delta, dueDateDisplay);
+                
+                
+                if (dateInt < [[NSDate date]timeIntervalSince1970]){
+                    cell.cellDueFlag.text = @"Due";
+                    cell.cellDueFlag.textColor = [UIColor redColor];
+                }else if (delta < 604800) {
+                    NSDateFormatter *df = [[NSDateFormatter alloc]init];
+                    [df setDateFormat:@"EEE"];
+                    NSString *dayString = [df stringFromDate:object.duedate];
+                    cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dayString];
+                    cell.cellDueFlag.textColor = [UIColor grayColor];
+
+                }else{
+
+                    cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dueDateDisplay];
+                    cell.cellDueFlag.textColor = [UIColor grayColor];
+
+
+                }
+                
+                
             }else{
                 cell.cellDueFlag.text = @"";
             }

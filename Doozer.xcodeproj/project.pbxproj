@@ -764,6 +764,7 @@
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = BETA;
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -916,6 +917,7 @@
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -944,6 +946,7 @@
 					"$(inherited)",
 					/Users/danielapone/Documents/FacebookSDK,
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = RELEASE;
 				INFOPLIST_FILE = Dan2Doozer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

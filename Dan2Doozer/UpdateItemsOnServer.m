@@ -77,7 +77,9 @@
         }else{
             params[@"archive"] = itemToUpdate.archive;
         }
-        NSString *urlBase = [NSString stringWithFormat:@"%@items/%@", kBaseAPIURL, itemToUpdate.itemId];
+        
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSString *urlBase = [NSString stringWithFormat:@"%@items/%@", appDelegate.SERVER_URI, itemToUpdate.itemId];
         
         [manager PUT:urlBase parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             //NSLog(@"Successful JSON update %@", responseObject);

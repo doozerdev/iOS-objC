@@ -41,7 +41,8 @@
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
         
-        NSString *URL = [NSString stringWithFormat:@"%@items/%@/archive", kBaseAPIURL, itemIdToDelete];
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSString *URL = [NSString stringWithFormat:@"%@items/%@/archive", appDelegate.SERVER_URI, itemIdToDelete];
         
         [manager DELETE:URL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"successful JSON delete %@", responseObject);

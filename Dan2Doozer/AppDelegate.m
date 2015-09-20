@@ -18,9 +18,11 @@
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
+
 @end
 
 @implementation AppDelegate
+
 
 + (AppDelegate *)sharedAppDelegate
 {
@@ -30,25 +32,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+#if DEBUG
+    _SERVER_URI = @"http://api.test.doozer.tips/api/";
     
-#if DEBUG == 1
-    NSLog(@"Debug == 1");
+#elif BETA
+    _SERVER_URI = @"http://api.beta.doozer.tips/api/";
+    
 #else
-    NSLog(@"Debug not set");
+    _SERVER_URI = @"http://api.doozer.tips/api/";
 #endif
-    
-#if BETA == 1
-    NSLog(@"Beta == 1");
-#else
-    NSLog(@"Beta not set");
-#endif
-    
-#if RELEASE == 1
-    NSLog(@"Release == 1");
-#else
-    NSLog(@"Release not set");
-#endif
-    
     
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
     

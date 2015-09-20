@@ -119,6 +119,8 @@
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
+    NSLog(@"here in the main vew ---------------- %@", appDelegate.SERVER_URI);
+    
     self.managedObjectContext = context;
     
     [self rebalanceListOrdersIfNeeded];

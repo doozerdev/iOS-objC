@@ -74,7 +74,8 @@
             params[@"color"] = itemToAdd.color;
         }
         
-        NSString *URLstring = [NSString stringWithFormat:@"%@items", kBaseAPIURL];
+        AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+        NSString *URLstring = [NSString stringWithFormat:@"%@items", appDelegate.SERVER_URI];
         
         [manager POST:URLstring parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSLog(@"Successful JSON ADD ITEM");

@@ -20,4 +20,5 @@
 
 //#define kBaseAPIURL @"http://api.doozer.tips/api/"
 
-#define kBaseAPIURL @"http://api.beta.doozer.tips/api/"
+//#define kBaseAPIURL @"http://api.beta.doozer.tips/api/"
+
