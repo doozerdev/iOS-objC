@@ -17,6 +17,7 @@
 #import "AFNetworking.h"
 #import "Constants.h"
 #import "DoozerSyncManager.h"
+#import "ItemCustomCell.h"
 
 @interface ItemVC () <UIGestureRecognizerDelegate, UITextViewDelegate>
 
@@ -33,26 +34,10 @@
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     self.managedObjectContext = appDelegate.managedObjectContext;
     
-    self.ItemTitle.text = self.detailItem.title;
-    
-    if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
-        self.Notes.text = self.detailItem.notes;
-        self.Notes.font = [UIFont fontWithName:@"Avenir" size:17];
-        self.Notes.textColor = [UIColor blackColor];
-
-    }else{
-        self.Notes.text = @"Add notes here...";
-        self.Notes.font = [UIFont fontWithName:@"Avenir-Oblique" size:17];
-        self.Notes.textColor = [UIColor lightGrayColor];
-    }
-    
-    self.Notes.layer.borderWidth = 1.0f;
-    self.Notes.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-    
     self.themeColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
 
-    
     self.view.backgroundColor = self.themeColor;
+    
     self.solutionsTable.backgroundColor = self.themeColor;
     self.solutionsTable.separatorColor = self.themeColor;
     
@@ -61,58 +46,10 @@
     
     self.showingDatePanel = NO;
     
-    self.dateButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-
-    self.dateButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-    self.dateButton2.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-    self.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-    self.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-
-    self.dateButton.tintColor = self.themeColor;
-    self.dateButton2.tintColor = self.themeColor;
-    self.dateButton3.tintColor = self.themeColor;
-    self.dateButton4.tintColor = self.themeColor;
-    
-    if (self.detailItem.duedate) {
-        
-        
-        NSDateFormatter *df = [[NSDateFormatter alloc]init];
-        [df setDateFormat:@"EEE MMM dd, yyyy"];
-        NSString * dateString = [df stringFromDate:self.detailItem.duedate];
-        
-        [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
-        self.datePicker.date = self.detailItem.duedate;
-
-    }else{
-        [self.dateButton setTitle: @"Due Someday" forState: UIControlStateNormal];
-
-    }
-    [self.dateButton2 setTitle: @"Today" forState: UIControlStateNormal];
-    [self.dateButton3 setTitle: @"Tomorrow" forState: UIControlStateNormal];
-    [self.dateButton4 setTitle: @"Someday" forState: UIControlStateNormal];
-
-    [self.datePicker addTarget:self
-                        action:@selector(datePickerValueChanged:)
-              forControlEvents:UIControlEventValueChanged];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tapGesture];
     
-    self.ItemTitle.scrollEnabled = NO;
-    self.Notes.scrollEnabled = YES;
-    
-    self.ItemTitle.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
-    
-    UIImage *image = [UIImage imageNamed:@"outlinecircledone"];
-    
-    if (self.detailItem.done.intValue == 0) {
-        self.toggleCompleteButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
-
-    }else{
-        self.toggleCompleteButton.backgroundColor = self.themeColor;
-    }
-    
-    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
     
     self.hyperlinks = [[NSMutableArray alloc]init];
     
@@ -156,6 +93,7 @@
 
 - (IBAction)toggleCompleteButtonPressed:(id)sender {
 
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     NSArray *listArray = [self fetchEntireList];
     int indexOfCompletedHeader = 0;
@@ -170,11 +108,11 @@
     UIImage *image = [[UIImage alloc]init];
     
     int newOrder = 0;
-    
+ 
     if (self.detailItem.done.intValue == 0) {
         self.detailItem.done = [NSNumber numberWithInt:1];
         image = [UIImage imageNamed:@"outlinecircledone"];
-        self.toggleCompleteButton.backgroundColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
+        cell.toggleButton.backgroundColor = [ColorHelper getUIColorFromString:self.parentList.color :1];
         
         if ([listArray count] - 1 > indexOfCompletedHeader) {
             Item *adjacentItem = [listArray objectAtIndex:indexOfCompletedHeader+1];
@@ -189,7 +127,7 @@
     }else{
         self.detailItem.done = [NSNumber numberWithInt:0];
         image = [UIImage imageNamed:@"outlinecircledone"];
-        self.toggleCompleteButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+        cell.toggleButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
         
         
         if (indexOfCompletedHeader == 0) {
@@ -208,9 +146,8 @@
      
     self.detailItem.order = [NSNumber numberWithInt:newOrder];
     
-    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateNormal];
-    [self.toggleCompleteButton setBackgroundImage:image forState:UIControlStateHighlighted];
-
+    [cell.toggleButton setBackgroundImage:image forState:UIControlStateNormal];
+    [cell.toggleButton setBackgroundImage:image forState:UIControlStateHighlighted];
 
     [self rebalanceListIfNeeded];
     [UpdateItemsOnServer updateThisItem:self.detailItem];
@@ -274,17 +211,18 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
-    if (![self.detailItem.title isEqualToString:self.ItemTitle.text] || (![self.detailItem.notes isEqualToString:self.Notes.text] && ![self.Notes.text isEqualToString:@"Add notes here..."])) {
+    if (![self.detailItem.title isEqualToString:cell.itemTitle.text] || (![self.detailItem.notes isEqualToString:cell.itemNotes.text] && ![cell.itemNotes.text isEqualToString:@"Add notes here..."])) {
         
         NSLog(@"saving Item on exit!");
         
-        self.detailItem.notes = self.Notes.text;
+        self.detailItem.notes = cell.itemNotes.text;
         
-        if (self.ItemTitle.text.length == 0) {
+        if (cell.itemTitle.text.length == 0) {
             //do nothing
         }else{
-            self.detailItem.title = self.ItemTitle.text;
+            self.detailItem.title = cell.itemTitle.text;
             [UpdateItemsOnServer updateThisItem:self.detailItem];
             int timestamp = [[NSDate date] timeIntervalSince1970];
             NSString *date = [NSString stringWithFormat:@"%d", timestamp];
@@ -292,17 +230,20 @@
         }
     }
     
+    
     [super viewWillDisappear:animated];
 }
 
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
-    
-    if ([self.Notes.text isEqualToString:@"Add notes here..."]) {
+
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+    if ([cell.itemNotes.text isEqualToString:@"Add notes here..."]) {
         
-        self.Notes.text = @"";
-        self.Notes.font = [UIFont fontWithName:@"Avenir" size:17];
-        self.Notes.textColor = [UIColor blackColor];
+        cell.itemNotes.text = @"";
+        cell.itemNotes.font = [UIFont fontWithName:@"Avenir" size:17];
+        cell.itemNotes.textColor = [UIColor blackColor];
     }
     
     [self closeDatePanel];
@@ -318,22 +259,27 @@
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-    if (textView == self.ItemTitle) {
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+    if (textView == cell.itemTitle) {
         CGFloat fixedWidth = textView.frame.size.width;
         CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
         CGRect newFrame = textView.frame;
         newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-        self.ItemTitle.frame = newFrame;
+        cell.itemTitle.frame = newFrame;
         
         self.titleFieldExtraHeight = newSize.height - 46.5;
         
     }
+    
     NSLog(@"completed text feild editing");
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
-    if([text isEqualToString:@"\n"] && textView == self.ItemTitle) {
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+    if([text isEqualToString:@"\n"] && textView == cell.itemTitle) {
         [textView resignFirstResponder];
         return NO;
     }
@@ -358,15 +304,17 @@
 
 -(void)viewDidLayoutSubviews {
     //NSLog(@"start of layout subviews!");
-        
-    CGFloat fixedWidth = self.ItemTitle.frame.size.width;
-    CGSize newSize = [self.ItemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
-    CGRect newFrame = self.ItemTitle.frame;
+    
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    
+    CGFloat fixedWidth = cell.itemTitle.frame.size.width;
+    CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+    CGRect newFrame = cell.itemTitle.frame;
     newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-    self.ItemTitle.frame = newFrame;
+    cell.itemTitle.frame = newFrame;
     
     self.titleFieldExtraHeight = newSize.height - 46.5;
-    
+    /*
     CGRect currentFrame = self.upperViewPanel.frame;
     
     if (self.showingDatePanel) {
@@ -381,6 +329,8 @@
         self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 225 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
 
     }
+    */
+     
 }
 
 
@@ -391,59 +341,40 @@
 
 - (void)openDatePanel {
     
-    CGRect currentFrame = self.upperViewPanel.frame;
-    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
-    //NSLog(@"opening the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
-    
-    [UIView animateWithDuration:0.5f animations:^{
-        self.upperViewPanel.frame = newFrame;
-        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 480 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
-    } completion:^(BOOL finished) {
-        self.showingDatePanel = YES;
-        self.dateButton2.userInteractionEnabled = YES;
-        self.dateButton3.userInteractionEnabled = YES;
-        self.dateButton4.userInteractionEnabled = YES;
+    self.showingDatePanel = YES;
+    cell.dateButton2.userInteractionEnabled = YES;
+    cell.dateButton3.userInteractionEnabled = YES;
+    cell.dateButton4.userInteractionEnabled = YES;
 
-        [self.view endEditing:YES];
-
-    }];
+    [self.solutionsTable beginUpdates];
+    [self.solutionsTable endUpdates];
     
 }
 
 - (void)closeDatePanel {
     
-    self.dateButton2.userInteractionEnabled = NO;
-    self.dateButton3.userInteractionEnabled = NO;
-    self.dateButton4.userInteractionEnabled = NO;
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
+    cell.dateButton2.userInteractionEnabled = NO;
+    cell.dateButton3.userInteractionEnabled = NO;
+    cell.dateButton4.userInteractionEnabled = NO;
     
     self.showingDatePanel = NO;
     
-    CGRect currentFrame = self.upperViewPanel.frame;
-    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225+self.titleFieldExtraHeight);
-    //NSLog(@"closing the panel to == %f, %f, %f, %f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
-    
-    int timestamp = [[NSDate date] timeIntervalSince1970];
-    NSString *date = [NSString stringWithFormat:@"%d", timestamp];
-    [Intercom logEventWithName:@"Edited_Item_Properties" metaData: @{@"date": date}];
-    
-    [UIView animateWithDuration:0.5f animations:^{
-        self.upperViewPanel.frame = newFrame;
-        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 225 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
-    } completion:^(BOOL finished) {
-        
-        
-    }];
+    [self.solutionsTable beginUpdates];
+    [self.solutionsTable endUpdates];
 }
 
 
 - (IBAction)dateButtonPressed:(id)sender {
     
-    //[self.view endEditing:YES];
+    NSLog(@"data button pressed");
     
     if (self.showingDatePanel) {
         
-        self.detailItem.duedate = self.datePicker.date;
+        //self.detailItem.duedate = self.datePicker.date;
         
         [UpdateItemsOnServer updateThisItem:self.detailItem];
         
@@ -453,24 +384,23 @@
 
         [self openDatePanel];
     }
+    
 }
     
 
 - (IBAction)dateButton2Pressed:(id)sender {
-    
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
     NSDate *today = [NSDate date];
-        
-    //NSLog(@"today = %@", today);
-    
     self.detailItem.duedate = today;
     
     NSDateFormatter *df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"EEE MMM dd, yyyy"];
     NSString * dateString = [df stringFromDate:today];
     
-    [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
+    [cell.dateButton1 setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
 
-    self.datePicker.date = today;
+    cell.datePicker.date = today;
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
     
@@ -478,6 +408,7 @@
 }
 
 - (IBAction)dateButton3Pressed:(id)sender {
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
     dayComponent.day = 1;
@@ -491,9 +422,9 @@
     [df setDateFormat:@"EEE MMM dd, yyyy"];
     NSString * dateString = [df stringFromDate:tomorrow];
     
-    self.datePicker.date = tomorrow;
+    cell.datePicker.date = tomorrow;
     
-    [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
+    [cell.dateButton1 setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
     [self closeDatePanel];
@@ -502,11 +433,13 @@
 }
 - (IBAction)dateButton4Pressed:(id)sender {
     
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+
     self.detailItem.duedate = nil;
     
-    self.datePicker.date = [NSDate date];
+    cell.datePicker.date = [NSDate date];
     
-    [self.dateButton setTitle: [NSString stringWithFormat:@"Due Someday"] forState: UIControlStateNormal];
+    [cell.dateButton1 setTitle: [NSString stringWithFormat:@"Due Someday"] forState: UIControlStateNormal];
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
 
@@ -517,25 +450,21 @@
 
 - (void)datePickerValueChanged:(id)sender{
     
+    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
     NSDateFormatter *df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"EEE MMM dd, yyyy"];
-    NSString * dateString = [df stringFromDate:self.datePicker.date];
+    NSString * dateString = [df stringFromDate:cell.datePicker.date];
     
-    self.detailItem.duedate = self.datePicker.date;
+    self.detailItem.duedate = cell.datePicker.date;
     
-    [self.dateButton setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
+    [cell.dateButton1 setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
     
     [UpdateItemsOnServer updateThisItem:self.detailItem];
     
 }
 
-- (IBAction)solutionsButtonPressed:(UIButton*)button {
-    
 
-    
-    
-}
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -550,186 +479,282 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     //NSLog(@"heightForRowAtIndexPath is being called now");
-    Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+    
+    if (indexPath.row == 0) {
+        NSLog(@"setting cell row %ld height", (long)indexPath.row);
 
-    float cellHeightOffset = 0;
+        if (self.showingDatePanel) {
+            return 480;
+        }else{
+            return 225;
+        }
+    }else{
     
-    if (solutionInCell.phone_number) {
-        cellHeightOffset += 30;
+        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+
+        float cellHeightOffset = 0;
+        
+        if (solutionInCell.phone_number) {
+            cellHeightOffset += 30;
+        }
+        if (solutionInCell.address) {
+            cellHeightOffset += 30;
+        }
+        if (solutionInCell.open_hours) {
+            cellHeightOffset += 30;
+        }
+        if (solutionInCell.price) {
+            cellHeightOffset += 30;
+        }
+        if (solutionInCell.img_link && cellHeightOffset < 40) {
+            cellHeightOffset = 40;
+        }
+        
+        NSLog(@"setting cell row %ld height to %f", (long)indexPath.row, cellHeightOffset + 180);
+        
+        return cellHeightOffset + 180;
     }
-    if (solutionInCell.address) {
-        cellHeightOffset += 30;
-    }
-    if (solutionInCell.open_hours) {
-        cellHeightOffset += 30;
-    }
-    if (solutionInCell.price) {
-        cellHeightOffset += 30;
-    }
-    if (solutionInCell.img_link && cellHeightOffset < 40) {
-        cellHeightOffset = 40;
-    }
-    
-    return cellHeightOffset + 180;
     
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *MyIdentifier = @"solutionCell";
-    SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-    if (cell == nil) {
-        cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
-    }
     
-    for (UIView *view in [cell.solutionsPanel subviews])
-    {
-        [view removeFromSuperview];
-    }
-    
-    Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
-    
-    cell.descriptionText.text = solutionInCell.sol_description;
-    
-    //NSLog(@"setting cell data for row %ld", (long)indexPath.row);
-    
-    cell.expertNameLabel.textColor = self.themeColor;
-    cell.expertNameLabel.text = @"Daniel Apone";
-    cell.expertTitleLabel.text = @"CEO, Doozer";
-
-    cell.thumbsUp.tag = indexPath.row;
-    cell.thumbsDown.tag = indexPath.row;
-    
-    if ([solutionInCell.state isEqualToString:@"liked"]) {
-        cell.thumbsUp.backgroundColor = self.themeColor;
-        cell.thumbsDown.backgroundColor = [UIColor clearColor];
-    }else if ([solutionInCell.state isEqualToString:@"disliked"]){
-        cell.thumbsUp.backgroundColor = [UIColor clearColor];
-        cell.thumbsDown.backgroundColor = self.themeColor;
-    }else{
-        cell.thumbsDown.backgroundColor = [UIColor clearColor];
-        cell.thumbsUp.backgroundColor = [UIColor clearColor];
-    }
-    
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    
-    float horizOffset = 0;
-    
-        UIImage *image = [self.images objectAtIndex:indexPath.row];
+    if (indexPath.row == 0) {
+        static NSString *MyIdentifier = @"firstCell";
+        ItemCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        if (cell == nil) {
+            cell = [[ItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+        }
         
-        UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [imageButton addTarget:self
-                        action:@selector(solutionTitleButtonPressed:)
-              forControlEvents:UIControlEventTouchUpInside];
-        imageButton.frame = CGRectMake(5, 5, screenRect.size.width / 4, screenRect.size.width / 4);
-        imageButton.tag = indexPath.row;
-        [imageButton setBackgroundImage:image forState:UIControlStateNormal];
-    
-    if (solutionInCell.img_link) {
+        cell.itemTitle.text = self.detailItem.title;
+        
+        if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
+            cell.itemNotes.text = self.detailItem.notes;
+            cell.itemNotes.font = [UIFont fontWithName:@"Avenir" size:17];
+            cell.itemNotes.textColor = [UIColor blackColor];
+            
+        }else{
+            cell.itemNotes.text = @"Add notes here...";
+            cell.itemNotes.font = [UIFont fontWithName:@"Avenir-Oblique" size:17];
+            cell.itemNotes.textColor = [UIColor lightGrayColor];
+        }
+        
+        cell.itemNotes.layer.borderWidth = 1.0f;
+        cell.itemNotes.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+        
+        cell.dateButton1.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        
+        cell.dateButton1.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        cell.dateButton2.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        cell.dateButton3.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        cell.dateButton4.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        
+        cell.dateButton1.tintColor = self.themeColor;
+        cell.dateButton2.tintColor = self.themeColor;
+        cell.dateButton3.tintColor = self.themeColor;
+        cell.dateButton4.tintColor = self.themeColor;
+        
+        if (self.detailItem.duedate) {
+            
+            
+            NSDateFormatter *df = [[NSDateFormatter alloc]init];
+            [df setDateFormat:@"EEE MMM dd, yyyy"];
+            NSString * dateString = [df stringFromDate:self.detailItem.duedate];
+            
+            [cell.dateButton1 setTitle: [NSString stringWithFormat:@"Due %@", dateString] forState: UIControlStateNormal];
+            cell.datePicker.date = self.detailItem.duedate;
+            
+        }else{
+            [cell.dateButton1 setTitle: @"Due Someday" forState: UIControlStateNormal];
+            
+        }
+        [cell.dateButton2 setTitle: @"Today" forState: UIControlStateNormal];
+        [cell.dateButton3 setTitle: @"Tomorrow" forState: UIControlStateNormal];
+        [cell.dateButton4 setTitle: @"Someday" forState: UIControlStateNormal];
+        
+        [cell.datePicker addTarget:self
+                            action:@selector(datePickerValueChanged:)
+                  forControlEvents:UIControlEventValueChanged];
+        
+        
+        cell.itemTitle.scrollEnabled = NO;
+        cell.itemNotes.scrollEnabled = YES;
+        
+        cell.itemNotes.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
+        
+        UIImage *image = [UIImage imageNamed:@"outlinecircledone"];
+        
+        if (self.detailItem.done.intValue == 0) {
+            cell.toggleButton.backgroundColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+            
+        }else{
+            cell.toggleButton.backgroundColor = self.themeColor;
+        }
+        
+        [cell.toggleButton setBackgroundImage:image forState:UIControlStateNormal];
+        
+        
+        return cell;
 
-        [cell.solutionsPanel addSubview:imageButton];
-
-        horizOffset = screenRect.size.width / 4;
     }else{
-        [imageButton removeFromSuperview];
-    }
     
-    //create solutions title button
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button addTarget:self
-               action:@selector(solutionTitleButtonPressed:)
-     forControlEvents:UIControlEventTouchUpInside];
-    [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
-    [button setTitleColor:self.themeColor forState:UIControlStateNormal];
-    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    button.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-    button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width - 70, 30);
-    button.tag = indexPath.row;
-    [cell.solutionsPanel addSubview:button];
-    float vertOffset = 30;
+        static NSString *MyIdentifier = @"solutionCell";
+        SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        if (cell == nil) {
+            cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+        }
+        
+        for (UIView *view in [cell.solutionsPanel subviews])
+        {
+            [view removeFromSuperview];
+        }
+        
+        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+        
+        cell.descriptionText.text = solutionInCell.sol_description;
+        
+        //NSLog(@"setting cell data for row %ld", (long)indexPath.row);
+        
+        cell.expertNameLabel.textColor = self.themeColor;
+        cell.expertNameLabel.text = @"Daniel Apone";
+        cell.expertTitleLabel.text = @"CEO, Doozer";
 
-    if (solutionInCell.phone_number) {
+        cell.thumbsUp.tag = indexPath.row;
+        cell.thumbsDown.tag = indexPath.row;
+        
+        if ([solutionInCell.state isEqualToString:@"liked"]) {
+            cell.thumbsUp.backgroundColor = self.themeColor;
+            cell.thumbsDown.backgroundColor = [UIColor clearColor];
+        }else if ([solutionInCell.state isEqualToString:@"disliked"]){
+            cell.thumbsUp.backgroundColor = [UIColor clearColor];
+            cell.thumbsDown.backgroundColor = self.themeColor;
+        }else{
+            cell.thumbsDown.backgroundColor = [UIColor clearColor];
+            cell.thumbsUp.backgroundColor = [UIColor clearColor];
+        }
+        
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        
+        float horizOffset = 0;
+        
+            UIImage *image = [self.images objectAtIndex:indexPath.row];
+            
+            UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [imageButton addTarget:self
+                            action:@selector(solutionTitleButtonPressed:)
+                  forControlEvents:UIControlEventTouchUpInside];
+            imageButton.frame = CGRectMake(5, 5, screenRect.size.width / 4, screenRect.size.width / 4);
+            imageButton.tag = indexPath.row;
+            [imageButton setBackgroundImage:image forState:UIControlStateNormal];
+        
+        if (solutionInCell.img_link) {
 
-        //NSLog(@"here's the phone number %@", solutionInCell.phone_number);
-        UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [phoneButton addTarget:self
-                   action:@selector(phoneButtonPressed:)
+            [cell.solutionsPanel addSubview:imageButton];
+
+            horizOffset = screenRect.size.width / 4;
+        }else{
+            [imageButton removeFromSuperview];
+        }
+        
+        //create solutions title button
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [button addTarget:self
+                   action:@selector(solutionTitleButtonPressed:)
          forControlEvents:UIControlEventTouchUpInside];
-        [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
-        [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
-        phoneButton.tag = indexPath.row;
-    
-        [cell.solutionsPanel addSubview:phoneButton];
-        vertOffset += 30;
-        //NSLog(@"new vert offset is %f", vertOffset);
-    }
-    if (solutionInCell.address) {
+        [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
+        [button setTitleColor:self.themeColor forState:UIControlStateNormal];
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        button.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+        button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width - 70, 30);
+        button.tag = indexPath.row;
+        [cell.solutionsPanel addSubview:button];
+        float vertOffset = 30;
 
-        //NSLog(@"here's the address %@", solutionInCell.address);
-        UIButton *addressButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [addressButton addTarget:self
-                        action:@selector(addressButtonPressed:)
-              forControlEvents:UIControlEventTouchUpInside];
-        [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
-        [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
-        addressButton.tag = indexPath.row;
-        [cell.solutionsPanel addSubview:addressButton];
-        vertOffset += 30;
-        //NSLog(@"new vert offset is %f", vertOffset);
-    }
-    
-    //if (solutionInCell.email) {
-        //NSLog(@"here's the email %@", solutionInCell.email);
-        UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [emailButton addTarget:self
-                          action:@selector(emailButtonPressed:)
-                forControlEvents:UIControlEventTouchUpInside];
-        [emailButton setTitle:@"dan@doozer.tips" forState:UIControlStateNormal];
-        [emailButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        emailButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        emailButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
-        emailButton.tag = indexPath.row;
-        [cell.solutionsPanel addSubview:emailButton];
-        vertOffset += 30;
-        //NSLog(@"new vert offset is %f", vertOffset);
-    //}
-    
-    if (solutionInCell.open_hours) {
-        //NSLog(@"setting open hours label");
-        
-        UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
-        hoursLabel.textColor = [UIColor darkGrayColor];
-        hoursLabel.text = solutionInCell.open_hours;
-        hoursLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        vertOffset += 30;
-        //NSLog(@"new vert offset is %f", vertOffset);
+        if (solutionInCell.phone_number) {
 
-        [cell.solutionsPanel addSubview:hoursLabel];
+            //NSLog(@"here's the phone number %@", solutionInCell.phone_number);
+            UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [phoneButton addTarget:self
+                       action:@selector(phoneButtonPressed:)
+             forControlEvents:UIControlEventTouchUpInside];
+            [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
+            [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+            phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+            phoneButton.tag = indexPath.row;
+        
+            [cell.solutionsPanel addSubview:phoneButton];
+            vertOffset += 30;
+            //NSLog(@"new vert offset is %f", vertOffset);
+        }
+        if (solutionInCell.address) {
+
+            //NSLog(@"here's the address %@", solutionInCell.address);
+            UIButton *addressButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [addressButton addTarget:self
+                            action:@selector(addressButtonPressed:)
+                  forControlEvents:UIControlEventTouchUpInside];
+            [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
+            [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+            addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+            addressButton.tag = indexPath.row;
+            [cell.solutionsPanel addSubview:addressButton];
+            vertOffset += 30;
+            //NSLog(@"new vert offset is %f", vertOffset);
+        }
+        
+        //if (solutionInCell.email) {
+            //NSLog(@"here's the email %@", solutionInCell.email);
+            UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [emailButton addTarget:self
+                              action:@selector(emailButtonPressed:)
+                    forControlEvents:UIControlEventTouchUpInside];
+            [emailButton setTitle:@"dan@doozer.tips" forState:UIControlStateNormal];
+            [emailButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+            emailButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            emailButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+            emailButton.tag = indexPath.row;
+            [cell.solutionsPanel addSubview:emailButton];
+            vertOffset += 30;
+            //NSLog(@"new vert offset is %f", vertOffset);
+        //}
+        
+        if (solutionInCell.open_hours) {
+            //NSLog(@"setting open hours label");
+            
+            UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
+            hoursLabel.textColor = [UIColor darkGrayColor];
+            hoursLabel.text = solutionInCell.open_hours;
+            hoursLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            vertOffset += 30;
+            //NSLog(@"new vert offset is %f", vertOffset);
+
+            [cell.solutionsPanel addSubview:hoursLabel];
+
+        }
+        
+        if (solutionInCell.price) {
+            //NSLog(@"setting price label");
+            
+            UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
+            priceLabel.textColor = [UIColor darkGrayColor];
+            priceLabel.text = solutionInCell.price.stringValue;
+            priceLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            vertOffset += 30;
+            //NSLog(@"new vert offset is %f", vertOffset);
+            
+            [cell.solutionsPanel addSubview:priceLabel];
+            
+        }
+        return cell;
 
     }
     
-    if (solutionInCell.price) {
-        //NSLog(@"setting price label");
-        
-        UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
-        priceLabel.textColor = [UIColor darkGrayColor];
-        priceLabel.text = solutionInCell.price.stringValue;
-        priceLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        vertOffset += 30;
-        //NSLog(@"new vert offset is %f", vertOffset);
-        
-        [cell.solutionsPanel addSubview:priceLabel];
-        
-    }
-    
-    return cell;
 }
 
 - (void)fetchSolutions{
@@ -784,20 +809,6 @@
              __block UIImage *image = [[UIImage alloc]init];
             NSLog(@"setting image placeholder at index %d", index);
             [self.images insertObject:image atIndex:index];
-
-            /*
-            NSString *sampleString = nil;
-            
-            if(index == 1){
-                //NSString *testString = @"https://cdn2.vox-cdn.com/thumbor/rOmgKTCjoOmRNYJAwqjWdyx93So=/0x0:1050x591/400x225/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/47087140/heatmap-image.0.0.0.0.jpg";
-                sampleString = @"https://cdn2.vox-cdn.com/thumbor/rOmgKTCjoOmRNYJAwqjWdyx93So=/0x0:1050x591/400x225/filters:format(webp)/cdn0.vox-cdn.com/uploads/chorus_image/image/47087140/heatmap-image.0.0.0.0.jpg";
-                //sampleString = [testString stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet];
-
-
-            }else{
-                sampleString = solution.img_link;
-            }
-            */
             
              dispatch_async(dispatch_get_global_queue(0,0), ^{
                  NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: solution.img_link]];
