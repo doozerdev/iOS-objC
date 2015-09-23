@@ -473,7 +473,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return [self.solutions count];
+    return [self.solutions count] + 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -490,7 +490,7 @@
         }
     }else{
     
-        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
 
         float cellHeightOffset = 0;
         
@@ -512,7 +512,7 @@
         
         NSLog(@"setting cell row %ld height to %f", (long)indexPath.row, cellHeightOffset + 180);
         
-        return cellHeightOffset + 180;
+        return cellHeightOffset + 230;
     }
     
 }
@@ -599,6 +599,7 @@
 
     }else{
     
+        
         static NSString *MyIdentifier = @"solutionCell";
         SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
         if (cell == nil) {
@@ -610,7 +611,13 @@
             [view removeFromSuperview];
         }
         
-        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 5)];
+        
+        lineView.backgroundColor = self.themeColor;
+        [cell.contentView addSubview:lineView];
+        
+        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
         
         cell.descriptionText.text = solutionInCell.sol_description;
         
@@ -638,35 +645,65 @@
         
         float horizOffset = 0;
         
-            UIImage *image = [self.images objectAtIndex:indexPath.row];
+        if (solutionInCell.img_link) {
+            NSLog(@"%@", solutionInCell.img_link);
+
+            UIImage *image = [self.images objectAtIndex:indexPath.row - 1];
             
+            float size = screenRect.size.width / 4;
+            UIImage *cropped = [[UIImage alloc]init];
+
+            if (image.size.width > image.size.height) {
+                
+                double diff = (image.size.width - image.size.height) / 2.0;
+
+                CGRect cropRect = CGRectMake(diff, 0, image.size.height, image.size.height);
+                CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
+                
+                cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
+                CGImageRelease(imageRef);
+
+
+            }else{
+                double diff = (image.size.height - image.size.width) / 2.0;
+                
+                CGRect cropRect = CGRectMake(0, diff, image.size.width, image.size.width);
+                CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
+                
+                cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
+                CGImageRelease(imageRef);
+                
+            }
+
             UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
             [imageButton addTarget:self
                             action:@selector(solutionTitleButtonPressed:)
                   forControlEvents:UIControlEventTouchUpInside];
-            imageButton.frame = CGRectMake(5, 5, screenRect.size.width / 4, screenRect.size.width / 4);
+            imageButton.frame = CGRectMake(0, 0, size, size);
             imageButton.tag = indexPath.row;
-            [imageButton setBackgroundImage:image forState:UIControlStateNormal];
+            
+            [imageButton setBackgroundImage:cropped forState:UIControlStateNormal];
         
-        if (solutionInCell.img_link) {
-
             [cell.solutionsPanel addSubview:imageButton];
 
-            horizOffset = screenRect.size.width / 4;
-        }else{
-            [imageButton removeFromSuperview];
+            horizOffset = size;
         }
+        
+        cell.solutionsPanel.layer.borderWidth = 2.0f;
+        cell.solutionsPanel.layer.borderColor = [[UIColor lightGrayColor] CGColor];
         
         //create solutions title button
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [button addTarget:self
                    action:@selector(solutionTitleButtonPressed:)
          forControlEvents:UIControlEventTouchUpInside];
+        
         [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
         [button setTitleColor:self.themeColor forState:UIControlStateNormal];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        button.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
-        button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width - 70, 30);
+        button.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        button.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
+        button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width * .65, 30);
         button.tag = indexPath.row;
         [cell.solutionsPanel addSubview:button];
         float vertOffset = 30;
@@ -681,7 +718,7 @@
             [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
             [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
             phoneButton.tag = indexPath.row;
         
@@ -699,7 +736,7 @@
             [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
             [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
             addressButton.tag = indexPath.row;
             [cell.solutionsPanel addSubview:addressButton];
@@ -716,7 +753,7 @@
             [emailButton setTitle:@"dan@doozer.tips" forState:UIControlStateNormal];
             [emailButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             emailButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             emailButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
             emailButton.tag = indexPath.row;
             [cell.solutionsPanel addSubview:emailButton];
@@ -730,7 +767,7 @@
             UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
             hoursLabel.textColor = [UIColor darkGrayColor];
             hoursLabel.text = solutionInCell.open_hours;
-            hoursLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            hoursLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
 
@@ -744,7 +781,7 @@
             UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
             priceLabel.textColor = [UIColor darkGrayColor];
             priceLabel.text = solutionInCell.price.stringValue;
-            priceLabel.font = [UIFont fontWithName:@"Avenir" size:18];
+            priceLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
             
@@ -844,7 +881,7 @@
 }
 
 -(void)phoneButtonPressed:(UIButton *)button{
-    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    Solution *solution = [self.solutions objectAtIndex:button.tag - 1];
     NSLog(@"hyperlink in phone button pressed - row %ld, value %@", (long)button.tag, solution.phone_number);
     
     NSString *URLString = [@"tel:" stringByAppendingString:solution.phone_number];
@@ -858,7 +895,7 @@
 }
 
 -(void)solutionTitleButtonPressed:(UIButton *)button{
-    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    Solution *solution = [self.solutions objectAtIndex:button.tag - 1];
     NSLog(@"hyperlink in solutions pressed - row %ld, value %@", (long)button.tag, solution.link);
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:solution.link]];
@@ -867,7 +904,7 @@
 
 -(void)addressButtonPressed:(UIButton *)button{
     
-    Solution *solution = [self.solutions objectAtIndex:button.tag];
+    Solution *solution = [self.solutions objectAtIndex:button.tag - 1];
     NSLog(@"hyperlink in address pressed - row %ld, value %@", (long)button.tag, solution.address);
     
     NSString* addr = [NSString stringWithFormat:@"http://maps.apple.com/?q=%@",solution.address];
@@ -891,7 +928,7 @@
     
     int row = (int)button.tag;
     NSLog(@"thumbs up pressed at row == %d", row);
-    Solution *likedSolution = [self.solutions objectAtIndex:row];
+    Solution *likedSolution = [self.solutions objectAtIndex:row - 1];
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     
     NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/like/%@", appDelegate.SERVER_URI, likedSolution.sol_ID, self.detailItem.itemId];
@@ -929,7 +966,7 @@
 
     NSLog(@"thumbs down pressed at row == %d", row);
     
-    Solution *dislikedSolution = [self.solutions objectAtIndex:row];
+    Solution *dislikedSolution = [self.solutions objectAtIndex:row - 1];
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/dislike/%@", appDelegate.SERVER_URI, dislikedSolution.sol_ID, self.detailItem.itemId];
     

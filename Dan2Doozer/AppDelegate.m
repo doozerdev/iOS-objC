@@ -32,19 +32,27 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-#if DEBUG
-    _SERVER_URI = @"http://api.test.doozer.tips/api/";
-    
-#elif BETA
-    _SERVER_URI = @"http://api.beta.doozer.tips/api/";
-    
-#else
-    _SERVER_URI = @"http://api.doozer.tips/api/";
-#endif
     
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
     
     NSLog(@"bundle is = %@", bundleIdentifier);
+
+    if ([bundleIdentifier isEqualToString:@"com.doozer.Doozer.DEBUG"]) {
+        _SERVER_URI = @"http://api.test.doozer.tips/api/";
+        NSLog(@"setting api.test.doozer.tips");
+
+    }else if ([bundleIdentifier isEqualToString:@"com.doozer.Doozer.BETA"]){
+        _SERVER_URI = @"http://api.beta.doozer.tips/api/";
+        NSLog(@"setting api.beta.doozer.tips");
+
+
+    }else{
+        _SERVER_URI = @"http://api.doozer.tips/api/";
+        NSLog(@"setting api.doozer.tips");
+
+
+    }
+    
     
     NSNumber *numberOfLaunches = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
     if (numberOfLaunches == NULL){

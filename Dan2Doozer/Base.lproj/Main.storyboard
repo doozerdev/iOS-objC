@@ -20,7 +20,6 @@
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
             <string>Avenir-Book</string>
-            <string>Avenir-Book</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -256,22 +255,22 @@
                                             <outlet property="toggleButton" destination="4GC-ZN-xC1" id="kxB-wS-F06"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="solutionCell" rowHeight="250" id="wvV-TH-ryI" customClass="SolutionCustomCell">
-                                        <rect key="frame" x="0.0" y="502" width="600" height="250"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="solutionCell" rowHeight="300" id="wvV-TH-ryI" customClass="SolutionCustomCell">
+                                        <rect key="frame" x="0.0" y="502" width="600" height="300"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wvV-TH-ryI" id="43G-kC-Twr">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="249"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="299"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Expert Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tFk-yy-eTf">
-                                                    <rect key="frame" x="28" y="3" width="101" height="24"/>
-                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
+                                                    <rect key="frame" x="20" y="33" width="106" height="24"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KVQ-ws-TxE">
-                                                    <rect key="frame" x="8" y="111" width="584" height="130"/>
-                                                    <color key="backgroundColor" white="0.80000000000000004" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <rect key="frame" x="8" y="134" width="584" height="132"/>
+                                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="20" id="a3J-6g-G6B"/>
                                                     </constraints>
@@ -282,13 +281,13 @@
                                                     </variation>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Expert Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tyB-M4-9mB">
-                                                    <rect key="frame" x="28" y="27" width="88" height="24"/>
-                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="17"/>
+                                                    <rect key="frame" x="20" y="57" width="62" height="17"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Dan's fake text!" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8As-mY-gdl">
-                                                    <rect key="frame" x="28" y="45" width="544" height="66"/>
+                                                    <rect key="frame" x="20" y="68" width="552" height="66"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="66" id="O2n-yL-Y8H"/>
@@ -297,7 +296,7 @@
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vOo-Kj-kSC">
-                                                    <rect key="frame" x="550" y="5" width="40" height="40"/>
+                                                    <rect key="frame" x="550" y="35" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="alP-Br-ka9"/>
                                                         <constraint firstAttribute="width" constant="40" id="sSN-4l-3s1"/>
@@ -310,7 +309,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OyE-lI-zDr">
-                                                    <rect key="frame" x="490" y="5" width="40" height="40"/>
+                                                    <rect key="frame" x="490" y="35" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="40" id="gXl-qa-Dm3"/>
                                                         <constraint firstAttribute="height" constant="40" id="sAl-CY-FAR"/>
@@ -328,27 +327,31 @@
                                                 <constraint firstAttribute="centerY" secondItem="tFk-yy-eTf" secondAttribute="centerY" id="20a-aT-DRF"/>
                                                 <constraint firstAttribute="trailing" secondItem="vOo-Kj-kSC" secondAttribute="trailing" constant="10" id="2bs-mc-Edf"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="top" secondItem="8As-mY-gdl" secondAttribute="bottom" id="5wo-Ov-fw1"/>
-                                                <constraint firstItem="OyE-lI-zDr" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="5" id="8O7-oq-sZm"/>
+                                                <constraint firstItem="OyE-lI-zDr" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="35" id="8O7-oq-sZm"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="top" secondItem="tFk-yy-eTf" secondAttribute="bottom" constant="30" id="FP7-2x-W4Y"/>
                                                 <constraint firstItem="8As-mY-gdl" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leadingMargin" constant="20" id="G1F-cJ-S9k"/>
-                                                <constraint firstItem="tFk-yy-eTf" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="3" id="OlI-4H-mfR"/>
+                                                <constraint firstItem="8As-mY-gdl" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leading" constant="20" id="IYM-MP-O3q"/>
+                                                <constraint firstItem="tFk-yy-eTf" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="33" id="OlI-4H-mfR"/>
                                                 <constraint firstItem="vOo-Kj-kSC" firstAttribute="leading" secondItem="OyE-lI-zDr" secondAttribute="trailing" constant="20" id="Sxr-zf-DX2"/>
                                                 <constraint firstItem="tFk-yy-eTf" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leadingMargin" constant="20" id="VJS-qg-JN4"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leadingMargin" id="Vqe-Mx-hq5"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leading" constant="8" id="YoI-vN-JBk"/>
+                                                <constraint firstItem="tFk-yy-eTf" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leading" constant="20" id="beh-Xx-x8D"/>
                                                 <constraint firstItem="tFk-yy-eTf" firstAttribute="leading" secondItem="tyB-M4-9mB" secondAttribute="leading" id="cdJ-lv-yfN"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="8As-mY-gdl" secondAttribute="trailing" constant="20" id="fbs-RC-jF3"/>
-                                                <constraint firstItem="vOo-Kj-kSC" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="5" id="kmS-Bk-6ws"/>
+                                                <constraint firstItem="vOo-Kj-kSC" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="35" id="kmS-Bk-6ws"/>
                                                 <constraint firstItem="tyB-M4-9mB" firstAttribute="top" secondItem="tFk-yy-eTf" secondAttribute="bottom" id="m5Q-dC-7aJ"/>
                                                 <constraint firstItem="8As-mY-gdl" firstAttribute="top" secondItem="tyB-M4-9mB" secondAttribute="bottom" constant="-6" id="qQe-Cr-2AL"/>
                                                 <constraint firstAttribute="trailing" secondItem="KVQ-ws-TxE" secondAttribute="trailing" constant="8" id="rqp-Ms-sBz"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="KVQ-ws-TxE" secondAttribute="trailing" id="sER-hp-cb6"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="KVQ-ws-TxE" secondAttribute="bottom" id="vs9-M5-CdZ"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="KVQ-ws-TxE" secondAttribute="bottom" constant="25" id="vs9-M5-CdZ"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="top" secondItem="8As-mY-gdl" secondAttribute="bottom" constant="8" id="xE8-4M-oWb"/>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="constraints">
                                                     <exclude reference="20a-aT-DRF"/>
+                                                    <exclude reference="VJS-qg-JN4"/>
+                                                    <exclude reference="G1F-cJ-S9k"/>
                                                     <exclude reference="FP7-2x-W4Y"/>
                                                     <exclude reference="Vqe-Mx-hq5"/>
                                                     <exclude reference="sER-hp-cb6"/>
