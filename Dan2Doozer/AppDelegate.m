@@ -47,8 +47,13 @@
 
 
     }else{
-        _SERVER_URI = @"http://api.doozer.tips/api/";
-        NSLog(@"setting api.doozer.tips");
+        //NSString *serverURI = @"http://api.doozer.tips/api/";
+        
+        NSString *serverURI = @"http://api.beta.doozer.tips/api/";
+        
+        _SERVER_URI = serverURI;
+
+        NSLog(@"setting serverURI to %@", serverURI);
 
 
     }

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		44E46C46C83E9BD0B2F3592A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 808A8A0F4B6CF0A061F79A27 /* libPods.a */; };
-		A20D8A091BB0D56B00B4262A /* ItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */; settings = {ASSET_TAGS = (); }; };
+		A20D8A091BB0D56B00B4262A /* ItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */; };
 		A22B7F201B5E16740096CEEC /* AddItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */; };
 		A22C5F1B1B9A430D001210C1 /* Solution.m in Sources */ = {isa = PBXBuildFile; fileRef = A22C5F1A1B9A430D001210C1 /* Solution.m */; };
 		A22C5F1F1B9B6CC5001210C1 /* SolutionCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */; };
@@ -734,8 +734,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUNDLE_DISPLAY_NAME = "β Doozer";
 				BUNDLE_ID = com.doozer.Doozer.BETA;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				FB_APP_ID = 1637385519866455;
@@ -787,7 +787,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = DoozerUITestsUpdated/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Doozer.DoozerUITestsUpdated;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -801,7 +801,7 @@
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = DoozerUITestsUpdated/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Doozer.DoozerUITestsUpdated;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -814,7 +814,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = DoozerUITestsUpdated/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Doozer.DoozerUITestsUpdated;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -943,8 +943,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUNDLE_DISPLAY_NAME = Doozer;
 				BUNDLE_ID = com.doozer.Doozer;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				FB_APP_ID = 1474823829455959;

@@ -213,7 +213,7 @@
                                                             }];
     self.tableView.separatorColor = [UIColor whiteColor];
     
-    NSString *listCount = [NSString stringWithFormat:@"%lu", [self.fetchedResultsController.fetchedObjects count]];
+    NSString *listCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.fetchedResultsController.fetchedObjects count]];
     
     NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     NSLog(@"here's the CFBundleVersion == %@", build);

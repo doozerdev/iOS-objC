@@ -93,7 +93,7 @@
 
 - (IBAction)toggleCompleteButtonPressed:(id)sender {
 
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     NSArray *listArray = [self fetchEntireList];
     int indexOfCompletedHeader = 0;
@@ -211,7 +211,7 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
 
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
     if (![self.detailItem.title isEqualToString:cell.itemTitle.text] || (![self.detailItem.notes isEqualToString:cell.itemNotes.text] && ![cell.itemNotes.text isEqualToString:@"Add notes here..."])) {
         
@@ -237,7 +237,7 @@
 
 -(void)textViewDidBeginEditing:(UITextView *)textView{
 
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     if ([cell.itemNotes.text isEqualToString:@"Add notes here..."]) {
         
@@ -259,25 +259,30 @@
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     if (textView == cell.itemTitle) {
-        CGFloat fixedWidth = textView.frame.size.width;
-        CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
-        CGRect newFrame = textView.frame;
-        newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-        cell.itemTitle.frame = newFrame;
+        
+        self.detailItem.title = cell.itemTitle.text;
+        
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(screenRect.size.width - 75, MAXFLOAT)];
+        //value of 75 comes from main storyboard. it's the amount of horizontal space, both left and right, that is the itemTitle text view
         
         self.titleFieldExtraHeight = newSize.height - 46.5;
+        //NSLog(@"completed text feild editing, and titleFieldExtraHeight is %f", self.titleFieldExtraHeight);
+
         
     }
     
-    NSLog(@"completed text feild editing");
+    
+    [self.solutionsTable beginUpdates];
+    [self.solutionsTable endUpdates];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     if([text isEqualToString:@"\n"] && textView == cell.itemTitle) {
         [textView resignFirstResponder];
@@ -302,38 +307,6 @@
 }
 
 
--(void)viewDidLayoutSubviews {
-    //NSLog(@"start of layout subviews!");
-    
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    
-    CGFloat fixedWidth = cell.itemTitle.frame.size.width;
-    CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
-    CGRect newFrame = cell.itemTitle.frame;
-    newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-    cell.itemTitle.frame = newFrame;
-    
-    self.titleFieldExtraHeight = newSize.height - 46.5;
-    /*
-    CGRect currentFrame = self.upperViewPanel.frame;
-    
-    if (self.showingDatePanel) {
-        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 480 + self.titleFieldExtraHeight);
-        self.upperViewPanel.frame = newFrame;
-        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 480 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
-
-
-    }else{
-        CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, 225 + self.titleFieldExtraHeight);
-        self.upperViewPanel.frame = newFrame;
-        self.lowerViewPanel.frame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + 225 + self.titleFieldExtraHeight, currentFrame.size.width, 500);
-
-    }
-    */
-     
-}
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -341,13 +314,15 @@
 
 - (void)openDatePanel {
     
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     self.showingDatePanel = YES;
     cell.dateButton2.userInteractionEnabled = YES;
     cell.dateButton3.userInteractionEnabled = YES;
     cell.dateButton4.userInteractionEnabled = YES;
 
+    //NSLog(@"OPEN title field extra hieght is %f", self.titleFieldExtraHeight);
+    
     [self.solutionsTable beginUpdates];
     [self.solutionsTable endUpdates];
     
@@ -355,13 +330,16 @@
 
 - (void)closeDatePanel {
     
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     cell.dateButton2.userInteractionEnabled = NO;
     cell.dateButton3.userInteractionEnabled = NO;
     cell.dateButton4.userInteractionEnabled = NO;
     
     self.showingDatePanel = NO;
+    
+    //NSLog(@"CLOSE title field extra hieght is %f", self.titleFieldExtraHeight);
+
     
     [self.solutionsTable beginUpdates];
     [self.solutionsTable endUpdates];
@@ -389,7 +367,7 @@
     
 
 - (IBAction)dateButton2Pressed:(id)sender {
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     NSDate *today = [NSDate date];
     self.detailItem.duedate = today;
@@ -408,7 +386,7 @@
 }
 
 - (IBAction)dateButton3Pressed:(id)sender {
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     NSDateComponents *dayComponent = [[NSDateComponents alloc] init];
     dayComponent.day = 1;
@@ -433,7 +411,7 @@
 }
 - (IBAction)dateButton4Pressed:(id)sender {
     
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     self.detailItem.duedate = nil;
     
@@ -450,7 +428,7 @@
 
 - (void)datePickerValueChanged:(id)sender{
     
-    ItemCustomCell *cell = [self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
     NSDateFormatter *df = [[NSDateFormatter alloc]init];
     [df setDateFormat:@"EEE MMM dd, yyyy"];
@@ -481,13 +459,32 @@
     //NSLog(@"heightForRowAtIndexPath is being called now");
     
     if (indexPath.row == 0) {
-        NSLog(@"setting cell row %ld height", (long)indexPath.row);
+        static NSString *MyIdentifier = @"firstCell";
+        ItemCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        if (cell == nil) {
+            cell = [[ItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+        }
+        
+        cell.itemTitle.font = [UIFont fontWithName:@"Avenir-Book" size:22];
+        cell.itemTitle.text = self.detailItem.title;
+        
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+        CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(screenRect.size.width - 75, MAXFLOAT)];
+        //value of 75 comes from main storyboard. it's the amount of horizontal space, both left and right, that is the itemTitle text view
+
+        self.titleFieldExtraHeight = newSize.height - 46.5;
+        
+        float cellHeight = 0;
 
         if (self.showingDatePanel) {
-            return 480;
+
+            cellHeight = 480 + self.titleFieldExtraHeight;
         }else{
-            return 225;
+            cellHeight = 225 + self.titleFieldExtraHeight;
         }
+        //NSLog(@"returning %f for cell height of row %ld", cellHeight, (long)indexPath.row);
+        return cellHeight;
+        
     }else{
     
         Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
@@ -509,9 +506,7 @@
         if (solutionInCell.img_link && cellHeightOffset < 40) {
             cellHeightOffset = 40;
         }
-        
-        NSLog(@"setting cell row %ld height to %f", (long)indexPath.row, cellHeightOffset + 180);
-        
+                
         return cellHeightOffset + 230;
     }
     
@@ -528,6 +523,8 @@
         }
         
         cell.itemTitle.text = self.detailItem.title;
+        cell.itemTitle.font = [UIFont fontWithName:@"Avenir-Book" size:22];
+
         
         if (self.detailItem.notes.length > 0 && ![self.detailItem.notes isEqualToString:@" "]) {
             cell.itemNotes.text = self.detailItem.notes;
@@ -860,7 +857,9 @@
                          [self.images replaceObjectAtIndex:index withObject:image];
                      }
                      image = nil;
-                     [self.solutionsTable reloadData];
+                     [self.solutionsTable reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index+1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+
+                     //[self.solutionsTable reloadData];
                      //data = nil;
                  });
              });

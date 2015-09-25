@@ -1088,10 +1088,10 @@
                 
             }else{
                 if (indexPath && (self.showCompleted || clickedItem.done.intValue == 0) && !self.longPressActive) {
-                    NSLog(@"trying to show item page");
+                    //NSLog(@"trying to show item page");
                     [self performSegueWithIdentifier:@"showItem" sender:indexPath];
                     
-                    NSLog(@"after trying to show item page");
+                    //NSLog(@"after trying to show item page");
 
                 }
             }
@@ -1215,8 +1215,13 @@
                 
                 NSLog(@"delta equals === %f, duedate is %@", delta, dueDateDisplay);
                 
+                NSDateFormatter *df3 = [[NSDateFormatter alloc]init];
+                [df3 setDateFormat:@"YYMMdd"];
                 
-                if (dateInt < [[NSDate date]timeIntervalSince1970]){
+                NSString *todayString = [df3 stringFromDate:[NSDate date]];
+                NSString *dueString = [df3 stringFromDate:object.duedate];
+                
+                if (dateInt < [[NSDate date]timeIntervalSince1970] || [todayString isEqualToString:dueString]){
                     cell.cellDueFlag.text = @"Due";
                     cell.cellDueFlag.textColor = [UIColor redColor];
                 }else if (delta < 604800) {
