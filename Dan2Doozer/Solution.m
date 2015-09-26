@@ -25,5 +25,6 @@
 @synthesize notes;
 @synthesize archive;
 @synthesize state;
+@synthesize date_associated;
 
 @end

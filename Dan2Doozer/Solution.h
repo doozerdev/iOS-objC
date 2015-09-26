@@ -25,6 +25,10 @@
 @property (nonatomic, retain) NSString *notes;
 @property (nonatomic, retain) NSNumber *archive;
 @property (nonatomic, retain) NSString *state;
+@property (nonatomic, retain) NSDate *date_associated;
+
+
+
 
 
 @end

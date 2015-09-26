@@ -477,6 +477,12 @@ double _lastSyncRequest;
             newSolution.source = [eachArrayElement objectForKey:@"source"];
             newSolution.tags = [eachArrayElement objectForKey:@"tags"];
             
+            NSString *assDateString = [eachArrayElement objectForKey:@"date_associated"];
+            NSDateFormatter* df = [[NSDateFormatter alloc]init];
+            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+            NSDate* assDate = [df dateFromString:assDateString];
+            newSolution.date_associated = assDate;
+            
             [solutionsList addObject:newSolution.sol_ID];
             
             // Save the context.

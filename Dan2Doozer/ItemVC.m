@@ -618,7 +618,7 @@
         
         cell.descriptionText.text = solutionInCell.sol_description;
         
-        //NSLog(@"setting cell data for row %ld", (long)indexPath.row);
+        NSLog(@"setting cell data for row %ld, with date of %@", (long)indexPath.row, solutionInCell.date_associated);
         
         cell.expertNameLabel.textColor = self.themeColor;
         cell.expertNameLabel.text = @"Daniel Apone";
@@ -797,8 +797,8 @@
     self.images = [[NSMutableArray alloc]init];
     
     NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
+    NSMutableArray *solutions = [[NSMutableArray alloc]init];
     
-    int index = 0;
     for (NSString *solutionID in array){
         
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -833,49 +833,63 @@
         
         Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
         
-        [self.solutions addObject: solution];
-        
-        NSLog(@"Index %d and the solutions image link = %@",index, solution.img_link);
+        [solutions addObject: solution];
+    }
+    
+    
+    NSSortDescriptor *sortDescriptor2;
+    sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor2];
+    NSArray *sortedSolutions;
+    sortedSolutions = [solutions sortedArrayUsingDescriptors:sortDescriptors];
+    
+    [self.solutions addObjectsFromArray:sortedSolutions];
+    
+    NSLog(@"solutions array is %@", self.solutions);
+    
+    int index = 0;
 
-        if (solution.img_link.length > 3) {
+    for (Solution *eachSolution in self.solutions) {
+        NSLog(@"Index %d and the solutions image link = %@",index, eachSolution.img_link);
+        
+        if (eachSolution.img_link.length > 3) {
             NSLog(@"image array index is = %d", index);
             
-             __block UIImage *image = [[UIImage alloc]init];
+            __block UIImage *image = [[UIImage alloc]init];
             NSLog(@"setting image placeholder at index %d", index);
             [self.images insertObject:image atIndex:index];
             
-             dispatch_async(dispatch_get_global_queue(0,0), ^{
-                 NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: solution.img_link]];
-                 if ( data == nil )
-                 return;
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                 // WARNING: is the cell still using the same data by this point??
-                     image = [UIImage imageWithData: data];
-                     NSLog(@"setting an image for index %d", index);
-                     NSLog(@"image data = %@", image);
-                     if (image) {
-                         [self.images replaceObjectAtIndex:index withObject:image];
-                     }
-                     image = nil;
-                     [self.solutionsTable reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index+1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-
-                     //[self.solutionsTable reloadData];
-                     //data = nil;
-                 });
-             });
-             
-
+            dispatch_async(dispatch_get_global_queue(0,0), ^{
+                NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: eachSolution.img_link]];
+                if ( data == nil )
+                    return;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    // WARNING: is the cell still using the same data by this point??
+                    image = [UIImage imageWithData: data];
+                    NSLog(@"setting an image for index %d", index);
+                    NSLog(@"image data = %@", image);
+                    if (image) {
+                        [self.images replaceObjectAtIndex:index withObject:image];
+                    }
+                    image = nil;
+                    [self.solutionsTable reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index+1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                    
+                    //[self.solutionsTable reloadData];
+                    //data = nil;
+                });
+            });
+            
+            
         }else{
             NSLog(@"print that an image was skipped....");
             UIImage * image = [[UIImage alloc]init];
             [self.images insertObject:image atIndex:index];
-
+            
         }
         
         index += 1;
     }
-    
-    //NSLog(@"solutions array is %@", self.solutions);
+
     
 }
 

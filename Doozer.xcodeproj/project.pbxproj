@@ -77,6 +77,7 @@
 		73D3B277CF7E6B25D1CB8C06 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		808A8A0F4B6CF0A061F79A27 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20A03FC1BB716A5007AEF27 /* Dan2Doozer 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 7.xcdatamodel"; sourceTree = "<group>"; };
 		A20D8A071BB0D56B00B4262A /* ItemCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemCustomCell.h; sourceTree = "<group>"; };
 		A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemCustomCell.m; sourceTree = "<group>"; };
 		A21658311B800B1700D5900C /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -1083,6 +1084,7 @@
 		A2301B321AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				A20A03FC1BB716A5007AEF27 /* Dan2Doozer 7.xcdatamodel */,
 				A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */,
 				A26174AA1B8FF4840004B371 /* Dan2Doozer 5.xcdatamodel */,
 				A26174A91B8FD87C0004B371 /* Dan2Doozer 4.xcdatamodel */,
@@ -1090,7 +1092,7 @@
 				A26174A71B8FD6420004B371 /* Dan2Doozer 2.xcdatamodel */,
 				A2301B331AF41A7C00E2267D /* Dan2Doozer.xcdatamodel */,
 			);
-			currentVersion = A22C5F1C1B9A5D57001210C1 /* Dan2Doozer 6.xcdatamodel */;
+			currentVersion = A20A03FC1BB716A5007AEF27 /* Dan2Doozer 7.xcdatamodel */;
 			path = Dan2Doozer.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
