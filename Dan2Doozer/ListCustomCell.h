@@ -12,5 +12,11 @@
 
 @property (nonatomic, weak) IBOutlet UITextField *cellItemTitle;
 @property (weak, nonatomic) IBOutlet UILabel *cellDueFlag;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *dueFlagBottomSpace;
+@property (weak, nonatomic) IBOutlet UILabel *solutionsBadge;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *solutionsLabelTopSpacing;
+
+
+
 
 @end

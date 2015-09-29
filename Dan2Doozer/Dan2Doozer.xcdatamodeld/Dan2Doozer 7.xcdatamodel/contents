@@ -14,6 +14,7 @@
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="parent" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="solutions" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="solutions_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
@@ -39,7 +40,7 @@
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ItemRecord" positionX="261" positionY="189" width="128" height="300"/>
+        <element name="ItemRecord" positionX="261" positionY="189" width="128" height="315"/>
         <element name="SolutionRecord" positionX="261" positionY="315" width="128" height="285"/>
     </elements>
 </model>

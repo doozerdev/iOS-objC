@@ -48,23 +48,42 @@
                         <color key="separatorColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="sectionIndexBackgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="dueCells" textLabel="5yq-7z-sUK" style="IBUITableViewCellStyleDefault" id="oE5-cx-oKL">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="dueCells" id="oE5-cx-oKL" customClass="DueItemCustomCell">
                                 <rect key="frame" x="0.0" y="114" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oE5-cx-oKL" id="WWm-CR-ng6">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5yq-7z-sUK">
-                                            <rect key="frame" x="15" y="0.0" width="570" height="43"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a9c-iA-xX1">
+                                            <rect key="frame" x="15" y="7" width="550" height="30"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="17" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ng8-4g-He6">
+                                            <rect key="frame" x="565" y="11" width="30" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="30" id="PlH-fk-RbA"/>
+                                                <constraint firstAttribute="height" constant="21" id="gZp-BD-1S4"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="a9c-iA-xX1" firstAttribute="leading" secondItem="WWm-CR-ng6" secondAttribute="leading" constant="15" id="7tq-jg-sTY"/>
+                                        <constraint firstAttribute="centerY" secondItem="a9c-iA-xX1" secondAttribute="centerY" id="BNN-uo-Owk"/>
+                                        <constraint firstAttribute="centerY" secondItem="Ng8-4g-He6" secondAttribute="centerY" id="GzL-Cp-ksQ"/>
+                                        <constraint firstAttribute="trailing" secondItem="Ng8-4g-He6" secondAttribute="trailing" constant="5" id="Lx5-Kv-DNO"/>
+                                        <constraint firstItem="Ng8-4g-He6" firstAttribute="leading" secondItem="a9c-iA-xX1" secondAttribute="trailing" id="QJT-Q6-xWB"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
+                                    <outlet property="itemTitle" destination="a9c-iA-xX1" id="3mr-9W-Zfw"/>
+                                    <outlet property="solutionBadge" destination="Ng8-4g-He6" id="ijo-NI-IVJ"/>
                                     <segue destination="tAf-os-SWk" kind="show" identifier="showItemFromDue" id="UMx-Ri-m6V"/>
                                 </connections>
                             </tableViewCell>
@@ -1028,8 +1047,8 @@
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes" returnKeyType="done"/>
                                         </textField>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DUE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q56-Q4-Fv2" userLabel="Due Flag">
-                                            <rect key="frame" x="565" y="10" width="30" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="DUE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q56-Q4-Fv2" userLabel="Due Flag">
+                                            <rect key="frame" x="565" y="23" width="30" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="8aX-57-9JF"/>
                                                 <constraint firstAttribute="width" constant="30" id="Evj-cx-Pgz"/>
@@ -1038,22 +1057,34 @@
                                             <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="17" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OZ9-b4-dMP">
+                                            <rect key="frame" x="565" y="0.0" width="30" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="Q56-Q4-Fv2" firstAttribute="centerY" secondItem="LeO-XY-iPa" secondAttribute="centerY" id="1IU-8T-B1F"/>
                                         <constraint firstAttribute="centerY" secondItem="uvy-Ow-oPA" secondAttribute="centerY" id="37b-hr-z94"/>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="leading" secondItem="OZ9-b4-dMP" secondAttribute="leading" id="8rV-UN-WCq"/>
+                                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Q56-Q4-Fv2" secondAttribute="bottom" id="FKm-IW-Z40"/>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="trailing" secondItem="OZ9-b4-dMP" secondAttribute="trailing" id="Gas-JI-8Ow"/>
                                         <constraint firstItem="Q56-Q4-Fv2" firstAttribute="leading" secondItem="uvy-Ow-oPA" secondAttribute="trailing" id="WRR-h6-jJ0"/>
                                         <constraint firstAttribute="trailing" secondItem="uvy-Ow-oPA" secondAttribute="trailing" constant="70" id="Wt7-ac-aOQ"/>
                                         <constraint firstAttribute="centerX" secondItem="uvy-Ow-oPA" secondAttribute="centerX" id="Zdx-5M-Ujj"/>
                                         <constraint firstItem="uvy-Ow-oPA" firstAttribute="leading" secondItem="LeO-XY-iPa" secondAttribute="leading" constant="15" id="kEp-DZ-3sO"/>
+                                        <constraint firstItem="Q56-Q4-Fv2" firstAttribute="height" secondItem="OZ9-b4-dMP" secondAttribute="height" id="qbo-8J-qpp"/>
                                         <constraint firstAttribute="trailing" secondItem="Q56-Q4-Fv2" secondAttribute="trailing" constant="5" id="ryn-no-cTX"/>
                                         <constraint firstItem="Q56-Q4-Fv2" firstAttribute="bottom" secondItem="uvy-Ow-oPA" secondAttribute="bottom" id="vRC-Yt-qfL"/>
+                                        <constraint firstItem="OZ9-b4-dMP" firstAttribute="top" relation="greaterThanOrEqual" secondItem="LeO-XY-iPa" secondAttribute="top" id="yHv-1E-43F"/>
                                     </constraints>
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="Wt7-ac-aOQ"/>
                                             <exclude reference="Zdx-5M-Ujj"/>
                                             <exclude reference="1IU-8T-B1F"/>
+                                            <exclude reference="vRC-Yt-qfL"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
@@ -1061,6 +1092,9 @@
                                 <connections>
                                     <outlet property="cellDueFlag" destination="Q56-Q4-Fv2" id="Lhh-92-bxr"/>
                                     <outlet property="cellItemTitle" destination="uvy-Ow-oPA" id="ryP-AB-Qmc"/>
+                                    <outlet property="dueFlagBottomSpace" destination="FKm-IW-Z40" id="8St-qR-bLS"/>
+                                    <outlet property="solutionsBadge" destination="OZ9-b4-dMP" id="32O-Uc-j2J"/>
+                                    <outlet property="solutionsLabelTopSpacing" destination="yHv-1E-43F" id="jve-3k-PHO"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -1100,7 +1134,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="mIu-Sg-Gjf"/>
-        <segue reference="98e-9g-Ut1"/>
         <segue reference="ddX-ID-X4a"/>
+        <segue reference="UMx-Ri-m6V"/>
     </inferredMetricsTieBreakers>
 </document>

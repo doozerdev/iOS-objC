@@ -65,6 +65,7 @@
     
 }
 
+
 -(void)viewWillAppear:(BOOL)animated{
     
     self.isScrolling = NO;
@@ -1103,10 +1104,19 @@
 - (void)configureCell:(ListCustomCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     cell.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
     
+    
     UIView *viewToRemove = nil;
     while((viewToRemove = [cell viewWithTag:5151]) != nil) {
         [viewToRemove removeFromSuperview];
     }
+    
+    /*
+    for (UIView *view in [cell subviews])
+    {
+        [view removeFromSuperview];
+    }
+    
+    */
     
     Item *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     //NSLog(@"Configuring -------- Cell for item == %@ %@", object.title, object.order);
@@ -1118,6 +1128,8 @@
     Item *listForTitle = self.displayList;
     lineView.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
     [cell.contentView addSubview:lineView];
+    
+    NSLog(@"Building item %@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
     
     if ([object.type isEqualToString:@"completed_header"]) {
         cell.cellItemTitle.hidden = NO;
@@ -1148,11 +1160,12 @@
         cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         cell.cellDueFlag.text = @"";
+        cell.solutionsBadge.hidden = YES;
         
     }else{
         if (object.done.intValue == 1) {
             
-            
+            cell.solutionsBadge.hidden = YES;
             NSString *titleText = object.title;
             //NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
 
@@ -1243,6 +1256,9 @@
             }else{
                 cell.cellDueFlag.text = @"";
             }
+            
+            
+            
          
             if (self.rowOfNewItem == -1) {
                 cell.backgroundColor = [UIColor whiteColor];
@@ -1260,6 +1276,31 @@
                     //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
                 }
             }
+            
+            if (object.solutions_count.intValue > 0) {
+                
+                NSLog(@"setting up the solutions number!");
+                cell.solutionsBadge.hidden = NO;
+                
+                if (object.duedate) {
+                    cell.dueFlagBottomSpace.constant = 5;
+                    cell.solutionsLabelTopSpacing.constant = 12;
+                }else{
+                    cell.solutionsLabelTopSpacing.constant = 20;
+                    cell.dueFlagBottomSpace.constant = 5;
+
+                }
+                
+                cell.solutionsBadge.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
+                cell.solutionsBadge.text = object.solutions_count.stringValue;
+                cell.solutionsBadge.textColor = [UIColor blackColor];
+                
+            }else{
+                cell.dueFlagBottomSpace.constant = 16;
+                cell.solutionsBadge.hidden = YES;
+                
+            }
+
         }
     }
 }

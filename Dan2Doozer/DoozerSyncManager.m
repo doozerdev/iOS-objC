@@ -295,6 +295,9 @@ double _lastSyncRequest;
                     NSString *ordertemp = [eachArrayElement objectForKey:@"order"];
                     existingItem.order = [NSNumber numberWithInt:ordertemp.intValue];
                     
+                    NSString *sol_count_temp = [eachArrayElement objectForKey:@"solutions_count"];
+                    existingItem.solutions_count = [NSNumber numberWithInt:sol_count_temp.intValue];
+                    
                     NSString *colorTemp = [eachArrayElement objectForKey:@"color"];
                     existingItem.color = colorTemp;
                     
@@ -355,6 +358,9 @@ double _lastSyncRequest;
                 
                 NSString *idtemp = [eachArrayElement objectForKey:@"id"];
                 newItem.itemId = idtemp;
+                
+                NSString *sol_count_temp = [eachArrayElement objectForKey:@"solutions_count"];
+                newItem.solutions_count = [NSNumber numberWithInt:sol_count_temp.intValue];
                 
                 NSString *typeTemp = [eachArrayElement objectForKey:@"type"];
                 newItem.type = typeTemp;

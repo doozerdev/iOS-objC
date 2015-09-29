@@ -15,6 +15,7 @@
 #import "UpdateItemsOnServer.h"
 #import "CoreDataItemManager.h"
 #import "Intercom.h"
+#import "DueItemCustomCell.h"
 
 @interface DueItemsViewController () <UIGestureRecognizerDelegate>
 
@@ -551,8 +552,9 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dueCells" forIndexPath:indexPath];
+    DueItemCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dueCells" forIndexPath:indexPath];
     
+    cell.itemTitle.enabled = NO;
     // Configure the cell...
     NSInteger section = indexPath.section;
     
@@ -579,10 +581,20 @@
     }
     Item *itemInCell = [dueItems objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = itemInCell.title;
+    cell.itemTitle.text = itemInCell.title;
     cell.backgroundColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont fontWithName:@"Avenir" size:17];
-    cell.textLabel.textColor = [UIColor blackColor];
+    cell.itemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
+    cell.itemTitle.textColor = [UIColor blackColor];
+    
+    if (itemInCell.solutions_count.intValue > 0) {
+        
+        cell.solutionBadge.backgroundColor = [ColorHelper getUIColorFromString:parentList.color :1];
+        cell.solutionBadge.text = itemInCell.solutions_count.stringValue;
+        cell.solutionBadge.textColor = [UIColor blackColor];
+        cell.solutionBadge.hidden = NO;
+    }else{
+        cell.solutionBadge.hidden = YES;
+    }
     
     return cell;
 }

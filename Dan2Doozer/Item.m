@@ -23,6 +23,7 @@
 @synthesize children_undone;
 @synthesize type;
 @synthesize localItemId;
+@synthesize solutions_count;
 
 @synthesize itemId;
 @synthesize color;

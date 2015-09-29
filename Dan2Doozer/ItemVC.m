@@ -578,7 +578,7 @@
         cell.itemTitle.scrollEnabled = NO;
         cell.itemNotes.scrollEnabled = YES;
         
-        cell.itemNotes.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
+        //cell.itemNotes.font = [UIFont fontWithName:@"Avenir-Medium" size:22];
         
         UIImage *image = [UIImage imageNamed:@"outlinecircledone"];
         
@@ -777,7 +777,7 @@
             
             UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
             priceLabel.textColor = [UIColor darkGrayColor];
-            priceLabel.text = solutionInCell.price.stringValue;
+            priceLabel.text = [NSString stringWithFormat:@"$%@", solutionInCell.price.stringValue];
             priceLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);

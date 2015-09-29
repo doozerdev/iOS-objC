@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		44E46C46C83E9BD0B2F3592A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 808A8A0F4B6CF0A061F79A27 /* libPods.a */; };
+		A20A03FF1BBA5097007AEF27 /* DueItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A20A03FE1BBA5097007AEF27 /* DueItemCustomCell.m */; };
 		A20D8A091BB0D56B00B4262A /* ItemCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */; };
 		A22B7F201B5E16740096CEEC /* AddItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A22B7F1F1B5E16740096CEEC /* AddItemViewController.m */; };
 		A22C5F1B1B9A430D001210C1 /* Solution.m in Sources */ = {isa = PBXBuildFile; fileRef = A22C5F1A1B9A430D001210C1 /* Solution.m */; };
@@ -78,6 +79,8 @@
 		7FB8AABDC09CD33586506854 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		808A8A0F4B6CF0A061F79A27 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20A03FC1BB716A5007AEF27 /* Dan2Doozer 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dan2Doozer 7.xcdatamodel"; sourceTree = "<group>"; };
+		A20A03FD1BBA5097007AEF27 /* DueItemCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DueItemCustomCell.h; sourceTree = "<group>"; };
+		A20A03FE1BBA5097007AEF27 /* DueItemCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DueItemCustomCell.m; sourceTree = "<group>"; };
 		A20D8A071BB0D56B00B4262A /* ItemCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemCustomCell.h; sourceTree = "<group>"; };
 		A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemCustomCell.m; sourceTree = "<group>"; };
 		A21658311B800B1700D5900C /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -301,6 +304,8 @@
 				A22C5F1E1B9B6CC5001210C1 /* SolutionCustomCell.m */,
 				A20D8A071BB0D56B00B4262A /* ItemCustomCell.h */,
 				A20D8A081BB0D56B00B4262A /* ItemCustomCell.m */,
+				A20A03FD1BBA5097007AEF27 /* DueItemCustomCell.h */,
+				A20A03FE1BBA5097007AEF27 /* DueItemCustomCell.m */,
 			);
 			name = CustomCells;
 			sourceTree = "<group>";
@@ -613,6 +618,7 @@
 				A253AD291B4AEF1200D896E1 /* ListCustomCell.m in Sources */,
 				A2301B371AF41A7C00E2267D /* MasterViewController.m in Sources */,
 				A2FB553D1B2FC02700D19660 /* UpdateItemsOnServer.m in Sources */,
+				A20A03FF1BBA5097007AEF27 /* DueItemCustomCell.m in Sources */,
 				A2C9F9EE1B78333300EB2DFF /* LogFiles.m in Sources */,
 				A2301B341AF41A7C00E2267D /* Dan2Doozer.xcdatamodeld in Sources */,
 				A2C9F9E91B78333300EB2DFF /* LEBackgroundThread.m in Sources */,
@@ -735,8 +741,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUNDLE_DISPLAY_NAME = "β Doozer";
 				BUNDLE_ID = com.doozer.Doozer.BETA;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				FB_APP_ID = 1637385519866455;
@@ -944,8 +950,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUNDLE_DISPLAY_NAME = Doozer;
 				BUNDLE_ID = com.doozer.Doozer;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				ENABLE_TESTABILITY = YES;
 				FB_APP_ID = 1474823829455959;
