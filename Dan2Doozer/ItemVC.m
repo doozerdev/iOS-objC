@@ -487,27 +487,86 @@
         
     }else{
     
+        static NSString *MyIdentifier = @"solutionCell";
+        SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
+        if (cell == nil) {
+            cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+        }
         Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
-
-        float cellHeightOffset = 0;
         
-        if (solutionInCell.phone_number) {
+        cell.descriptionText.font = [UIFont fontWithName:@"Avenir-Book" size:12];
+        cell.descriptionText.text = solutionInCell.sol_description;
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
+
+        CGSize newSize = [cell.descriptionText sizeThatFits:CGSizeMake(screenRect.size.width - 25, MAXFLOAT)];
+        //value of 40 comes from storyboard gaps on either side of the textfield
+        
+        NSLog(@"cell desc width --- %f", cell.descriptionText.frame.size.width);
+
+        float cellHeightOffset = newSize.height;
+        NSLog(@"solution --- %@", solutionInCell.sol_title);
+        NSLog(@"cell height offest is %f", cellHeightOffset);
+        
+        float size = screenRect.size.width / 4;
+        
+        if (solutionInCell.img_link) {
+            cellHeightOffset += size;
+            NSLog(@"img height - offest is %f", cellHeightOffset);
+            
+        }else{
             cellHeightOffset += 30;
         }
-        if (solutionInCell.address) {
+        
+        int count = 0;
+        if (solutionInCell.phone_number) {
+            if (solutionInCell.img_link) {
+                count += 1;
+            }else{
+                cellHeightOffset += 30;
+            }
+            NSLog(@"phone number - offest is %f", cellHeightOffset);
+
+        }
+        if (solutionInCell.address.length > 5) {
+            if (solutionInCell.img_link) {
+                count += 1;
+            }else{
             cellHeightOffset += 30;
+            }
+            NSLog(@"address - offest is %f, %@, %lu", cellHeightOffset, solutionInCell.address, (unsigned long)solutionInCell.address.length);
+
         }
         if (solutionInCell.open_hours) {
-            cellHeightOffset += 30;
+            if (solutionInCell.img_link) {
+                if (count > 1) {
+                    cellHeightOffset += 30;
+                }
+                count += 1;
+            }else{
+                cellHeightOffset += 30;
+            }
+            NSLog(@"open hours - offest is %f", cellHeightOffset);
+
         }
         if (solutionInCell.price) {
-            cellHeightOffset += 30;
+            if (solutionInCell.img_link) {
+                if (count > 1) {
+                    cellHeightOffset += 30;
+                }
+                count += 1;
+            }else{
+                cellHeightOffset += 30;
+            }
+            NSLog(@"price - offest is %f", cellHeightOffset);
+
         }
-        if (solutionInCell.img_link && cellHeightOffset < 40) {
-            cellHeightOffset = 40;
-        }
-                
-        return cellHeightOffset + 230;
+        
+        
+
+        
+        NSLog(@"final offest is %f", cellHeightOffset);
+
+        return cellHeightOffset + 120;
     }
     
 }
@@ -616,9 +675,14 @@
         
         Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
         
+        cell.descriptionText.font = [UIFont fontWithName:@"Avenir-Book" size:12];
         cell.descriptionText.text = solutionInCell.sol_description;
+        CGRect oldSize = cell.descriptionText.frame;
         
-        NSLog(@"setting cell data for row %ld, with date of %@", (long)indexPath.row, solutionInCell.date_associated);
+        CGSize newSize = [cell.descriptionText sizeThatFits:CGSizeMake(oldSize.size.width, MAXFLOAT)];
+        cell.descriptionText.frame = CGRectMake(oldSize.origin.x, oldSize.origin.y, oldSize.size.width, newSize.height);
+        
+        //NSLog(@"setting cell data for row %ld, with date of %@", (long)indexPath.row, solutionInCell.date_associated);
         
         cell.expertNameLabel.textColor = self.themeColor;
         cell.expertNameLabel.text = @"Daniel Apone";
@@ -643,7 +707,7 @@
         float horizOffset = 0;
         
         if (solutionInCell.img_link) {
-            NSLog(@"%@", solutionInCell.img_link);
+            //NSLog(@"%@", solutionInCell.img_link);
 
             UIImage *image = [self.images objectAtIndex:indexPath.row - 1];
             
@@ -723,7 +787,7 @@
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
         }
-        if (solutionInCell.address) {
+        if (solutionInCell.address.length > 5) {
 
             //NSLog(@"here's the address %@", solutionInCell.address);
             UIButton *addressButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -740,7 +804,7 @@
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
         }
-        
+        /*
         //if (solutionInCell.email) {
             //NSLog(@"here's the email %@", solutionInCell.email);
             UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -757,6 +821,7 @@
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
         //}
+         */
         
         if (solutionInCell.open_hours) {
             //NSLog(@"setting open hours label");
@@ -838,7 +903,7 @@
     
     
     NSSortDescriptor *sortDescriptor2;
-    sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:YES];
+    sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor2];
     NSArray *sortedSolutions;
     sortedSolutions = [solutions sortedArrayUsingDescriptors:sortDescriptors];

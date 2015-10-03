@@ -287,7 +287,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KVQ-ws-TxE">
-                                                    <rect key="frame" x="8" y="134" width="584" height="132"/>
+                                                    <rect key="frame" x="8" y="101" width="584" height="165"/>
                                                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="20" id="a3J-6g-G6B"/>
@@ -305,10 +305,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Dan's fake text!" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8As-mY-gdl">
-                                                    <rect key="frame" x="20" y="68" width="552" height="66"/>
+                                                    <rect key="frame" x="15" y="68" width="575" height="33"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="66" id="O2n-yL-Y8H"/>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="O2n-yL-Y8H"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="12"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -348,7 +348,7 @@
                                                 <constraint firstItem="OyE-lI-zDr" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="35" id="8O7-oq-sZm"/>
                                                 <constraint firstItem="KVQ-ws-TxE" firstAttribute="top" secondItem="tFk-yy-eTf" secondAttribute="bottom" constant="30" id="FP7-2x-W4Y"/>
                                                 <constraint firstItem="8As-mY-gdl" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leadingMargin" constant="20" id="G1F-cJ-S9k"/>
-                                                <constraint firstItem="8As-mY-gdl" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leading" constant="20" id="IYM-MP-O3q"/>
+                                                <constraint firstItem="8As-mY-gdl" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leading" constant="15" id="IYM-MP-O3q"/>
                                                 <constraint firstItem="tFk-yy-eTf" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="33" id="OlI-4H-mfR"/>
                                                 <constraint firstItem="vOo-Kj-kSC" firstAttribute="leading" secondItem="OyE-lI-zDr" secondAttribute="trailing" constant="20" id="Sxr-zf-DX2"/>
                                                 <constraint firstItem="tFk-yy-eTf" firstAttribute="leading" secondItem="43G-kC-Twr" secondAttribute="leadingMargin" constant="20" id="VJS-qg-JN4"/>
@@ -359,6 +359,7 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="8As-mY-gdl" secondAttribute="trailing" constant="20" id="fbs-RC-jF3"/>
                                                 <constraint firstItem="vOo-Kj-kSC" firstAttribute="top" secondItem="43G-kC-Twr" secondAttribute="top" constant="35" id="kmS-Bk-6ws"/>
                                                 <constraint firstItem="tyB-M4-9mB" firstAttribute="top" secondItem="tFk-yy-eTf" secondAttribute="bottom" id="m5Q-dC-7aJ"/>
+                                                <constraint firstAttribute="trailing" secondItem="8As-mY-gdl" secondAttribute="trailing" constant="10" id="oZa-yT-366"/>
                                                 <constraint firstItem="8As-mY-gdl" firstAttribute="top" secondItem="tyB-M4-9mB" secondAttribute="bottom" constant="-6" id="qQe-Cr-2AL"/>
                                                 <constraint firstAttribute="trailing" secondItem="KVQ-ws-TxE" secondAttribute="trailing" constant="8" id="rqp-Ms-sBz"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="KVQ-ws-TxE" secondAttribute="trailing" id="sER-hp-cb6"/>
@@ -370,6 +371,7 @@
                                                     <exclude reference="20a-aT-DRF"/>
                                                     <exclude reference="VJS-qg-JN4"/>
                                                     <exclude reference="G1F-cJ-S9k"/>
+                                                    <exclude reference="fbs-RC-jF3"/>
                                                     <exclude reference="FP7-2x-W4Y"/>
                                                     <exclude reference="Vqe-Mx-hq5"/>
                                                     <exclude reference="sER-hp-cb6"/>
