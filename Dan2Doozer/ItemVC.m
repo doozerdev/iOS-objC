@@ -501,17 +501,17 @@
         CGSize newSize = [cell.descriptionText sizeThatFits:CGSizeMake(screenRect.size.width - 25, MAXFLOAT)];
         //value of 40 comes from storyboard gaps on either side of the textfield
         
-        NSLog(@"cell desc width --- %f", cell.descriptionText.frame.size.width);
+        //NSLog(@"cell desc width --- %f", cell.descriptionText.frame.size.width);
 
         float cellHeightOffset = newSize.height;
-        NSLog(@"solution --- %@", solutionInCell.sol_title);
-        NSLog(@"cell height offest is %f", cellHeightOffset);
+        //NSLog(@"solution --- %@", solutionInCell.sol_title);
+        //NSLog(@"cell height offest is %f", cellHeightOffset);
         
         float size = screenRect.size.width / 4;
         
         if (solutionInCell.img_link) {
             cellHeightOffset += size;
-            NSLog(@"img height - offest is %f", cellHeightOffset);
+            //NSLog(@"img height - offest is %f", cellHeightOffset);
             
         }else{
             cellHeightOffset += 30;
@@ -524,7 +524,7 @@
             }else{
                 cellHeightOffset += 30;
             }
-            NSLog(@"phone number - offest is %f", cellHeightOffset);
+            //NSLog(@"phone number - offest is %f", cellHeightOffset);
 
         }
         if (solutionInCell.address.length > 5) {
@@ -533,7 +533,7 @@
             }else{
             cellHeightOffset += 30;
             }
-            NSLog(@"address - offest is %f, %@, %lu", cellHeightOffset, solutionInCell.address, (unsigned long)solutionInCell.address.length);
+            //NSLog(@"address - offest is %f, %@, %lu", cellHeightOffset, solutionInCell.address, (unsigned long)solutionInCell.address.length);
 
         }
         if (solutionInCell.open_hours) {
@@ -545,7 +545,7 @@
             }else{
                 cellHeightOffset += 30;
             }
-            NSLog(@"open hours - offest is %f", cellHeightOffset);
+            //NSLog(@"open hours - offest is %f", cellHeightOffset);
 
         }
         if (solutionInCell.price) {
@@ -557,14 +557,14 @@
             }else{
                 cellHeightOffset += 30;
             }
-            NSLog(@"price - offest is %f", cellHeightOffset);
+            //NSLog(@"price - offest is %f", cellHeightOffset);
 
         }
         
         
 
         
-        NSLog(@"final offest is %f", cellHeightOffset);
+        //NSLog(@"final offest is %f", cellHeightOffset);
 
         return cellHeightOffset + 120;
     }
@@ -910,18 +910,18 @@
     
     [self.solutions addObjectsFromArray:sortedSolutions];
     
-    NSLog(@"solutions array is %@", self.solutions);
+    //NSLog(@"solutions array is %@", self.solutions);
     
     int index = 0;
 
     for (Solution *eachSolution in self.solutions) {
-        NSLog(@"Index %d and the solutions image link = %@",index, eachSolution.img_link);
+        //NSLog(@"Index %d and the solutions image link = %@",index, eachSolution.img_link);
         
         if (eachSolution.img_link.length > 3) {
-            NSLog(@"image array index is = %d", index);
+            //NSLog(@"image array index is = %d", index);
             
             __block UIImage *image = [[UIImage alloc]init];
-            NSLog(@"setting image placeholder at index %d", index);
+            //NSLog(@"setting image placeholder at index %d", index);
             [self.images insertObject:image atIndex:index];
             
             dispatch_async(dispatch_get_global_queue(0,0), ^{
@@ -931,8 +931,8 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     // WARNING: is the cell still using the same data by this point??
                     image = [UIImage imageWithData: data];
-                    NSLog(@"setting an image for index %d", index);
-                    NSLog(@"image data = %@", image);
+                    //NSLog(@"setting an image for index %d", index);
+                    //NSLog(@"image data = %@", image);
                     if (image) {
                         [self.images replaceObjectAtIndex:index withObject:image];
                     }
@@ -946,7 +946,7 @@
             
             
         }else{
-            NSLog(@"print that an image was skipped....");
+            //NSLog(@"print that an image was skipped....");
             UIImage * image = [[UIImage alloc]init];
             [self.images insertObject:image atIndex:index];
             
@@ -1005,7 +1005,7 @@
 - (IBAction)thumbsUpPressed:(UIButton *)button {
     
     int row = (int)button.tag;
-    NSLog(@"thumbs up pressed at row == %d", row);
+    //NSLog(@"thumbs up pressed at row == %d", row);
     Solution *likedSolution = [self.solutions objectAtIndex:row - 1];
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     
@@ -1017,7 +1017,7 @@
     
     [manager POST:URLstring parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //NSDictionary *serverResponse = (NSDictionary *)responseObject;
-        NSLog(@"heres the server response = %@", responseObject);
+        //NSLog(@"heres the server response = %@", responseObject);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
