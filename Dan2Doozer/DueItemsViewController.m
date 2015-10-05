@@ -155,8 +155,8 @@
     
     if (indexPath) {
         
-        UITableViewCell *cell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-        UITableViewCell *originalCell = (UITableViewCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
+        DueItemCustomCell *cell = (DueItemCustomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        DueItemCustomCell *originalCell = (DueItemCustomCell *)[self.tableView cellForRowAtIndexPath:originalIndexPath];
         Item *swipedItem = [self findItemAtIndexPath:originalIndexPath];
         
         CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -180,6 +180,7 @@
                     
                     if(location.x-startPoint.x > 10){
                         
+                        /*
                         self.isRightSwiping = YES;
                         
                         // Add the snapshot as subview, centered at cell's center...
@@ -208,7 +209,35 @@
                             }
                         }
                         originalCell.textLabel.font = [UIFont boldSystemFontOfSize:26];
+                         */
                         
+                        
+                        self.isRightSwiping = YES;
+                        
+                        // Add the snapshot as subview, centered at cell's center...
+                        
+                        CGPoint offset = { ((location.x-startPoint.x) + screenWidth/2), originalCell.center.y };
+                        
+                        snapshot.center = offset;
+                        snapshot.alpha = 1.0;
+                        [self.tableView addSubview:snapshot];
+                        originalCell.hidden = NO;
+                        //Item *parent = self.displayList;
+                        Item *parent = [self.sectionsToShow objectAtIndex:originalIndexPath.section];
+
+                        originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
+                        originalCell.itemTitle.text = @"\U00002713\U0000FE0E";
+                        
+                        originalCell.itemTitle.textColor = [UIColor whiteColor];
+                        
+                        if ((location.x-startPoint.x) > swipeThreshold) {
+                            originalCell.itemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:30];
+                            
+                            
+                        }else{
+                            originalCell.itemTitle.font = [UIFont fontWithName:@"ZapfDingbatsITC" size:20];
+                            
+                        }
                     }
                     
                     break;
