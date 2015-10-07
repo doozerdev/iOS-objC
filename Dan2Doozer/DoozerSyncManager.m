@@ -462,7 +462,7 @@ double _lastSyncRequest;
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-        NSLog(@" heres' the server response =%@", itemsArray);
+        //NSLog(@" heres' the server response =%@", itemsArray);
         
         
         for (id eachArrayElement in itemsArray) {
@@ -502,7 +502,7 @@ double _lastSyncRequest;
         
         
         item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
-        NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
+        //NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
         
         // Save the context.
         NSError *error = nil;

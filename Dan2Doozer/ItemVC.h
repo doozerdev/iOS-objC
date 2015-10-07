@@ -28,6 +28,7 @@
 @property NSMutableArray *hyperlinks;
 @property NSMutableArray *solutions;
 @property NSMutableArray *images;
+@property NSMutableArray *cellHeights;
 
 
 

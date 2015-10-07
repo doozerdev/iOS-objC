@@ -62,6 +62,8 @@
     
     [DoozerSyncManager getSolutions:self.detailItem];
     
+    [self calculateCellRowHeights];
+    
 }
 
 
@@ -80,7 +82,7 @@
         
         [manager POST:URLstring parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             //NSDictionary *serverResponse = (NSDictionary *)responseObject;
-            NSLog(@"heres the server response = %@", responseObject);
+            //NSLog(@"heres the server response = %@", responseObject);
             
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
@@ -454,10 +456,139 @@
     return [self.solutions count] + 1;
 }
 
+- (void)calculateCellRowHeights {
+    
+    NSLog(@"calculating cell row heights");
+    
+    self.cellHeights = [[NSMutableArray alloc]init];
+    
+    for (int i = 0; i<[self.solutions count]+1; i++) {
+        
+        if (i == 0) {
+            static NSString *MyIdentifier = @"firstCell";
+            ItemCustomCell *cell = [self.solutionsTable dequeueReusableCellWithIdentifier:MyIdentifier];
+            if (cell == nil) {
+                cell = [[ItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+            }
+            
+            cell.itemTitle.font = [UIFont fontWithName:@"Avenir-Book" size:22];
+            cell.itemTitle.text = self.detailItem.title;
+            
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
+            CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(screenRect.size.width - 75, MAXFLOAT)];
+            //value of 75 comes from main storyboard. it's the amount of horizontal space, both left and right, that is the itemTitle text view
+            
+            self.titleFieldExtraHeight = newSize.height - 46.5;
+            
+            float cellHeight = 0;
+            
+            if (self.showingDatePanel) {
+                
+                cellHeight = 480 + self.titleFieldExtraHeight;
+            }else{
+                cellHeight = 225 + self.titleFieldExtraHeight;
+            }
+            //NSLog(@"returning %f for cell height of row %ld", cellHeight, (long)indexPath.row);
+            [self.cellHeights addObject:[NSNumber numberWithFloat:cellHeight]];
+            
+        }else{
+            
+            //NSLog(@"solutions array is %@", self.solutions);
+            //NSLog(@"i value is === %d", i);
+            //NSLog(@"solutions count is ===%lu", (unsigned long)[self.solutions count]);
+            
+            static NSString *MyIdentifier = @"solutionCell";
+            SolutionCustomCell *cell = [self.solutionsTable dequeueReusableCellWithIdentifier:MyIdentifier];
+            if (cell == nil) {
+                cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
+            }
+            Solution *solutionInCell = [self.solutions objectAtIndex:i-1];
+            //NSLog(@"chosen solutin is **************************************** %@", solutionInCell);
+            
+            cell.descriptionText.font = [UIFont fontWithName:@"Avenir-Book" size:12];
+            cell.descriptionText.text = solutionInCell.sol_description;
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
+            
+            CGSize newSize = [cell.descriptionText sizeThatFits:CGSizeMake(screenRect.size.width - 25, MAXFLOAT)];
+            //value of 40 comes from storyboard gaps on either side of the textfield
+            
+            //NSLog(@"cell desc width --- %f", cell.descriptionText.frame.size.width);
+            
+            float cellHeightOffset = newSize.height;
+            //NSLog(@"solution --- %@", solutionInCell.sol_title);
+            //NSLog(@"cell height offest is %f", cellHeightOffset);
+            
+            float size = screenRect.size.width / 4;
+            
+            if (solutionInCell.img_link) {
+                cellHeightOffset += size;
+                //NSLog(@"img height - offest is %f", cellHeightOffset);
+                
+            }else{
+                cellHeightOffset += 30;
+            }
+            
+            int count = 0;
+            if (solutionInCell.phone_number) {
+                if (solutionInCell.img_link) {
+                    count += 1;
+                }else{
+                    cellHeightOffset += 30;
+                }
+                //NSLog(@"phone number - offest is %f", cellHeightOffset);
+                
+            }
+            if (solutionInCell.address.length > 5) {
+                if (solutionInCell.img_link) {
+                    count += 1;
+                }else{
+                    cellHeightOffset += 30;
+                }
+                //NSLog(@"address - offest is %f, %@, %lu", cellHeightOffset, solutionInCell.address, (unsigned long)solutionInCell.address.length);
+                
+            }
+            if (solutionInCell.open_hours) {
+                if (solutionInCell.img_link) {
+                    if (count > 1) {
+                        cellHeightOffset += 30;
+                    }
+                    count += 1;
+                }else{
+                    cellHeightOffset += 30;
+                }
+                //NSLog(@"open hours - offest is %f", cellHeightOffset);
+                
+            }
+            if (solutionInCell.price) {
+                if (solutionInCell.img_link) {
+                    if (count > 1) {
+                        cellHeightOffset += 30;
+                    }
+                    count += 1;
+                }else{
+                    cellHeightOffset += 30;
+                }
+                //NSLog(@"price - offest is %f", cellHeightOffset);
+                
+            }
+            //NSLog(@"final offest is %f", cellHeightOffset);
+            
+            [self.cellHeights addObject:[NSNumber numberWithFloat:cellHeightOffset + 120]];
+        }
+    }
+}
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    //NSLog(@"heightForRowAtIndexPath is being called now");
     
+    //NSLog(@"heightForRowAtIndexPath is being called now for row %ld", (long)indexPath.row);
+    
+    NSNumber *returnValue = [self.cellHeights objectAtIndex:indexPath.row];
+    
+    return returnValue.floatValue;
+
+    /*
     if (indexPath.row == 0) {
         static NSString *MyIdentifier = @"firstCell";
         ItemCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
@@ -568,6 +699,8 @@
 
         return cellHeightOffset + 120;
     }
+     
+     */
     
 }
 
