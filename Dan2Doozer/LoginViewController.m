@@ -221,6 +221,7 @@ NSString *sessionID = nil;
                     int secondsEpochInt = secondsSinceUnixEpoch;
                     NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
                     [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+                    NSLog(@"in login view controller. last sync value is being set to %@", secondsEpoch);
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     
                     [DoozerSyncManager copyFromServer :itemsBigArray];

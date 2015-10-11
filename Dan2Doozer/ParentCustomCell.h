@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *GreenButton;
 @property (weak, nonatomic) IBOutlet UIButton *BlueButton;
 @property (weak, nonatomic) IBOutlet UIButton *PurpleButton;
+@property (weak, nonatomic) IBOutlet UIImageView *lightBulb;
 
 
 @end

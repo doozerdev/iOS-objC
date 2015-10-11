@@ -76,6 +76,11 @@
     
     for (Solution *eachSolution in self.solutions) {
         
+        if ([eachSolution.state isEqualToString:@"unseen"]) {
+            eachSolution.state = @"viewed";
+            NSLog(@"marking solution %@ as viewed", eachSolution.sol_title);
+        }
+        
         NSString *URLstring = [NSString stringWithFormat:@"%@solutions/%@/view/%@", appDelegate.SERVER_URI, eachSolution.sol_ID, self.detailItem.itemId];
         
         //NSLog(@"here's the urlstring: %@", URLstring);
@@ -88,6 +93,13 @@
             NSLog(@"Error: %@", error);
             
         }];
+    }
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
     }
     
 }
@@ -319,11 +331,13 @@
     ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
     self.showingDatePanel = YES;
+    
+    [self calculateCellRowHeights];
     cell.dateButton2.userInteractionEnabled = YES;
     cell.dateButton3.userInteractionEnabled = YES;
     cell.dateButton4.userInteractionEnabled = YES;
 
-    //NSLog(@"OPEN title field extra hieght is %f", self.titleFieldExtraHeight);
+    NSLog(@"OPEN title field extra hieght is %f", self.titleFieldExtraHeight);
     
     [self.solutionsTable beginUpdates];
     [self.solutionsTable endUpdates];
@@ -340,6 +354,9 @@
     
     self.showingDatePanel = NO;
     
+    [self calculateCellRowHeights];
+
+    
     //NSLog(@"CLOSE title field extra hieght is %f", self.titleFieldExtraHeight);
 
     
@@ -355,6 +372,7 @@
     if (self.showingDatePanel) {
         
         //self.detailItem.duedate = self.datePicker.date;
+        
         
         [UpdateItemsOnServer updateThisItem:self.detailItem];
         
@@ -581,10 +599,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    
-    //NSLog(@"heightForRowAtIndexPath is being called now for row %ld", (long)indexPath.row);
-    
     NSNumber *returnValue = [self.cellHeights objectAtIndex:indexPath.row];
+    
+    NSLog(@"cell height for row %ld is --------- %@", (long)indexPath.row, returnValue);
     
     return returnValue.floatValue;
 
@@ -1043,7 +1060,7 @@
     
     [self.solutions addObjectsFromArray:sortedSolutions];
     
-    //NSLog(@"solutions array is %@", self.solutions);
+    NSLog(@"solutions array is %@", self.solutions);
     
     int index = 0;
 

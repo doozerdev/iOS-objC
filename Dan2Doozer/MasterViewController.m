@@ -835,6 +835,8 @@
     if (indexPath.row == [self.fetchedResultsController.fetchedObjects count]) {
         
         //NSLog(@"index path row = %ld", (long)indexPath.row);
+        cell.lightBulb.hidden = YES;
+        
         cell.cellItemSubTitle.hidden = YES;
         cell.cellItemTitle.textAlignment = NSTextAlignmentCenter;
 
@@ -869,6 +871,26 @@
         */
         
         NSNumber * numKids = [self.numberOfItemsOnLists objectAtIndex:indexPath.row];
+        
+        NSInteger solutionsFlag = [CoreDataItemManager checkForSolutions:itemInCell.itemId];
+        NSLog(@"solutionsFlag is %ld, for row %ld", (long)solutionsFlag, (long)indexPath.row);
+        
+        if (solutionsFlag == 1) {
+            cell.lightBulb.hidden = NO;
+            UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
+            [cell.lightBulb setImage:image];
+            cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.lightBulb setTintColor:[UIColor whiteColor]];
+        }else if (solutionsFlag == 0){
+            cell.lightBulb.hidden = NO;
+            UIImage *image = [UIImage imageNamed: @"EmptyLightbulb"];
+            [cell.lightBulb setImage:image];
+            cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.lightBulb setTintColor:[UIColor whiteColor]];
+        }else{
+            cell.lightBulb.hidden = YES;
+        }
+        
         
         cell.cellItemTitle.text = itemInCell.title;
         //cell.cellItemTitle.text = [NSString stringWithFormat:@"%@ - %@", itemInCell.title, itemInCell.order];
@@ -963,7 +985,7 @@
         
     }else{
         NSLog(@"else else else");
-        
+        cell.lightBulb.hidden = YES;
         cell.backgroundColor = [UIColor whiteColor];
         cell.cellItemTitle.text = nil;
         cell.cellItemSubTitle.text = nil;

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "Item.h"
+#import "Solution.h"
 
 @class DetailViewController;
 @class MasterViewController;

@@ -1129,10 +1129,13 @@
     lineView.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
     [cell.contentView addSubview:lineView];
     
+    
     NSLog(@"Building item %@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
     
     if ([object.type isEqualToString:@"completed_header"]) {
         cell.cellItemTitle.hidden = NO;
+        cell.lightBulb.hidden = YES;
+        cell.cellDueFlag.hidden = YES;
 
         
         NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
@@ -1164,8 +1167,10 @@
         
     }else{
         if (object.done.intValue == 1) {
-            
+            cell.cellDueFlag.hidden = YES;
+
             cell.solutionsBadge.hidden = YES;
+            cell.lightBulb.hidden = YES;
             NSString *titleText = object.title;
             //NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
 
@@ -1192,6 +1197,7 @@
             }
         }else{
             cell.cellItemTitle.hidden = NO;
+            
 
             cell.cellItemTitle.attributedText = nil;
             
@@ -1207,6 +1213,9 @@
             
             if (object.duedate) {
                 
+                cell.cellDueFlag.hidden = NO;
+                cell.cellDueFlag.layer.masksToBounds = YES;
+                cell.cellDueFlag.layer.cornerRadius = 5;
 
                 //NSString *dueDateString = [df stringFromDate:object.duedate];
                 NSDateFormatter *df2 = [[NSDateFormatter alloc]init];
@@ -1234,27 +1243,32 @@
                 NSString *todayString = [df3 stringFromDate:[NSDate date]];
                 NSString *dueString = [df3 stringFromDate:object.duedate];
                 
+
+                
                 if (dateInt < [[NSDate date]timeIntervalSince1970] || [todayString isEqualToString:dueString]){
-                    cell.cellDueFlag.text = @"Due";
-                    cell.cellDueFlag.textColor = [UIColor redColor];
+                    cell.cellDueFlag.text = @"due";
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Black" size:13];
+                    cell.cellDueFlag.textColor = [UIColor whiteColor];
+                    cell.cellDueFlag.backgroundColor = [UIColor redColor];
                 }else if (delta < 604800) {
                     NSDateFormatter *df = [[NSDateFormatter alloc]init];
                     [df setDateFormat:@"EEE"];
                     NSString *dayString = [df stringFromDate:object.duedate];
                     cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dayString];
-                    cell.cellDueFlag.textColor = [UIColor grayColor];
-
+                    cell.cellDueFlag.backgroundColor = [UIColor whiteColor];
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Heavy" size:15];
+                    cell.cellDueFlag.textColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
                 }else{
-
                     cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dueDateDisplay];
-                    cell.cellDueFlag.textColor = [UIColor grayColor];
-
-
+                    cell.cellDueFlag.backgroundColor = [UIColor whiteColor];
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir" size:11];
+                    cell.cellDueFlag.textColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
                 }
                 
                 
             }else{
                 cell.cellDueFlag.text = @"";
+                cell.cellDueFlag.hidden = YES;
             }
             
             
@@ -1280,7 +1294,22 @@
             if (object.solutions_count.intValue > 0) {
                 
                 NSLog(@"setting up the solutions number!");
+                
+                if ([CoreDataItemManager checkForUnseenSolutions:object]) {
+                    UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
+                    [cell.lightBulb setImage:image];
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[ColorHelper getUIColorFromString:listForTitle.color :1]];
+                }else{
+                    UIImage *image = [UIImage imageNamed: @"EmptyLightbulb"];
+                    [cell.lightBulb setImage:image];
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[UIColor lightGrayColor]];
+                }
+                
                 cell.solutionsBadge.hidden = NO;
+                cell.lightBulb.hidden = NO;
+
                 
                 if (object.duedate) {
                     cell.dueFlagBottomSpace.constant = 5;
@@ -1298,6 +1327,8 @@
             }else{
                 cell.dueFlagBottomSpace.constant = 16;
                 cell.solutionsBadge.hidden = YES;
+                cell.lightBulb.hidden = YES;
+
                 
             }
 

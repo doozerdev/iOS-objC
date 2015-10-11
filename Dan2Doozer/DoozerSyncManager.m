@@ -80,7 +80,8 @@ double _lastSyncRequest;
                             NSString * sessionID = [responseObject objectForKey:@"sessionId"];
                             [[NSUserDefaults standardUserDefaults] setObject:sessionID forKey:@"UserLoginIdSession"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
-                            NSLog(@"returning message from login operation");
+                            NSLog(@"returning message from login operation and setting last sync auth to %f", currentTime);
+                            
                             
                             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithDouble:currentTime] forKey:@"lastDoozerAuth"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -189,10 +190,15 @@ double _lastSyncRequest;
                                         
                                         if (handler != -1) {
                                             //NSLog(@"delete items successfully returned");
+                                            
+                                            [self getUpdatedSolutions];
+
+                                            
                                             NSTimeInterval secondsSinceUnixEpoch = [[NSDate date]timeIntervalSince1970];
                                             int secondsEpochInt = secondsSinceUnixEpoch;
                                             NSNumber *secondsEpoch = [NSNumber numberWithInt:secondsEpochInt];
                                             [[NSUserDefaults standardUserDefaults] setObject:secondsEpoch forKey:@"LastSuccessfulSync"];
+                                            NSLog(@"setting last sync to %@", secondsEpoch);
                                             [[NSUserDefaults standardUserDefaults] synchronize];
                                             
                                             //LELog* log = [LELog sharedInstance];
@@ -320,11 +326,12 @@ double _lastSyncRequest;
                     
                     NSLog(@"creating! %@ %@ %@", existingItem.title, existingItem.itemId, solutionsCount);
                     
-                    
+                    /*
                     if (solutionsCount.intValue > 0) {
                         
-                        [self getSolutions:existingItem];
+                        //[self getSolutions:existingItem];
                     }
+                     */
                     
                     NSError *error = nil;
                     if (![context save:&error]) {
@@ -462,7 +469,97 @@ double _lastSyncRequest;
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-        //NSLog(@" heres' the server response =%@", itemsArray);
+        NSLog(@" heres' the server response =%@", itemsArray);
+        
+        
+        for (id eachArrayElement in itemsArray) {
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
+            Solution *newSolution = [[Solution alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+            
+            newSolution.sol_title = [eachArrayElement objectForKey:@"title"];
+            newSolution.address = [eachArrayElement objectForKey:@"address"];
+            newSolution.sol_description = [eachArrayElement objectForKey:@"description"];
+            newSolution.expire_date = [eachArrayElement objectForKey:@"expireDate"];
+            newSolution.sol_ID = [eachArrayElement objectForKey:@"id"];
+            newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
+            newSolution.link = [eachArrayElement objectForKey:@"link"];
+            newSolution.notes = [eachArrayElement objectForKey:@"notes"];
+            newSolution.open_hours = [eachArrayElement objectForKey:@"openHours"];
+            newSolution.phone_number = [eachArrayElement objectForKey:@"phoneNumber"];
+            newSolution.price = [eachArrayElement objectForKey:@"price"];
+            newSolution.source = [eachArrayElement objectForKey:@"source"];
+            newSolution.tags = [eachArrayElement objectForKey:@"tags"];
+            newSolution.state = @"unseen";
+            
+            NSString *assDateString = [eachArrayElement objectForKey:@"date_link_updated"];
+            NSDateFormatter* df = [[NSDateFormatter alloc]init];
+            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+            NSDate* assDate = [df dateFromString:assDateString];
+            newSolution.date_associated = assDate;
+            
+            [solutionsList addObject:newSolution.sol_ID];
+            
+            // Save the context.
+            NSError *error = nil;
+            if (![context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            
+        }
+        
+        
+        item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
+        //NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        
+    }
+      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+          NSLog(@"Error: %@", error);
+          
+      }];
+    
+    
+}
+
+
+
+
++ (void)getUpdatedSolutions{
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
+    NSString* dateString = [NSString stringWithFormat:@"%@", syncDate];
+    //int newTestDate = dateString.intValue - 36000;
+    //NSString *syncTime = [NSString stringWithFormat:@"%d", newTestDate];
+    
+    NSString * NewURL = [NSString stringWithFormat:@"%@solutions/for_user/%@", appDelegate.SERVER_URI, dateString];
+    
+    NSLog(@"get solutions url === %@", NewURL);
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    
+    AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
+    
+    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    
+    NSMutableArray *solutionsList = [[NSMutableArray alloc]init];
+    
+    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDictionary *jsonDict = (NSDictionary *) responseObject;
+        NSLog(@"here's the SOLUTIONS from the server = %@", responseObject);
+
+        NSArray * itemsArray = [jsonDict objectForKey:@"items"];
         
         
         for (id eachArrayElement in itemsArray) {
@@ -501,7 +598,7 @@ double _lastSyncRequest;
         }
         
         
-        item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
+        //item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
         //NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
         
         // Save the context.
@@ -520,7 +617,6 @@ double _lastSyncRequest;
     
     
 }
-
 
 
 
