@@ -577,6 +577,7 @@
                 //NSLog(@"open hours - offest is %f", cellHeightOffset);
                 
             }
+            /*
             if (solutionInCell.price) {
                 if (solutionInCell.img_link) {
                     if (count > 1) {
@@ -589,6 +590,8 @@
                 //NSLog(@"price - offest is %f", cellHeightOffset);
                 
             }
+             
+             */
             //NSLog(@"final offest is %f", cellHeightOffset);
             
             [self.cellHeights addObject:[NSNumber numberWithFloat:cellHeightOffset + 120]];
@@ -601,7 +604,7 @@
     
     NSNumber *returnValue = [self.cellHeights objectAtIndex:indexPath.row];
     
-    NSLog(@"cell height for row %ld is --------- %@", (long)indexPath.row, returnValue);
+    //NSLog(@"cell height for row %ld is --------- %@", (long)indexPath.row, returnValue);
     
     return returnValue.floatValue;
 
@@ -856,8 +859,8 @@
         
         float horizOffset = 0;
         
-        if (solutionInCell.img_link) {
-            //NSLog(@"%@", solutionInCell.img_link);
+        if (solutionInCell.img_link.length > 5) {
+            NSLog(@"%@----------%@", solutionInCell.sol_title, solutionInCell.img_link);
 
             UIImage *image = [self.images objectAtIndex:indexPath.row - 1];
             
@@ -909,28 +912,48 @@
                    action:@selector(solutionTitleButtonPressed:)
          forControlEvents:UIControlEventTouchUpInside];
         
+        button.layer.borderWidth = 2.0f;
+        button.layer.borderColor = [[UIColor redColor] CGColor];
+        
         [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
         [button setTitleColor:self.themeColor forState:UIControlStateNormal];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         button.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         button.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-        button.frame = CGRectMake(horizOffset + 10, 5, screenRect.size.width * .65, 30);
+        float widthConst = screenRect.size.width * .9;
+        if (horizOffset > 0) {
+            widthConst = screenRect.size.width * .65;
+        }
+        button.frame = CGRectMake(horizOffset + 10, 5, widthConst, 30);
+        button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        button.titleLabel.numberOfLines = 3;
         button.tag = indexPath.row;
-        [cell.solutionsPanel addSubview:button];
-        float vertOffset = 30;
+        
+        CGRect buttonOldSize = button.frame;
+        
+        CGSize buttonNewSize = [button.titleLabel sizeThatFits:CGSizeMake(buttonOldSize.size.width, MAXFLOAT)];
+        button.frame = CGRectMake(buttonOldSize.origin.x, buttonOldSize.origin.y, buttonOldSize.size.width, buttonNewSize.height);
 
-        if (solutionInCell.phone_number) {
+        
+        [cell.solutionsPanel addSubview:button];
+        float vertOffset = buttonNewSize.height;
+
+        if (solutionInCell.phone_number.length > 5) {
 
             //NSLog(@"here's the phone number %@", solutionInCell.phone_number);
             UIButton *phoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
             [phoneButton addTarget:self
                        action:@selector(phoneButtonPressed:)
              forControlEvents:UIControlEventTouchUpInside];
+            
+            phoneButton.layer.borderWidth = 2.0f;
+            phoneButton.layer.borderColor = [[UIColor blueColor] CGColor];
+            
             [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
             [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+            phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30);
             phoneButton.tag = indexPath.row;
         
             [cell.solutionsPanel addSubview:phoneButton];
@@ -944,11 +967,14 @@
             [addressButton addTarget:self
                             action:@selector(addressButtonPressed:)
                   forControlEvents:UIControlEventTouchUpInside];
+            addressButton.layer.borderWidth = 2.0f;
+            addressButton.layer.borderColor = [[UIColor greenColor] CGColor];
+            
             [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
             [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
+            addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30);
             addressButton.tag = indexPath.row;
             [cell.solutionsPanel addSubview:addressButton];
             vertOffset += 30;
@@ -973,11 +999,15 @@
         //}
          */
         
-        if (solutionInCell.open_hours) {
+        if (solutionInCell.open_hours.length > 5) {
             //NSLog(@"setting open hours label");
             
-            UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
+            UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30)];
             hoursLabel.textColor = [UIColor darkGrayColor];
+            
+            hoursLabel.layer.borderWidth = 2.0f;
+            hoursLabel.layer.borderColor = [[UIColor yellowColor] CGColor];
+            
             hoursLabel.text = solutionInCell.open_hours;
             hoursLabel.font = [UIFont fontWithName:@"Avenir" size:12];
             vertOffset += 30;
@@ -987,6 +1017,7 @@
 
         }
         
+        /*
         if (solutionInCell.price) {
             //NSLog(@"setting price label");
             
@@ -1000,6 +1031,7 @@
             [cell.solutionsPanel addSubview:priceLabel];
             
         }
+         */
         return cell;
 
     }
@@ -1060,12 +1092,12 @@
     
     [self.solutions addObjectsFromArray:sortedSolutions];
     
-    NSLog(@"solutions array is %@", self.solutions);
+    //NSLog(@"solutions array is %@", self.solutions);
     
     int index = 0;
 
     for (Solution *eachSolution in self.solutions) {
-        //NSLog(@"Index %d and the solutions image link = %@",index, eachSolution.img_link);
+        //NSLog(@"Tip %@ and the solutions image link = %@",eachSolution.sol_title, eachSolution.img_link);
         
         if (eachSolution.img_link.length > 3) {
             //NSLog(@"image array index is = %d", index);
@@ -1084,6 +1116,9 @@
                     //NSLog(@"setting an image for index %d", index);
                     //NSLog(@"image data = %@", image);
                     if (image) {
+                        [self.images replaceObjectAtIndex:index withObject:image];
+                    }else{
+                        image = [UIImage imageNamed:@"image_placeholder"];
                         [self.images replaceObjectAtIndex:index withObject:image];
                     }
                     image = nil;

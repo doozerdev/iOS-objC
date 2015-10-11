@@ -1019,7 +1019,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    //NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
+    NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
     
     ListCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemCell" forIndexPath:indexPath];
 
@@ -1163,13 +1163,11 @@
         cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         cell.cellDueFlag.text = @"";
-        cell.solutionsBadge.hidden = YES;
         
     }else{
         if (object.done.intValue == 1) {
             cell.cellDueFlag.hidden = YES;
 
-            cell.solutionsBadge.hidden = YES;
             cell.lightBulb.hidden = YES;
             NSString *titleText = object.title;
             //NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
@@ -1307,29 +1305,10 @@
                     [cell.lightBulb setTintColor:[UIColor lightGrayColor]];
                 }
                 
-                cell.solutionsBadge.hidden = NO;
                 cell.lightBulb.hidden = NO;
-
-                
-                if (object.duedate) {
-                    cell.dueFlagBottomSpace.constant = 5;
-                    cell.solutionsLabelTopSpacing.constant = 12;
-                }else{
-                    cell.solutionsLabelTopSpacing.constant = 20;
-                    cell.dueFlagBottomSpace.constant = 5;
-
-                }
-                
-                cell.solutionsBadge.backgroundColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
-                cell.solutionsBadge.text = object.solutions_count.stringValue;
-                cell.solutionsBadge.textColor = [UIColor blackColor];
                 
             }else{
-                cell.dueFlagBottomSpace.constant = 16;
-                cell.solutionsBadge.hidden = YES;
                 cell.lightBulb.hidden = YES;
-
-                
             }
 
         }

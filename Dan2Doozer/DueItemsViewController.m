@@ -16,6 +16,7 @@
 #import "CoreDataItemManager.h"
 #import "Intercom.h"
 #import "DueItemCustomCell.h"
+#import "CoreDataItemManager.h"
 
 @interface DueItemsViewController () <UIGestureRecognizerDelegate>
 
@@ -617,12 +618,24 @@
     
     if (itemInCell.solutions_count.intValue > 0) {
         
-        cell.solutionBadge.backgroundColor = [ColorHelper getUIColorFromString:parentList.color :1];
-        cell.solutionBadge.text = itemInCell.solutions_count.stringValue;
-        cell.solutionBadge.textColor = [UIColor blackColor];
-        cell.solutionBadge.hidden = NO;
+        NSLog(@"setting up the solutions number!");
+        
+        if ([CoreDataItemManager checkForUnseenSolutions:itemInCell]) {
+            UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
+            [cell.lightBulb setImage:image];
+            cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.lightBulb setTintColor:[ColorHelper getUIColorFromString:parentList.color :1]];
+        }else{
+            UIImage *image = [UIImage imageNamed: @"EmptyLightbulb"];
+            [cell.lightBulb setImage:image];
+            cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.lightBulb setTintColor:[UIColor lightGrayColor]];
+        }
+        
+        cell.lightBulb.hidden = NO;
+        
     }else{
-        cell.solutionBadge.hidden = YES;
+        cell.lightBulb.hidden = YES;
     }
     
     return cell;

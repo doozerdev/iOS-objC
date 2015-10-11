@@ -11,5 +11,5 @@
 @interface DueItemCustomCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UITextField *itemTitle;
-@property (weak, nonatomic) IBOutlet UILabel *solutionBadge;
+@property (weak, nonatomic) IBOutlet UIImageView *lightBulb;
 @end

@@ -469,7 +469,7 @@ double _lastSyncRequest;
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-        NSLog(@" heres' the server response =%@", itemsArray);
+        //NSLog(@" heres' the server response =%@", itemsArray);
         
         
         for (id eachArrayElement in itemsArray) {
