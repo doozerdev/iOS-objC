@@ -17,6 +17,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *thumbsUp;
 @property (weak, nonatomic) IBOutlet UIButton *thumbsDown;
 
+@property (weak, nonatomic) IBOutlet UIImageView *thumbsUpImage;
+
+@property (weak, nonatomic) IBOutlet UIImageView *thumbsDownImage;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *solutionsPanelHeight;
 
 
 @end

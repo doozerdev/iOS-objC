@@ -469,7 +469,7 @@ double _lastSyncRequest;
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
         NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-        //NSLog(@" heres' the server response =%@", itemsArray);
+        NSLog(@" heres' the server response =%@", itemsArray);
         
         
         for (id eachArrayElement in itemsArray) {
@@ -484,8 +484,8 @@ double _lastSyncRequest;
             newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
             newSolution.link = [eachArrayElement objectForKey:@"link"];
             newSolution.notes = [eachArrayElement objectForKey:@"notes"];
-            newSolution.open_hours = [eachArrayElement objectForKey:@"openHours"];
-            newSolution.phone_number = [eachArrayElement objectForKey:@"phoneNumber"];
+            newSolution.open_hours = [eachArrayElement objectForKey:@"open_hours"];
+            newSolution.phone_number = [eachArrayElement objectForKey:@"phone_number"];
             newSolution.price = [eachArrayElement objectForKey:@"price"];
             newSolution.source = [eachArrayElement objectForKey:@"source"];
             newSolution.tags = [eachArrayElement objectForKey:@"tags"];

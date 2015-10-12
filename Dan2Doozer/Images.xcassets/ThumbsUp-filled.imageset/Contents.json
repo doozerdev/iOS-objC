@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "thumbsup2.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "ThumbsUp-filled.pdf"
     },
     {
       "idiom" : "universal",

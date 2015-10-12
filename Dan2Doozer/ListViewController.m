@@ -1245,7 +1245,7 @@
                 
                 if (dateInt < [[NSDate date]timeIntervalSince1970] || [todayString isEqualToString:dueString]){
                     cell.cellDueFlag.text = @"due";
-                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Black" size:13];
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Black" size:12];
                     cell.cellDueFlag.textColor = [UIColor whiteColor];
                     cell.cellDueFlag.backgroundColor = [UIColor redColor];
                 }else if (delta < 604800) {
@@ -1254,12 +1254,12 @@
                     NSString *dayString = [df stringFromDate:object.duedate];
                     cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dayString];
                     cell.cellDueFlag.backgroundColor = [UIColor whiteColor];
-                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Heavy" size:15];
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Medium" size:14];
                     cell.cellDueFlag.textColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
                 }else{
                     cell.cellDueFlag.text = [NSString stringWithFormat:@"%@", dueDateDisplay];
                     cell.cellDueFlag.backgroundColor = [UIColor whiteColor];
-                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir" size:11];
+                    cell.cellDueFlag.font = [UIFont fontWithName:@"Avenir-Medium" size:11];
                     cell.cellDueFlag.textColor = [ColorHelper getUIColorFromString:listForTitle.color :1];
                 }
                 

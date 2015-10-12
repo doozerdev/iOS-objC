@@ -286,6 +286,9 @@
         self.titleFieldExtraHeight = newSize.height - 46.5;
         //NSLog(@"completed text feild editing, and titleFieldExtraHeight is %f", self.titleFieldExtraHeight);
 
+        [self calculateCellRowHeights];
+        //[self.solutionsTable reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+
         
     }
     
@@ -548,11 +551,9 @@
             
             int count = 0;
             if (solutionInCell.phone_number) {
-                if (solutionInCell.img_link) {
-                    count += 1;
-                }else{
-                    cellHeightOffset += 30;
-                }
+
+                    //cellHeightOffset += 30;
+    
                 //NSLog(@"phone number - offest is %f", cellHeightOffset);
                 
             }
@@ -566,35 +567,15 @@
                 
             }
             if (solutionInCell.open_hours) {
-                if (solutionInCell.img_link) {
-                    if (count > 1) {
-                        cellHeightOffset += 30;
-                    }
-                    count += 1;
-                }else{
-                    cellHeightOffset += 30;
-                }
+ 
+                        //cellHeightOffset += 30;
+  
                 //NSLog(@"open hours - offest is %f", cellHeightOffset);
                 
             }
-            /*
-            if (solutionInCell.price) {
-                if (solutionInCell.img_link) {
-                    if (count > 1) {
-                        cellHeightOffset += 30;
-                    }
-                    count += 1;
-                }else{
-                    cellHeightOffset += 30;
-                }
-                //NSLog(@"price - offest is %f", cellHeightOffset);
-                
-            }
-             
-             */
-            //NSLog(@"final offest is %f", cellHeightOffset);
+
             
-            [self.cellHeights addObject:[NSNumber numberWithFloat:cellHeightOffset + 120]];
+            [self.cellHeights addObject:[NSNumber numberWithFloat:cellHeightOffset + 80]];
         }
     }
 }
@@ -607,120 +588,6 @@
     //NSLog(@"cell height for row %ld is --------- %@", (long)indexPath.row, returnValue);
     
     return returnValue.floatValue;
-
-    /*
-    if (indexPath.row == 0) {
-        static NSString *MyIdentifier = @"firstCell";
-        ItemCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-        if (cell == nil) {
-            cell = [[ItemCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
-        }
-        
-        cell.itemTitle.font = [UIFont fontWithName:@"Avenir-Book" size:22];
-        cell.itemTitle.text = self.detailItem.title;
-        
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-        CGSize newSize = [cell.itemTitle sizeThatFits:CGSizeMake(screenRect.size.width - 75, MAXFLOAT)];
-        //value of 75 comes from main storyboard. it's the amount of horizontal space, both left and right, that is the itemTitle text view
-
-        self.titleFieldExtraHeight = newSize.height - 46.5;
-        
-        float cellHeight = 0;
-
-        if (self.showingDatePanel) {
-
-            cellHeight = 480 + self.titleFieldExtraHeight;
-        }else{
-            cellHeight = 225 + self.titleFieldExtraHeight;
-        }
-        //NSLog(@"returning %f for cell height of row %ld", cellHeight, (long)indexPath.row);
-        return cellHeight;
-        
-    }else{
-    
-        static NSString *MyIdentifier = @"solutionCell";
-        SolutionCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-        if (cell == nil) {
-            cell = [[SolutionCustomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
-        }
-        Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
-        
-        cell.descriptionText.font = [UIFont fontWithName:@"Avenir-Book" size:12];
-        cell.descriptionText.text = solutionInCell.sol_description;
-        CGRect screenRect = [[UIScreen mainScreen] bounds];
-
-        CGSize newSize = [cell.descriptionText sizeThatFits:CGSizeMake(screenRect.size.width - 25, MAXFLOAT)];
-        //value of 40 comes from storyboard gaps on either side of the textfield
-        
-        //NSLog(@"cell desc width --- %f", cell.descriptionText.frame.size.width);
-
-        float cellHeightOffset = newSize.height;
-        //NSLog(@"solution --- %@", solutionInCell.sol_title);
-        //NSLog(@"cell height offest is %f", cellHeightOffset);
-        
-        float size = screenRect.size.width / 4;
-        
-        if (solutionInCell.img_link) {
-            cellHeightOffset += size;
-            //NSLog(@"img height - offest is %f", cellHeightOffset);
-            
-        }else{
-            cellHeightOffset += 30;
-        }
-        
-        int count = 0;
-        if (solutionInCell.phone_number) {
-            if (solutionInCell.img_link) {
-                count += 1;
-            }else{
-                cellHeightOffset += 30;
-            }
-            //NSLog(@"phone number - offest is %f", cellHeightOffset);
-
-        }
-        if (solutionInCell.address.length > 5) {
-            if (solutionInCell.img_link) {
-                count += 1;
-            }else{
-            cellHeightOffset += 30;
-            }
-            //NSLog(@"address - offest is %f, %@, %lu", cellHeightOffset, solutionInCell.address, (unsigned long)solutionInCell.address.length);
-
-        }
-        if (solutionInCell.open_hours) {
-            if (solutionInCell.img_link) {
-                if (count > 1) {
-                    cellHeightOffset += 30;
-                }
-                count += 1;
-            }else{
-                cellHeightOffset += 30;
-            }
-            //NSLog(@"open hours - offest is %f", cellHeightOffset);
-
-        }
-        if (solutionInCell.price) {
-            if (solutionInCell.img_link) {
-                if (count > 1) {
-                    cellHeightOffset += 30;
-                }
-                count += 1;
-            }else{
-                cellHeightOffset += 30;
-            }
-            //NSLog(@"price - offest is %f", cellHeightOffset);
-
-        }
-        
-        
-
-        
-        //NSLog(@"final offest is %f", cellHeightOffset);
-
-        return cellHeightOffset + 120;
-    }
-     
-     */
     
 }
 
@@ -825,6 +692,8 @@
         
         lineView.backgroundColor = self.themeColor;
         [cell.contentView addSubview:lineView];
+        [cell setBackgroundColor:[UIColor colorWithRed:.985 green:.985 blue:.985 alpha:1]];
+
         
         Solution *solutionInCell = [self.solutions objectAtIndex:indexPath.row - 1];
         
@@ -838,73 +707,47 @@
         //NSLog(@"setting cell data for row %ld, with date of %@", (long)indexPath.row, solutionInCell.date_associated);
         
         cell.expertNameLabel.textColor = self.themeColor;
-        cell.expertNameLabel.text = @"Daniel Apone";
-        cell.expertTitleLabel.text = @"CEO, Doozer";
+        
+        cell.expertNameLabel.text = @"test name";
+        cell.expertTitleLabel.text = @"test title titel titel";
+        
+        cell.expertNameLabel.text = solutionInCell.phone_number;
+        cell.expertTitleLabel.text = solutionInCell.open_hours;
 
         cell.thumbsUp.tag = indexPath.row;
         cell.thumbsDown.tag = indexPath.row;
         
         if ([solutionInCell.state isEqualToString:@"liked"]) {
-            cell.thumbsUp.backgroundColor = self.themeColor;
-            cell.thumbsDown.backgroundColor = [UIColor clearColor];
+            cell.thumbsUpImage.image = [UIImage imageNamed:@"ThumbsUp-filled"];
+            cell.thumbsUpImage.image = [cell.thumbsUpImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsUpImage setTintColor:self.themeColor];
+    
+            cell.thumbsDownImage.image = [UIImage imageNamed:@"ThumbsDown"];
+            cell.thumbsDownImage.image = [cell.thumbsDownImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsDownImage setTintColor:[UIColor grayColor]];
+            
         }else if ([solutionInCell.state isEqualToString:@"disliked"]){
-            cell.thumbsUp.backgroundColor = [UIColor clearColor];
-            cell.thumbsDown.backgroundColor = self.themeColor;
+            cell.thumbsUpImage.image = [UIImage imageNamed:@"ThumbsUp"];
+            cell.thumbsUpImage.image = [cell.thumbsUpImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsUpImage setTintColor:[UIColor grayColor]];
+            
+            cell.thumbsDownImage.image = [UIImage imageNamed:@"ThumbsDown-filled"];
+            cell.thumbsDownImage.image = [cell.thumbsDownImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsDownImage setTintColor:self.themeColor];
         }else{
-            cell.thumbsDown.backgroundColor = [UIColor clearColor];
-            cell.thumbsUp.backgroundColor = [UIColor clearColor];
+            cell.thumbsUpImage.image = [UIImage imageNamed:@"ThumbsUp"];
+            cell.thumbsUpImage.image = [cell.thumbsUpImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsUpImage setTintColor:[UIColor grayColor]];
+            
+            cell.thumbsDownImage.image = [UIImage imageNamed:@"ThumbsDown"];
+            cell.thumbsDownImage.image = [cell.thumbsDownImage.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [cell.thumbsDownImage setTintColor:[UIColor grayColor]];
         }
         
         CGRect screenRect = [[UIScreen mainScreen] bounds];
-        
-        float horizOffset = 0;
-        
-        if (solutionInCell.img_link.length > 5) {
-            NSLog(@"%@----------%@", solutionInCell.sol_title, solutionInCell.img_link);
+        float size = screenRect.size.width / 4;
 
-            UIImage *image = [self.images objectAtIndex:indexPath.row - 1];
-            
-            float size = screenRect.size.width / 4;
-            UIImage *cropped = [[UIImage alloc]init];
-
-            if (image.size.width > image.size.height) {
-                
-                double diff = (image.size.width - image.size.height) / 2.0;
-
-                CGRect cropRect = CGRectMake(diff, 0, image.size.height, image.size.height);
-                CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
-                
-                cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
-                CGImageRelease(imageRef);
-
-
-            }else{
-                double diff = (image.size.height - image.size.width) / 2.0;
-                
-                CGRect cropRect = CGRectMake(0, diff, image.size.width, image.size.width);
-                CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
-                
-                cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
-                CGImageRelease(imageRef);
-                
-            }
-
-            UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [imageButton addTarget:self
-                            action:@selector(solutionTitleButtonPressed:)
-                  forControlEvents:UIControlEventTouchUpInside];
-            imageButton.frame = CGRectMake(0, 0, size, size);
-            imageButton.tag = indexPath.row;
-            
-            [imageButton setBackgroundImage:cropped forState:UIControlStateNormal];
-        
-            [cell.solutionsPanel addSubview:imageButton];
-
-            horizOffset = size;
-        }
-        
-        cell.solutionsPanel.layer.borderWidth = 2.0f;
-        cell.solutionsPanel.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+        cell.solutionsPanel.backgroundColor = [UIColor colorWithRed:.929 green:.929 blue:.929 alpha:1];
         
         //create solutions title button
         UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -912,32 +755,25 @@
                    action:@selector(solutionTitleButtonPressed:)
          forControlEvents:UIControlEventTouchUpInside];
         
-        button.layer.borderWidth = 2.0f;
-        button.layer.borderColor = [[UIColor redColor] CGColor];
-        
+        //button.layer.borderWidth = 2.0f;
+        //button.layer.borderColor = [[UIColor redColor] CGColor];
         [button setTitle:solutionInCell.sol_title forState:UIControlStateNormal];
         [button setTitleColor:self.themeColor forState:UIControlStateNormal];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         button.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         button.titleLabel.font = [UIFont fontWithName:@"Avenir-Heavy" size:17];
-        float widthConst = screenRect.size.width * .9;
-        if (horizOffset > 0) {
-            widthConst = screenRect.size.width * .65;
-        }
-        button.frame = CGRectMake(horizOffset + 10, 5, widthConst, 30);
+        float widthConst = screenRect.size.width * .75 - 50;
+        button.frame = CGRectMake(size + 8, 5, widthConst, 30);
         button.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         button.titleLabel.numberOfLines = 3;
         button.tag = indexPath.row;
-        
         CGRect buttonOldSize = button.frame;
-        
         CGSize buttonNewSize = [button.titleLabel sizeThatFits:CGSizeMake(buttonOldSize.size.width, MAXFLOAT)];
         button.frame = CGRectMake(buttonOldSize.origin.x, buttonOldSize.origin.y, buttonOldSize.size.width, buttonNewSize.height);
-
-        
         [cell.solutionsPanel addSubview:button];
         float vertOffset = buttonNewSize.height;
 
+        /*
         if (solutionInCell.phone_number.length > 5) {
 
             //NSLog(@"here's the phone number %@", solutionInCell.phone_number);
@@ -946,20 +782,22 @@
                        action:@selector(phoneButtonPressed:)
              forControlEvents:UIControlEventTouchUpInside];
             
-            phoneButton.layer.borderWidth = 2.0f;
-            phoneButton.layer.borderColor = [[UIColor blueColor] CGColor];
+            //phoneButton.layer.borderWidth = 2.0f;
+            //phoneButton.layer.borderColor = [[UIColor blueColor] CGColor];
             
             [phoneButton setTitle:solutionInCell.phone_number forState:UIControlStateNormal];
             [phoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             phoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             phoneButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            phoneButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30);
+            phoneButton.frame = CGRectMake(size + 8, vertOffset + 5, button.frame.size.width, 30);
             phoneButton.tag = indexPath.row;
         
             [cell.solutionsPanel addSubview:phoneButton];
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
         }
+         */
+        
         if (solutionInCell.address.length > 5) {
 
             //NSLog(@"here's the address %@", solutionInCell.address);
@@ -967,46 +805,29 @@
             [addressButton addTarget:self
                             action:@selector(addressButtonPressed:)
                   forControlEvents:UIControlEventTouchUpInside];
-            addressButton.layer.borderWidth = 2.0f;
-            addressButton.layer.borderColor = [[UIColor greenColor] CGColor];
+            //addressButton.layer.borderWidth = 2.0f;
+            //addressButton.layer.borderColor = [[UIColor greenColor] CGColor];
             
             [addressButton setTitle:solutionInCell.address forState:UIControlStateNormal];
             [addressButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
             addressButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
             addressButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            addressButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30);
+            addressButton.frame = CGRectMake(size + 8, vertOffset + 5, button.frame.size.width, 30);
             addressButton.tag = indexPath.row;
             [cell.solutionsPanel addSubview:addressButton];
             vertOffset += 30;
             //NSLog(@"new vert offset is %f", vertOffset);
         }
-        /*
-        //if (solutionInCell.email) {
-            //NSLog(@"here's the email %@", solutionInCell.email);
-            UIButton *emailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [emailButton addTarget:self
-                              action:@selector(emailButtonPressed:)
-                    forControlEvents:UIControlEventTouchUpInside];
-            [emailButton setTitle:@"dan@doozer.tips" forState:UIControlStateNormal];
-            [emailButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-            emailButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            emailButton.titleLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            emailButton.frame = CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30);
-            emailButton.tag = indexPath.row;
-            [cell.solutionsPanel addSubview:emailButton];
-            vertOffset += 30;
-            //NSLog(@"new vert offset is %f", vertOffset);
-        //}
-         */
         
+        /*
         if (solutionInCell.open_hours.length > 5) {
             //NSLog(@"setting open hours label");
             
-            UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, button.frame.size.width, 30)];
+            UILabel *hoursLabel = [[UILabel alloc]initWithFrame:CGRectMake(size + 8, vertOffset + 5, button.frame.size.width, 30)];
             hoursLabel.textColor = [UIColor darkGrayColor];
             
-            hoursLabel.layer.borderWidth = 2.0f;
-            hoursLabel.layer.borderColor = [[UIColor yellowColor] CGColor];
+            //hoursLabel.layer.borderWidth = 2.0f;
+            //hoursLabel.layer.borderColor = [[UIColor yellowColor] CGColor];
             
             hoursLabel.text = solutionInCell.open_hours;
             hoursLabel.font = [UIFont fontWithName:@"Avenir" size:12];
@@ -1016,22 +837,44 @@
             [cell.solutionsPanel addSubview:hoursLabel];
 
         }
-        
-        /*
-        if (solutionInCell.price) {
-            //NSLog(@"setting price label");
-            
-            UILabel *priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(horizOffset + 10, vertOffset + 5, screenRect.size.width - 70, 30)];
-            priceLabel.textColor = [UIColor darkGrayColor];
-            priceLabel.text = [NSString stringWithFormat:@"$%@", solutionInCell.price.stringValue];
-            priceLabel.font = [UIFont fontWithName:@"Avenir" size:12];
-            vertOffset += 30;
-            //NSLog(@"new vert offset is %f", vertOffset);
-            
-            [cell.solutionsPanel addSubview:priceLabel];
-            
-        }
          */
+        
+
+        NSLog(@"screenrect/4 is %f, and vertOffset is %f", size, vertOffset);
+        
+        if (size > vertOffset) {
+            cell.solutionsPanelHeight.constant = size;
+        }else{
+            cell.solutionsPanelHeight.constant = vertOffset + 10;
+        }
+        
+        UIImage *image = [self.images objectAtIndex:indexPath.row - 1];
+        UIImage *cropped = [[UIImage alloc]init];
+        
+        if (image.size.width > image.size.height) {
+            double diff = (image.size.width - image.size.height) / 2.0;
+            CGRect cropRect = CGRectMake(diff, 0, image.size.height, image.size.height);
+            CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
+            cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
+            CGImageRelease(imageRef);
+        }else{
+            double diff = (image.size.height - image.size.width) / 2.0;
+            CGRect cropRect = CGRectMake(0, diff, image.size.width, image.size.width);
+            CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
+            cropped = [UIImage imageWithCGImage:imageRef scale:0.0 orientation:UIImageOrientationUp];
+            CGImageRelease(imageRef);
+        }
+        
+        UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [imageButton addTarget:self
+                        action:@selector(solutionTitleButtonPressed:)
+              forControlEvents:UIControlEventTouchUpInside];
+        imageButton.frame = CGRectMake(0, 0, size, size);
+        imageButton.tag = indexPath.row;
+        [imageButton setBackgroundImage:cropped forState:UIControlStateNormal];
+        [cell.solutionsPanel addSubview:imageButton];
+        
+        
         return cell;
 
     }
@@ -1118,7 +961,7 @@
                     if (image) {
                         [self.images replaceObjectAtIndex:index withObject:image];
                     }else{
-                        image = [UIImage imageNamed:@"image_placeholder"];
+                        image = [UIImage imageNamed:@"GenericTipImage"];
                         [self.images replaceObjectAtIndex:index withObject:image];
                     }
                     image = nil;
@@ -1133,6 +976,7 @@
         }else{
             //NSLog(@"print that an image was skipped....");
             UIImage * image = [[UIImage alloc]init];
+            image = [UIImage imageNamed:@"GenericTipImage"];
             [self.images insertObject:image atIndex:index];
             
         }
@@ -1210,6 +1054,7 @@
     }];
     
     likedSolution.state = @"liked";
+
     
     // Save the context.
     NSError *error = nil;
