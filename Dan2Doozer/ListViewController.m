@@ -162,6 +162,8 @@
                         snapshot.alpha = 1.0;
                         [self.tableView addSubview:snapshot];
                         originalCell.hidden = NO;
+                        originalCell.cellDueFlag.hidden = YES;
+                        
                         Item *parent = self.displayList;
                         originalCell.backgroundColor = [ColorHelper getUIColorFromString:parent.color :1];
                         originalCell.cellItemTitle.text = @"\U00002713\U0000FE0E";
@@ -1284,6 +1286,8 @@
                     cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
                     cell.cellItemTitle.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
                     cell.cellDueFlag.textColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+                    cell.cellDueFlag.backgroundColor = [UIColor clearColor];
+
 
                     //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
                 }
