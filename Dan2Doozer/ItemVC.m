@@ -333,6 +333,8 @@
     
     ItemCustomCell *cell = (ItemCustomCell *)[self.solutionsTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 
+    [self.view endEditing:YES];
+
     self.showingDatePanel = YES;
     
     [self calculateCellRowHeights];
@@ -882,60 +884,6 @@
     
     self.solutions = [[NSMutableArray alloc]init];
     self.images = [[NSMutableArray alloc]init];
-    
-    
-    /*
-    NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
-    NSMutableArray *solutions = [[NSMutableArray alloc]init];
-    
-    for (NSString *solutionID in array){
-        
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:self.managedObjectContext];
-        [fetchRequest setEntity:entity];
-        
-        // Set the batch size to a suitable number.
-        [fetchRequest setFetchBatchSize:20];
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sol_ID == %@", solutionID];
-        [fetchRequest setPredicate:predicate];
-        
-        
-        // Edit the sort key as appropriate.
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sol_ID" ascending:YES];
-        NSArray *sortDescriptors = @[sortDescriptor];
-        
-        [fetchRequest setSortDescriptors:sortDescriptors];
-        
-        // Edit the section name key path and cache name if appropriate.
-        // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Solution"];
-        [NSFetchedResultsController deleteCacheWithName:@"Solution"];
-        
-        NSError *error = nil;
-        if (![aFetchedResultsController performFetch:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
-        
-        [solutions addObject: solution];
-    }
-    
-    
-    NSSortDescriptor *sortDescriptor2;
-    sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:NO];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor2];
-    NSArray *sortedSolutions;
-    sortedSolutions = [solutions sortedArrayUsingDescriptors:sortDescriptors];
-    
-    [self.solutions addObjectsFromArray:sortedSolutions];
-    
-    //NSLog(@"solutions array is %@", self.solutions);
-    */
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:self.managedObjectContext];
