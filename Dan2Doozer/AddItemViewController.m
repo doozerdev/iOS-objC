@@ -235,10 +235,16 @@
     Item *itemInCell = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     if (indexPath.row == 0) {
-        cell.textLabel.text = self.selectedList.title;
+        
+        if (self.showAllLists) {
+            cell.textLabel.text = [NSString stringWithFormat:@"\U000025BC\U0000FE0E %@", self.selectedList.title];
+        }else{
+            cell.textLabel.text = [NSString stringWithFormat:@"\U000025B6\U0000FE0E %@", self.selectedList.title];
+        }
+        //cell.textLabel.text = self.selectedList.title;
         cell.textLabel.textColor = [ColorHelper getUIColorFromString:self.selectedList.color :1];
     }else{
-        cell.textLabel.text = itemInCell.title;
+        cell.textLabel.text = [NSString stringWithFormat:@"     %@", itemInCell.title];
         cell.textLabel.textColor = [ColorHelper getUIColorFromString:itemInCell.color :1];
 
     }

@@ -53,14 +53,14 @@
     
     self.hyperlinks = [[NSMutableArray alloc]init];
     
-    if (self.detailItem.solutions.length > 5) {
+    //if (self.detailItem.solutions.length > 5) {
         [self fetchSolutions];
 
-    }
+    //}
     
     [self markSolutionsViewed];
     
-    [DoozerSyncManager getSolutions:self.detailItem];
+    //[DoozerSyncManager getSolutions:self.detailItem];
     
     [self calculateCellRowHeights];
     
@@ -708,12 +708,9 @@
         
         cell.expertNameLabel.textColor = self.themeColor;
         
-        cell.expertNameLabel.text = @"test name";
-        cell.expertTitleLabel.text = @"test title titel titel";
+        cell.expertNameLabel.text = @"Daniel Apone";
+        cell.expertTitleLabel.text = @"CEO, Doozer";
         
-        cell.expertNameLabel.text = solutionInCell.phone_number;
-        cell.expertTitleLabel.text = solutionInCell.open_hours;
-
         cell.thumbsUp.tag = indexPath.row;
         cell.thumbsDown.tag = indexPath.row;
         
@@ -886,6 +883,8 @@
     self.solutions = [[NSMutableArray alloc]init];
     self.images = [[NSMutableArray alloc]init];
     
+    
+    /*
     NSArray *array = [self.detailItem.solutions componentsSeparatedByString:@","];
     NSMutableArray *solutions = [[NSMutableArray alloc]init];
     
@@ -936,6 +935,39 @@
     [self.solutions addObjectsFromArray:sortedSolutions];
     
     //NSLog(@"solutions array is %@", self.solutions);
+    */
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"item_id == %@", self.detailItem.itemId];
+    [fetchRequest setPredicate:predicate];
+    
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Solution"];
+    [NSFetchedResultsController deleteCacheWithName:@"Solution"];
+    
+    NSError *error = nil;
+    if (![aFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    self.solutions = [aFetchedResultsController.fetchedObjects mutableCopy];
     
     int index = 0;
 

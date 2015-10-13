@@ -18,6 +18,8 @@
 + (void)syncWithServer;
 + (void)copyFromServer :(NSMutableArray *)inputArray;
 + (void)getSolutions:(Item *)item;
++ (void)getUpdatedSolutions;
+
 
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;

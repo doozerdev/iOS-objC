@@ -47,7 +47,7 @@
 
 
     }else{
-        //NSString *serverURI = @"http://api.doozer.tips/api/";
+        //NSString *serverURI = @"http://api.test.doozer.tips/api/";
         
         NSString *serverURI = @"http://api.beta.doozer.tips/api/";
         

@@ -424,7 +424,7 @@ double _lastSyncRequest;
                 
                 if (solutionsCount.intValue > 0) {
 
-                    [self getSolutions:newItem];
+                    //[self getSolutions:newItem];
                 }
                 
                 
@@ -538,12 +538,14 @@ double _lastSyncRequest;
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     NSDate *syncDate = [[NSUserDefaults standardUserDefaults] valueForKey:@"LastSuccessfulSync"];
-    NSString* dateString = [NSString stringWithFormat:@"%@", syncDate];
-    //int newTestDate = dateString.intValue - 36000;
-    //NSString *syncTime = [NSString stringWithFormat:@"%d", newTestDate];
+    NSString* dateString = @"0";
+    
+    if (syncDate != NULL) {
+        dateString = [NSString stringWithFormat:@"%@", syncDate];
+    }
     
     NSString * NewURL = [NSString stringWithFormat:@"%@solutions/for_user/%@", appDelegate.SERVER_URI, dateString];
-    
+        
     NSLog(@"get solutions url === %@", NewURL);
     
     NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
@@ -579,6 +581,7 @@ double _lastSyncRequest;
             newSolution.price = [eachArrayElement objectForKey:@"price"];
             newSolution.source = [eachArrayElement objectForKey:@"source"];
             newSolution.tags = [eachArrayElement objectForKey:@"tags"];
+            newSolution.item_id = [eachArrayElement objectForKey:@"item_id"];
             
             NSString *assDateString = [eachArrayElement objectForKey:@"date_associated"];
             NSDateFormatter* df = [[NSDateFormatter alloc]init];

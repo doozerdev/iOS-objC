@@ -230,6 +230,8 @@ NSString *sessionID = nil;
                 }
             }];
             
+            [DoozerSyncManager getUpdatedSolutions];
+            
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Error: %@", error);
             NSLog(@"login failed!!");

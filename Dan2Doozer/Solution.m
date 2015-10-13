@@ -26,5 +26,6 @@
 @synthesize archive;
 @synthesize state;
 @synthesize date_associated;
+@synthesize item_id;
 
 @end
