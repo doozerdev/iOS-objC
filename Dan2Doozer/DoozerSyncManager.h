@@ -17,7 +17,6 @@
 
 + (void)syncWithServer;
 + (void)copyFromServer :(NSMutableArray *)inputArray;
-+ (void)getSolutions:(Item *)item;
 + (void)getUpdatedSolutions;
 
 

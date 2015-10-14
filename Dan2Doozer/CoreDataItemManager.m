@@ -105,8 +105,9 @@ NSFetchedResultsController *_fetchedResultsController;
     BOOL unseenSolutions = NO;
     
     for (Item *eachItem in aFetchedResultsController.fetchedObjects) {
-        if (eachItem.solutions_count.intValue > 0) {
-            NSLog(@"item with name being set to have solutions ======= %@", eachItem.title);
+        //NSLog(@"****");
+        if ([self findNumberOfSolutions:eachItem] > 0) {
+            //NSLog(@"item with name being set to have solutions ======= %@", eachItem.title);
             solutions = YES;
             unseenSolutions = [self checkForUnseenSolutions:eachItem];
 
@@ -133,56 +134,97 @@ NSFetchedResultsController *_fetchedResultsController;
 
 + (BOOL)checkForUnseenSolutions:(Item *)item{
     
+    
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
     NSManagedObjectContext* context = appDelegate.managedObjectContext;
     
     BOOL unseenSolutions = NO;
     
-    NSArray *array = [item.solutions componentsSeparatedByString:@","];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
     
-    for (NSString *solutionID in array){
-        
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
-        [fetchRequest setEntity:entity];
-        
-        // Set the batch size to a suitable number.
-        [fetchRequest setFetchBatchSize:20];
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sol_ID == %@", solutionID];
-        [fetchRequest setPredicate:predicate];
-        
-        
-        // Edit the sort key as appropriate.
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sol_ID" ascending:YES];
-        NSArray *sortDescriptors = @[sortDescriptor];
-        
-        [fetchRequest setSortDescriptors:sortDescriptors];
-        
-        // Edit the section name key path and cache name if appropriate.
-        // nil for section name key path means "no sections".
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Solution"];
-        [NSFetchedResultsController deleteCacheWithName:@"Solution"];
-        
-        NSError *error = nil;
-        if (![aFetchedResultsController performFetch:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
-        
-        if ([solution.state isEqualToString:@"unseen"]) {
-            unseenSolutions = YES;
-        }
-        
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"item_id == %@", item.itemId];
+    [fetchRequest setPredicate:predicate];
+    
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"item_id" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Solution"];
+    [NSFetchedResultsController deleteCacheWithName:@"Solution"];
+    
+    NSError *error = nil;
+    if (![aFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
     }
+    
+    Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
+    
+    
+    if ([solution.state isEqualToString:@"unseen"]) {
+        unseenSolutions = YES;
+    }
+    
+    //NSLog(@"************************* looking for solutions on Item === %@, and found a solution with state ---- %@", item.title, solution.state);
+
     
     return unseenSolutions;
     
 }
+
+
++ (NSInteger)findNumberOfSolutions:(Item *)item{
+    
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSManagedObjectContext* context = appDelegate.managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"item_id == %@", item.itemId];
+    [fetchRequest setPredicate:predicate];
+    
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"item_id" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Solution"];
+    [NSFetchedResultsController deleteCacheWithName:@"Solution"];
+    
+    NSError *error = nil;
+    if (![aFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return [aFetchedResultsController.fetchedObjects count];
+    
+}
+
 
 
 

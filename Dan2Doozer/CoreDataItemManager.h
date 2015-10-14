@@ -19,6 +19,9 @@
 
 +(NSInteger)checkForSolutions :(NSString *)parent;
 
++ (NSInteger)findNumberOfSolutions:(Item *)item;
+
+
 
 
 +(NSArray *)findNumberOfDueItems;

@@ -450,88 +450,6 @@ double _lastSyncRequest;
 }
 
 
-+ (void)getSolutions:(Item *)item{
-    
-    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
-    NSManagedObjectContext* context = appDelegate.managedObjectContext;
-    
-    NSString * NewURL = [NSString stringWithFormat:@"%@items/%@/solutions", appDelegate.SERVER_URI, item.itemId];
-    
-    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
-    
-    AFHTTPRequestOperationManager *cats = [AFHTTPRequestOperationManager manager];
-    
-    [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
-    
-    NSMutableArray *solutionsList = [[NSMutableArray alloc]init];
-    
-    [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        NSDictionary *jsonDict = (NSDictionary *) responseObject;
-        NSArray * itemsArray = [jsonDict objectForKey:@"items"];
-        NSLog(@" heres' the server response =%@", itemsArray);
-        
-        
-        for (id eachArrayElement in itemsArray) {
-            NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
-            Solution *newSolution = [[Solution alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
-            
-            newSolution.sol_title = [eachArrayElement objectForKey:@"title"];
-            newSolution.address = [eachArrayElement objectForKey:@"address"];
-            newSolution.sol_description = [eachArrayElement objectForKey:@"description"];
-            newSolution.expire_date = [eachArrayElement objectForKey:@"expireDate"];
-            newSolution.sol_ID = [eachArrayElement objectForKey:@"id"];
-            newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
-            newSolution.link = [eachArrayElement objectForKey:@"link"];
-            newSolution.notes = [eachArrayElement objectForKey:@"notes"];
-            newSolution.open_hours = [eachArrayElement objectForKey:@"open_hours"];
-            newSolution.phone_number = [eachArrayElement objectForKey:@"phone_number"];
-            newSolution.price = [eachArrayElement objectForKey:@"price"];
-            newSolution.source = [eachArrayElement objectForKey:@"source"];
-            newSolution.tags = [eachArrayElement objectForKey:@"tags"];
-            newSolution.state = @"unseen";
-            
-            NSString *assDateString = [eachArrayElement objectForKey:@"date_link_updated"];
-            NSDateFormatter* df = [[NSDateFormatter alloc]init];
-            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-            NSDate* assDate = [df dateFromString:assDateString];
-            newSolution.date_associated = assDate;
-            
-            [solutionsList addObject:newSolution.sol_ID];
-            
-            // Save the context.
-            NSError *error = nil;
-            if (![context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-            
-        }
-        
-        
-        item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
-        //NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        
-    }
-      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-          NSLog(@"Error: %@", error);
-          
-      }];
-    
-    
-}
-
-
-
-
 + (void)getUpdatedSolutions{
     
     AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
@@ -582,6 +500,7 @@ double _lastSyncRequest;
             newSolution.source = [eachArrayElement objectForKey:@"source"];
             newSolution.tags = [eachArrayElement objectForKey:@"tags"];
             newSolution.item_id = [eachArrayElement objectForKey:@"item_id"];
+            newSolution.state = @"unseen";
             
             NSString *assDateString = [eachArrayElement objectForKey:@"date_associated"];
             NSDateFormatter* df = [[NSDateFormatter alloc]init];

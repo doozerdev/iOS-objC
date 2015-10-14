@@ -872,8 +872,9 @@
         
         NSNumber * numKids = [self.numberOfItemsOnLists objectAtIndex:indexPath.row];
         
+        //NSLog(@"right before");
         NSInteger solutionsFlag = [CoreDataItemManager checkForSolutions:itemInCell.itemId];
-        NSLog(@"solutionsFlag is %ld, for row %ld", (long)solutionsFlag, (long)indexPath.row);
+        //NSLog(@"solutionsFlag is %ld, for row %ld", (long)solutionsFlag, (long)indexPath.row);
         
         if (solutionsFlag == 1) {
             cell.lightBulb.hidden = NO;

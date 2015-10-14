@@ -1021,7 +1021,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
+   // NSLog(@"cell for row at index pathing at row %ld", (long)indexPath.row);
     
     ListCustomCell *cell = [tableView dequeueReusableCellWithIdentifier:@"itemCell" forIndexPath:indexPath];
 
@@ -1132,12 +1132,14 @@
     [cell.contentView addSubview:lineView];
     
     
-    NSLog(@"Building item %@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
+    NSLog(@"%@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
     
     if ([object.type isEqualToString:@"completed_header"]) {
         cell.cellItemTitle.hidden = NO;
         cell.lightBulb.hidden = YES;
         cell.cellDueFlag.hidden = YES;
+        cell.lightBulb.image = nil;
+
 
         
         NSArray *itemsOnList = self.fetchedResultsController.fetchedObjects;
@@ -1167,10 +1169,53 @@
         cell.cellDueFlag.text = @"";
         
     }else{
+        
+        NSInteger solutionCount = [CoreDataItemManager findNumberOfSolutions:object];
+        
+        if (solutionCount > 0) {
+            
+            NSLog(@"setting up the solutions number for %@, value %ld", object.title, (long)solutionCount);
+            
+            cell.lightBulb.hidden = NO;
+            
+            if ([CoreDataItemManager checkForUnseenSolutions:object]) {
+                UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
+                [cell.lightBulb setImage:image];
+                
+                if (object.done.intValue == 1) {
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[UIColor whiteColor]];
+                }else{
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[ColorHelper getUIColorFromString:listForTitle.color :1]];
+                }
+            }else{
+                UIImage *image = [UIImage imageNamed: @"EmptyLightbulb"];
+                [cell.lightBulb setImage:image];
+                
+                if (object.done.intValue == 1) {
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[UIColor whiteColor]];
+                }else{
+                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    [cell.lightBulb setTintColor:[UIColor lightGrayColor]];
+                }
+            }
+            
+            
+        }else{
+            cell.lightBulb.image = nil;
+            cell.lightBulb.hidden = YES;
+
+        }
+        
+        
+        //also, fix becca thing - no light buld showing up after tip created, but you can navigate into the task and then see it...
+        
         if (object.done.intValue == 1) {
+            
             cell.cellDueFlag.hidden = YES;
 
-            cell.lightBulb.hidden = YES;
             NSString *titleText = object.title;
             //NSString *titleText = [NSString stringWithFormat:@"%@ - %@", object.title, object.order];
 
@@ -1179,7 +1224,11 @@
 
             
             if (self.showCompleted) {
+                
+                NSLog(@"show completed and NOT hiding lightbuld");
+                
                 cell.cellItemTitle.hidden = NO;
+                cell.lightBulb.hidden = NO;
 
                 cell.cellItemTitle.text = titleText;
                 cell.cellItemTitle.textColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.5];
@@ -1194,10 +1243,12 @@
                 lineView.tag = 5151;
                 [cell addSubview:lineView];
 
+            }else{
+                cell.lightBulb.hidden = YES;
+
             }
         }else{
             cell.cellItemTitle.hidden = NO;
-            
 
             cell.cellItemTitle.attributedText = nil;
             
@@ -1208,9 +1259,6 @@
             cell.cellItemTitle.font = [UIFont fontWithName:@"Avenir" size:17];
             cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
            
-
-
-            
             if (object.duedate) {
                 
                 cell.cellDueFlag.hidden = NO;
@@ -1270,9 +1318,6 @@
                 cell.cellDueFlag.text = @"";
                 cell.cellDueFlag.hidden = YES;
             }
-            
-            
-            
          
             if (self.rowOfNewItem == -1) {
                 cell.backgroundColor = [UIColor whiteColor];
@@ -1292,29 +1337,6 @@
                     //NSLog(@"setting background color to transparent for row %ld", (long)indexPath.row);
                 }
             }
-            
-            if (object.solutions_count.intValue > 0) {
-                
-                NSLog(@"setting up the solutions number!");
-                
-                if ([CoreDataItemManager checkForUnseenSolutions:object]) {
-                    UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
-                    [cell.lightBulb setImage:image];
-                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    [cell.lightBulb setTintColor:[ColorHelper getUIColorFromString:listForTitle.color :1]];
-                }else{
-                    UIImage *image = [UIImage imageNamed: @"EmptyLightbulb"];
-                    [cell.lightBulb setImage:image];
-                    cell.lightBulb.image = [cell.lightBulb.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    [cell.lightBulb setTintColor:[UIColor lightGrayColor]];
-                }
-                
-                cell.lightBulb.hidden = NO;
-                
-            }else{
-                cell.lightBulb.hidden = YES;
-            }
-
         }
     }
 }
