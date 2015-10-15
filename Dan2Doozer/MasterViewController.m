@@ -46,7 +46,7 @@
     houseChoreList.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     houseChoreList.color = @"198,99,175,1";
     houseChoreList.order = [NSNumber numberWithInt:1000];
-    
+    /*
     Item *chore1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
     chore1.parent = houseChoreList.itemId;
     chore1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
@@ -62,6 +62,32 @@
     chore2.order = [NSNumber numberWithInt:2000];
     chore2.done = 0;
     chore2.notes = @" ";
+    */
+    
+    Item *chore3 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    chore3.parent = houseChoreList.itemId;
+    chore3.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    chore3.title = @"Swipe right to complete me";
+    chore3.order = [NSNumber numberWithInt:3000];
+    chore3.done = 0;
+    chore3.notes = @" ";
+    
+    Item *chore4 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    chore4.parent = houseChoreList.itemId;
+    chore4.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    chore4.title = @"Swipe left to delete me";
+    chore4.order = [NSNumber numberWithInt:5000];
+    chore4.done = 0;
+    chore4.notes = @" ";
+    
+    Item *chore5 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    chore5.parent = houseChoreList.itemId;
+    chore5.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    chore5.title = @"Press and hold to reorder me";
+    chore5.order = [NSNumber numberWithInt:4000];
+    chore5.done = 0;
+    chore5.notes = @" ";
+    
     
     Item *vacationPlanning = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
     vacationPlanning.parent = nil;
@@ -70,7 +96,7 @@
     vacationPlanning.color = @"46,179,193,1";
     vacationPlanning.order = [NSNumber numberWithInt:2000];
     
-    
+    /*
     Item *item1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
     item1.parent = vacationPlanning.itemId;
     item1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
@@ -86,6 +112,63 @@
     item2.order = [NSNumber numberWithInt:2000];
     item2.done = 0;
     item2.notes = @" ";
+    */
+    
+    Item *item3 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    item3.parent = vacationPlanning.itemId;
+    item3.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    item3.title = @"Swipe right to complete me";
+    item3.order = [NSNumber numberWithInt:3000];
+    item3.done = 0;
+    item3.notes = @" ";
+    
+    Item *item4 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    item4.parent = vacationPlanning.itemId;
+    item4.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    item4.title = @"Swipe left to delete me";
+    item4.order = [NSNumber numberWithInt:5000];
+    item4.done = 0;
+    item4.notes = @" ";
+    
+    Item *item5 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    item5.parent = vacationPlanning.itemId;
+    item5.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    item5.title = @"Press and hold to reorder me";
+    item5.order = [NSNumber numberWithInt:4000];
+    item5.done = 0;
+    item5.notes = @" ";
+    
+    Item *instructions = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    instructions.parent = nil;
+    instructions.title = @"Swipe left to edit me";
+    instructions.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    instructions.color = @"236,183,0,1";
+    instructions.order = [NSNumber numberWithInt:3000];
+    
+    Item *instruction1 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    instruction1.parent = instructions.itemId;
+    instruction1.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    instruction1.title = @"Swipe right to complete me";
+    instruction1.order = [NSNumber numberWithInt:1000];
+    instruction1.done = 0;
+    instruction1.notes = @" ";
+    
+    Item *instruction2 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    instruction2.parent = instructions.itemId;
+    instruction2.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    instruction2.title = @"Swipe left to delete me";
+    instruction2.order = [NSNumber numberWithInt:3000];
+    instruction2.done = 0;
+    instruction2.notes = @" ";
+    
+    Item *instruction3 = [[Item alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+    instruction3.parent = instructions.itemId;
+    instruction3.itemId = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    instruction3.title = @"Press and hold to reorder me";
+    instruction3.order = [NSNumber numberWithInt:2000];
+    instruction3.done = 0;
+    instruction3.notes = @" ";
+    
     
     NSError *error = nil;
     if (![context save:&error]) {
@@ -96,11 +179,23 @@
     [self reloadAndDrawLists];
     
     [AddItemsToServer addThisItem:houseChoreList];
-    [AddItemsToServer addThisItem:chore1];
-    [AddItemsToServer addThisItem:chore2];
+    //[AddItemsToServer addThisItem:chore1];
+    //[AddItemsToServer addThisItem:chore2];
+    [AddItemsToServer addThisItem:chore3];
+    [AddItemsToServer addThisItem:chore4];
+    [AddItemsToServer addThisItem:chore5];
+    
     [AddItemsToServer addThisItem:vacationPlanning];
-    [AddItemsToServer addThisItem:item1];
-    [AddItemsToServer addThisItem:item2];
+    //[AddItemsToServer addThisItem:item1];
+    //[AddItemsToServer addThisItem:item2];
+    [AddItemsToServer addThisItem:item3];
+    [AddItemsToServer addThisItem:item4];
+    [AddItemsToServer addThisItem:item5];
+    
+    [AddItemsToServer addThisItem:instructions];
+    [AddItemsToServer addThisItem:instruction1];
+    [AddItemsToServer addThisItem:instruction2];
+    [AddItemsToServer addThisItem:instruction3];
     
 }
 
@@ -859,20 +954,9 @@
         cell.cellItemTitle.textAlignment = NSTextAlignmentLeft;
         cell.tag = 0;
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-
-        /*
-        NSNumber *launchCount = [[NSUserDefaults standardUserDefaults] valueForKey:@"NumberOfLaunches"];
-        int numKids = 0;
-        if ([launchCount intValue] == 0) {
-            numKids = itemInCell.children_undone.intValue;
-        }else{
-            numKids = [CoreDataItemManager findNumberOfUncompletedChildren:itemInCell.itemId];
-        }
-        */
         
         NSNumber * numKids = [self.numberOfItemsOnLists objectAtIndex:indexPath.row];
         
-        //NSLog(@"right before");
         NSInteger solutionsFlag = [CoreDataItemManager checkForSolutions:itemInCell.itemId];
         //NSLog(@"solutionsFlag is %ld, for row %ld", (long)solutionsFlag, (long)indexPath.row);
         

@@ -95,6 +95,12 @@
     self.navigationController.navigationBar.barStyle  = UIBarStyleBlackTranslucent;
     self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
     
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *appVersion = [infoDict objectForKey:@"CFBundleShortVersionString"];
+    NSNumber *buildNumber = [infoDict objectForKey:@"CFBundleVersion"];
+    self.buildNumberLabel.text = [NSString stringWithFormat:@"%@ build %@", appVersion, buildNumber];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

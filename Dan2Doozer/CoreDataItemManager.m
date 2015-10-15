@@ -109,21 +109,29 @@ NSFetchedResultsController *_fetchedResultsController;
         if ([self findNumberOfSolutions:eachItem] > 0) {
             //NSLog(@"item with name being set to have solutions ======= %@", eachItem.title);
             solutions = YES;
-            unseenSolutions = [self checkForUnseenSolutions:eachItem];
-
+            if([self checkForUnseenSolutions:eachItem]){
+                unseenSolutions = YES;
+            }
         }
     }
+    
+    //NSLog(@"item = %@, solutions = %@, unseensolutions = %@", )
     
     NSInteger returnValue = 0;
     
     if (solutions) {
         if (unseenSolutions) {
             returnValue = 1;
+            //NSLog(@"setting return value of 1");
         }else{
             returnValue = 0;
+            //NSLog(@"setting return value of 0");
+
         }
     }else{
         returnValue = -1;
+        //NSLog(@"setting return value of -1");
+
     }
     
     // values: -1 is no solutions, 0 is solutions that have been seen, and 1 means there are unseen solutions
@@ -175,6 +183,7 @@ NSFetchedResultsController *_fetchedResultsController;
     
     if ([solution.state isEqualToString:@"unseen"]) {
         unseenSolutions = YES;
+        //NSLog(@"setting unseen solutions to YES for item %@", item.title);
     }
     
     //NSLog(@"************************* looking for solutions on Item === %@, and found a solution with state ---- %@", item.title, solution.state);
@@ -230,7 +239,7 @@ NSFetchedResultsController *_fetchedResultsController;
 
 +(void)rebalanceItemOrderValues :(NSArray *)arrayOfItems{
     
-    NSLog(@"beginning the rebalance operation ---------------");
+    //NSLog(@"beginning the rebalance operation ---------------");
     int orderStepValue = 1073741824/[arrayOfItems count];
     //int orderStepValue = 32;
     int itemOrderMultiplier = 1;

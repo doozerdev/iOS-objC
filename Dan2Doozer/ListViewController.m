@@ -1132,7 +1132,7 @@
     [cell.contentView addSubview:lineView];
     
     
-    NSLog(@"%@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
+    //NSLog(@"%@, Row %ld, Number of Solutions = %@", object.title, (long)indexPath.row, object.solutions_count);
     
     if ([object.type isEqualToString:@"completed_header"]) {
         cell.cellItemTitle.hidden = NO;
@@ -1174,7 +1174,7 @@
         
         if (solutionCount > 0) {
             
-            NSLog(@"setting up the solutions number for %@, value %ld", object.title, (long)solutionCount);
+            //NSLog(@"setting up the solutions number for %@, value %ld", object.title, (long)solutionCount);
             
             cell.lightBulb.hidden = NO;
             
@@ -1225,7 +1225,7 @@
             
             if (self.showCompleted) {
                 
-                NSLog(@"show completed and NOT hiding lightbuld");
+                //NSLog(@"show completed and NOT hiding lightbuld");
                 
                 cell.cellItemTitle.hidden = NO;
                 cell.lightBulb.hidden = NO;
@@ -1281,9 +1281,9 @@
                 }
                  */
                 
-                NSLog(@"due date int is %d", dueDateDisplay.intValue);
+                //NSLog(@"due date int is %d", dueDateDisplay.intValue);
                 
-                NSLog(@"delta equals === %f, duedate is %@", delta, dueDateDisplay);
+                //NSLog(@"delta equals === %f, duedate is %@", delta, dueDateDisplay);
                 
                 NSDateFormatter *df3 = [[NSDateFormatter alloc]init];
                 [df3 setDateFormat:@"YYMMdd"];
@@ -1452,93 +1452,6 @@
     
     return _fetchedResultsController;
 }
-
-/*
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    //NSLog(@"beginning updates now ------------------");
-    
- 
-     //self.fetchedResultsController = nil;
-
-    //Item *parentItem = self.displayList;
-    //NSLog(@"parent ID = %@", parentItem.itemId);
-    
-    
-    //for (Item* eachItem in self.fetchedResultsController.fetchedObjects){
-        //NSLog(@"Item %@, with parent %@", eachItem.title, eachItem.parent);
-    //}
-    
-    [self.tableView beginUpdates];
-
-    
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        default:
-            return;
-    }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    UITableView *tableView = self.tableView;
-    
-    //Item * test = (Item *)anObject;
-    //Item *parent = (Item *)self.displayList;
-
-    //NSLog(@"title of item ================= %@, parent = %@", test.title, parent.itemId);
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            NSLog(@"ChangeInsert index path to delete = %@", indexPath);
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            
-            
-            NSLog(@"ChangeDelete row = %ld", (long)indexPath.row);
-
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-        
-        case NSFetchedResultsChangeUpdate:
-            NSLog(@"ChangeUpdate index path to UPDATE = %@", indexPath);
-            [self configureCell:(ListCustomCell *)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-            //[tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-            break;
-         
-            
-        case NSFetchedResultsChangeMove:
-            NSLog(@"moving rows in CHANGEMOVE");
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    
-    
-    [self.tableView endUpdates];
-    
-    //NSLog(@"ending updates now - after table endUpdates -------------");
-
-}
-
-*/
-
 
 #pragma mark - Helper methods
 - (UIView *)customSnapshoFromView:(UIView *)inputView {

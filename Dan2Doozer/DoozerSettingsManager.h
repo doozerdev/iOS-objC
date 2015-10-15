@@ -16,6 +16,7 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UILabel *UserNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *buildNumberLabel;
 
 
 @end

@@ -618,7 +618,7 @@
     
     if (itemInCell.solutions_count.intValue > 0) {
         
-        NSLog(@"setting up the solutions number!");
+        //NSLog(@"setting up the solutions number!");
         
         if ([CoreDataItemManager checkForUnseenSolutions:itemInCell]) {
             UIImage *image = [UIImage imageNamed: @"FilledLightbulb"];
