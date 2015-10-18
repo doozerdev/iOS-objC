@@ -53,14 +53,9 @@
     
     self.hyperlinks = [[NSMutableArray alloc]init];
     
-    //if (self.detailItem.solutions.length > 5) {
-        [self fetchSolutions];
-
-    //}
+    [self fetchSolutions];
     
     [self markSolutionsViewed];
-    
-    //[DoozerSyncManager getSolutions:self.detailItem];
     
     [self calculateCellRowHeights];
     
@@ -898,6 +893,7 @@
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:NO];
+    
     NSArray *sortDescriptors = @[sortDescriptor];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -963,8 +959,6 @@
         
         index += 1;
     }
-
-    
 }
 
 -(void)phoneButtonPressed:(UIButton *)button{

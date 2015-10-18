@@ -178,16 +178,12 @@ NSFetchedResultsController *_fetchedResultsController;
         abort();
     }
     
-    Solution *solution = [aFetchedResultsController.fetchedObjects objectAtIndex:0];
-    
-    
-    if ([solution.state isEqualToString:@"unseen"]) {
-        unseenSolutions = YES;
-        //NSLog(@"setting unseen solutions to YES for item %@", item.title);
+    for (Solution *eachSolution in aFetchedResultsController.fetchedObjects){
+        if ([eachSolution.state isEqualToString:@"unseen"]) {
+            unseenSolutions = YES;
+            //NSLog(@"setting unseen solutions to YES for item %@", item.title);
+        }
     }
-    
-    //NSLog(@"************************* looking for solutions on Item === %@, and found a solution with state ---- %@", item.title, solution.state);
-
     
     return unseenSolutions;
     

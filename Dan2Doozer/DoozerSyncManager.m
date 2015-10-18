@@ -472,8 +472,6 @@ double _lastSyncRequest;
     
     [cats.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
     
-    NSMutableArray *solutionsList = [[NSMutableArray alloc]init];
-    
     [cats GET:NewURL parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSDictionary *jsonDict = (NSDictionary *) responseObject;
@@ -481,34 +479,51 @@ double _lastSyncRequest;
 
         NSArray * itemsArray = [jsonDict objectForKey:@"items"];
         
-        
         for (id eachArrayElement in itemsArray) {
-            NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
-            Solution *newSolution = [[Solution alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
             
-            newSolution.sol_title = [eachArrayElement objectForKey:@"title"];
-            newSolution.address = [eachArrayElement objectForKey:@"address"];
-            newSolution.sol_description = [eachArrayElement objectForKey:@"description"];
-            newSolution.expire_date = [eachArrayElement objectForKey:@"expireDate"];
-            newSolution.sol_ID = [eachArrayElement objectForKey:@"id"];
-            newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
-            newSolution.link = [eachArrayElement objectForKey:@"link"];
-            newSolution.notes = [eachArrayElement objectForKey:@"notes"];
-            newSolution.open_hours = [eachArrayElement objectForKey:@"openHours"];
-            newSolution.phone_number = [eachArrayElement objectForKey:@"phoneNumber"];
-            newSolution.price = [eachArrayElement objectForKey:@"price"];
-            newSolution.source = [eachArrayElement objectForKey:@"source"];
-            newSolution.tags = [eachArrayElement objectForKey:@"tags"];
-            newSolution.item_id = [eachArrayElement objectForKey:@"item_id"];
-            newSolution.state = @"unseen";
+            NSString *solID = [eachArrayElement objectForKey:@"id"];
+            NSString *itemID = [eachArrayElement objectForKey:@"item_id"];
             
-            NSString *assDateString = [eachArrayElement objectForKey:@"date_associated"];
-            NSDateFormatter* df = [[NSDateFormatter alloc]init];
-            [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-            NSDate* assDate = [df dateFromString:assDateString];
-            newSolution.date_associated = assDate;
+            NSArray *solutionsArray = [self fetchSolution:context :solID :itemID];
             
-            [solutionsList addObject:newSolution.sol_ID];
+            if ([solutionsArray count] > 0) {
+                NSNumber *linked = [eachArrayElement objectForKey:@"linked"];
+                if (linked.intValue == 0) {
+                    Solution *existingSoltuion = [solutionsArray objectAtIndex:0];
+                    NSLog(@"unlinking and deleting a local solution");
+                    [context deleteObject:existingSoltuion];
+                }
+            }else{
+            
+                NSLog(@"creating a new local solution");
+                NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
+                Solution *newSolution = [[Solution alloc]initWithEntity:entity insertIntoManagedObjectContext:context];
+                
+                newSolution.sol_title = [eachArrayElement objectForKey:@"title"];
+                newSolution.address = [eachArrayElement objectForKey:@"address"];
+                newSolution.sol_description = [eachArrayElement objectForKey:@"description"];
+                newSolution.expire_date = [eachArrayElement objectForKey:@"expireDate"];
+                newSolution.sol_ID = [eachArrayElement objectForKey:@"id"];
+                newSolution.img_link = [eachArrayElement objectForKey:@"img_link"];
+                newSolution.link = [eachArrayElement objectForKey:@"link"];
+                newSolution.notes = [eachArrayElement objectForKey:@"notes"];
+                newSolution.open_hours = [eachArrayElement objectForKey:@"openHours"];
+                newSolution.phone_number = [eachArrayElement objectForKey:@"phoneNumber"];
+                newSolution.price = [eachArrayElement objectForKey:@"price"];
+                newSolution.source = [eachArrayElement objectForKey:@"source"];
+                newSolution.tags = [eachArrayElement objectForKey:@"tags"];
+                newSolution.item_id = [eachArrayElement objectForKey:@"item_id"];
+                newSolution.state = @"unseen";
+                
+                NSString *assDateString = [eachArrayElement objectForKey:@"date_link_updated"];
+                
+                NSDateFormatter* df = [[NSDateFormatter alloc]init];
+                [df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                NSDate* assDate = [df dateFromString:assDateString];
+                newSolution.date_associated = assDate;
+                
+                NSLog(@"%@, and saved as %@", assDateString, newSolution.date_associated);
+            }
             
             // Save the context.
             NSError *error = nil;
@@ -519,9 +534,6 @@ double _lastSyncRequest;
             
         }
         
-        
-        //item.solutions = [[solutionsList valueForKey:@"description"] componentsJoinedByString:@","];
-        //NSLog(@"Solutions found!!! and then equal == %@", item.solutions);
         
         // Save the context.
         NSError *error = nil;
@@ -578,6 +590,45 @@ double _lastSyncRequest;
     }
     
     return _fetchedResultsController;
+}
+
++ (NSArray *)fetchSolution:(NSManagedObjectContext *)context :(NSString *)solID :(NSString *)itemID{
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SolutionRecord" inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(sol_ID == %@) AND (item_id == %@)", solID, itemID];
+    [fetchRequest setPredicate:predicate];
+    
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date_associated" ascending:NO];
+    
+    NSArray *sortDescriptors = @[sortDescriptor];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:context sectionNameKeyPath:nil cacheName:@"Solution"];
+    [NSFetchedResultsController deleteCacheWithName:@"Solution"];
+    
+    NSError *error = nil;
+    if (![aFetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    NSLog(@"here are the local solutions that match: %@", aFetchedResultsController.fetchedObjects);
+    
+    return aFetchedResultsController.fetchedObjects;
+    
 }
 
 

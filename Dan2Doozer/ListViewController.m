@@ -1209,9 +1209,7 @@
 
         }
         
-        
-        //also, fix becca thing - no light buld showing up after tip created, but you can navigate into the task and then see it...
-        
+                
         if (object.done.intValue == 1) {
             
             cell.cellDueFlag.hidden = YES;
