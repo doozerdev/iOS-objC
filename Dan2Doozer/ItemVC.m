@@ -705,8 +705,20 @@
         
         cell.expertNameLabel.textColor = self.themeColor;
         
-        cell.expertNameLabel.text = @"Daniel Apone";
-        cell.expertTitleLabel.text = @"CEO, Doozer";
+        //cell.expertNameLabel.text = @"Daniel Apone";
+        //cell.expertTitleLabel.text = @"CEO, Doozer";
+        
+        if (solutionInCell.source.length > 3) {
+            cell.expertNameLabel.text = solutionInCell.source;
+        }else{
+            cell.expertNameLabel.text = @"Doozer";
+        }
+        
+        if (solutionInCell.notes.length > 3) {
+            cell.expertTitleLabel.text = solutionInCell.notes;
+        }else{
+            cell.expertTitleLabel.text = @"Staff research experts";
+        }
         
         cell.thumbsUp.tag = indexPath.row;
         cell.thumbsDown.tag = indexPath.row;

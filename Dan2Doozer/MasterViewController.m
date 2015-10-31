@@ -244,7 +244,38 @@
     [self.tableView addGestureRecognizer:tapGesture];
     
     
+    //[self updateJoey];
+    
+    
+    
 }
+
+/*
+- (void)updateJoey{
+    
+    NSString *currentSessionId = [[NSUserDefaults standardUserDefaults] valueForKey:@"UserLoginIdSession"];
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    [manager.requestSerializer setValue:currentSessionId forHTTPHeaderField:@"sessionId"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    params[@"id"] = @"10205054111251934";
+    params[@"role"] = @"admin";
+    
+    NSLog(@"params equal ------- %@", params);
+    
+    AppDelegate* appDelegate = [AppDelegate sharedAppDelegate];
+    NSString *URLstring = [NSString stringWithFormat:@"%@users/updateAdmin", appDelegate.SERVER_URI];
+    
+    [manager PUT:URLstring parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"Successful Joey = %@", responseObject);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+        
+    }];
+    
+}
+*/
+
 
 - (void)findNumberOfItemsOnLists{
     
@@ -258,7 +289,7 @@
     }
     
      NSArray *lists = self.fetchedResultsController.fetchedObjects;
-     
+    
      for (Item *eachItem in lists) {
      
          NSArray *eachList = [self fetchItemsOnList:eachItem.itemId];
